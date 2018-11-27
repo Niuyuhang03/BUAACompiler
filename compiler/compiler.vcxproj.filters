@@ -30,6 +30,9 @@
     <ClCompile Include="parser.c">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="IR.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -42,6 +45,9 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="lexer.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="IR.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

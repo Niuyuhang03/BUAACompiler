@@ -5,8 +5,10 @@
 
 struct symtable *symTable;
 
+int addrIndex = 0;					// 内存中下一变量、常量或参数的addr
+
 void init();
-void enter(char *name, int kind, int type, int value, int number);
+void enter(char *name, int kind, int type, int value, int number, int addr);
 void updateParaNumber(char* name, int value);
 void updateIdentValue(char* name, int type, int index, int value);
 struct node findIdentInSymTable(char* name);
@@ -60,12 +62,13 @@ void init() {
 * value: value of variable
 * number: number of parameters in function
 */
-void enter(char *name, int kind, int type, int value, int number) {
+void enter(char *name, int kind, int type, int value, int number, int addr) {
 	strcpy(symTable->table[symTable->top].name, name);
 	symTable->table[symTable->top].kind = kind;
 	symTable->table[symTable->top].type = type;
 	symTable->table[symTable->top].value = value;
 	symTable->table[symTable->top].number = number;
+	symTable->table[symTable->top].addr = addr;
 	if (kind == 3 || symTable->subprogramNumber == 0) {
 		symTable->subprogramTable[symTable->subprogramNumber] = symTable->top;
 		symTable->subprogramNumber++;
@@ -129,7 +132,7 @@ void updateIdentValue(char* name, int type, int index, int value) {
 }
 
 /*
-* Summary: find ident in symTable and return it
+* Summary: find identidier in symTable and return its whole struct
 */
 struct node findIdentInSymTable(char* name) {
 	int i;
@@ -149,7 +152,7 @@ struct node findIdentInSymTable(char* name) {
 }
 
 /*
-* judge if sym and next sym form integer
+* judge if sym and next sym form integer and do getsym(). if form, set iValue with the whole integer
 */
 int isInteger() {
 	int coefficient = 1;
@@ -176,11 +179,14 @@ void constdef() {
 	if (sym == INTSY) {
 		getsym();
 		while (1) {
+			char name[100];
+			int kind = 1, type = 2, value = 0;
 			if (sym != IDENT) {
 				// error
 				// return;
 				error(MISSING_IDENT);
 			}
+			strcpy(name, cValue);
 			getsym();
 			if (sym != IS) {
 				// error
@@ -193,12 +199,17 @@ void constdef() {
 				// return;
 				error(MISSING_INTEGER);
 			}
+			value = iValue;
 			printf("This is a constant int define!\n");
 			if (sym == SEMICOLON) {
+				enter(name, kind, type, value, 0, addrIndex);
+				addrIndex += 4;
 				getsym();
 				break;
 			}
 			else if (sym == COMMA) {
+				enter(name, kind, type, value, 0, addrIndex);
+				addrIndex += 4;
 				getsym();
 			}
 			else {
@@ -212,11 +223,14 @@ void constdef() {
 	else if (sym == CHARSY) {
 		getsym();
 		while (1) {
+			char name[100];
+			int kind = 1, type = 3, value = 0;
 			if (sym != IDENT) {
 				// error
 				// return;
 				error(MISSING_IDENT);
 			}
+			strcpy(name, cValue);
 			getsym();
 			if (sym != IS) {
 				// error
@@ -229,13 +243,18 @@ void constdef() {
 				// return
 				error(MISSING_CHAR);
 			}
+			value = (int)(cValue[0]);
 			printf("This is a constant char define!\n");
 			getsym();
 			if (sym == SEMICOLON) {
+				enter(name, kind, type, value, 0, addrIndex);
+				addrIndex += 4;
 				getsym();
 				break;
 			}
 			else if (sym == COMMA) {
+				enter(name, kind, type, value, 0, addrIndex);
+				addrIndex += 4;
 				getsym();
 			}
 			else {
@@ -271,7 +290,7 @@ void vardef() {
 		getsym();
 		while (1) {
 			char name[100];
-			int kind = 2, type = 2, number = NULL, value = NULL;
+			int kind = 2, type = 2, number = 0;
 			if (sym != IDENT) {
 				// error
 				// return;
@@ -298,13 +317,15 @@ void vardef() {
 			}
 			if (sym == SEMICOLON) {
 				printf("This is a variable int define!\n");
-				enter(name, kind, type, value, number);
+				enter(name, kind, type, 0, number, addrIndex);
+				addrIndex += 4;
 				getsym();
 				break;
 			}
 			else if (sym == COMMA) {
 				printf("This is a variable int define!\n");
-				enter(name, kind, type, value, number);
+				enter(name, kind, type, 0, number, addrIndex);
+				addrIndex += 4;
 				getsym();
 			}
 			else {
@@ -319,7 +340,7 @@ void vardef() {
 		getsym();
 		while (1) {
 			char name[100];
-			int kind = 2, type = 3, number = NULL, value = NULL;
+			int kind = 2, type = 3, number = 0;
 			if (sym != IDENT) {
 				// error
 				// return;
@@ -346,13 +367,15 @@ void vardef() {
 			}
 			if (sym == SEMICOLON) {
 				printf("This is a variable char define!\n");
-				enter(name, kind, type, value, number);
+				enter(name, kind, type, 0, number, addrIndex);
+				addrIndex += 4;
 				getsym();
 				break;
 			}
 			else if (sym == COMMA) {
 				printf("This is a variable char define!\n");
-				enter(name, kind, type, value, number);
+				enter(name, kind, type, 0, number, addrIndex);
+				addrIndex += 4;
 				getsym();
 			}
 			else {
@@ -401,7 +424,7 @@ void vardecl() {
 */
 void para() {
 	char name[100];
-	int kind = 4, type, value = NULL, number = NULL;
+	int kind = 4, type = 0;
 	if (sym == INTSY) {
 		type = 2;
 		getsym();
@@ -421,7 +444,8 @@ void para() {
 			// return;
 			error(MISSING_RPARENT);
 		}
-		enter(name, kind, type, value, number);
+		enter(name, kind, type, 0, 0, addrIndex);
+		addrIndex += 4;
 	}
 	else if (sym == CHARSY) {
 		type = 3;
@@ -442,7 +466,8 @@ void para() {
 			// return;
 			error(MISSING_RPARENT);
 		}
-		enter(name, kind, type, value, number);
+		enter(name, kind, type, 0, 0, addrIndex);
+		addrIndex += 4;
 	}
 	else {
 		// error
@@ -980,7 +1005,7 @@ void complexsentence() {
 void funcdef() {
 	while (1) {
 		char name[100];
-		int kind = 3, type = 0, value = NULL, number = NULL;
+		int kind = 3, type = 0, number = 0;
 		if (sym == VOIDSY) {
 			type = 1;
 		}
@@ -1003,15 +1028,14 @@ void funcdef() {
 			// return;
 			error(MISSING_LPARENT);
 		}
-		enter(name, kind, type, value, 0);
 		getsym();
 		if (sym != RPAR) {
-			int sum = paratable();
-			updateParaNumber(name, sum);
+			number = paratable();
 		}
 		else {
 			printf("This is a empty parameter list!\n");
 		}
+		enter(name, kind, type, 0, number, 0);
 		if (sym != RPAR) {
 			// error
 			// return;
@@ -1066,7 +1090,7 @@ void mainprog() {
 		// return;
 		error(MISSING_MAIN);
 	}
-	enter("main", 3, 1, 0, 0);
+	enter("main", 3, 1, 0, 0, 0);
 	getsym();
 	if (sym != LPAR) {
 		// error

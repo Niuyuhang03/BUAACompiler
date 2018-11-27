@@ -136,7 +136,7 @@ void getsym() {
 			else {
 				// printf("%d %s %s\n", outputLine, symbol_name[IDENT], cValue);
 				outputLine++;
-				push_in_symList(IDENT, cValue, 0, row, column, 0);
+				push_in_symList(IDENT, cValue, 0, row, column);
 			}
 		}
 		else if (ch == '\'') {

@@ -24,15 +24,15 @@ struct symInfo {
 void getch();
 int isinkey(char *string);
 void getsym();
-void push_in_symList(enum symbol temp_sym);
+void push_in_symList(enum symbol temp_sym, char *name, int value, int row, int column);
 
-extern FILE *fp;
-extern char ch;												// 刚读到的一个字符
-extern enum symbol sym;										// 刚读到的符号类型
-extern struct symInfo *symList[MAX_SYMLIST_NUM];			// sym的列表
-extern int symList_index;									// symList的下标
-extern int symList_max_index;								// symList队尾的下标
-extern int startRow, maxColumn, startColumn;				// 错误输出相关信息
-extern int iValue;											// int型的值
-extern char cValue[100];									// char型的值
-extern int row, column;										// 行列的位置信息
+FILE *fp;
+char ch;												// 刚读到的一个字符
+enum symbol sym;										// 刚读到的符号类型
+struct symInfo *symList[MAX_SYMLIST_NUM];				// sym的列表
+int symList_index;										// symList的下标
+int symList_max_index;									// symList队尾的下标
+int startRow, maxColumn, startColumn;					// 错误输出相关信息
+int iValue;												// int型的值
+char cValue[100];										// char型的值
+int row, column;										// 行列的位置信息
