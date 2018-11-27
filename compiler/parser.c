@@ -54,11 +54,11 @@ void init() {
 
 /*
 * Summary: enter into symbol table
-  name: name of identifier
-  kind: 1:constant,2:variable,3:function,4:para
-  type: 1:void,2:int,3:char,4:int arrays,5:char arrays
-  value: value of variable
-  number: number of parameters in function
+* name: name of identifier
+* kind: 1:constant,2:variable,3:function,4:para
+* type: 1:void,2:int,3:char,4:int arrays,5:char arrays
+* value: value of variable
+* number: number of parameters in function
 */
 void enter(char *name, int kind, int type, int value, int number) {
 	strcpy(symTable->table[symTable->top].name, name);
@@ -465,7 +465,8 @@ int paratable() {
 }
 
 /*
-Summary: expression*/
+* Summary: expression
+*/
 void expression() {
 	// int coefficient = 1;
 	if (sym == PLUS) {
