@@ -1,0 +1,25 @@
+const int max = +100, min = -0;
+const char fail = 'n';
+int num, array[100], result;
+char id, pwd[20], _a2;
+
+void main() {
+    const char myId = '1';
+    int flag, myArray[100], test;
+    char ch;
+    flag = 0;
+    result = 1;
+    scanf(num);
+    scanf(test);
+    scanf(ch);
+    if (num > max) {
+
+    }
+    if (num < min) {
+
+    }
+    if (num == 0) {
+
+    }
+    printf("result:", num + 1);
+}

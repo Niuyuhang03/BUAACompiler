@@ -1,0 +1,109 @@
+const int max = +100, min = -0;
+const char fail = 'n';
+int num, array[100], result;
+char id, pwd[20], _a2;
+
+char fun(char c1, char c2) {
+    return(c1 + c2);
+}
+
+void output() {
+    printf("result:", result);
+}
+
+int calcul(int n) {
+    int nn;
+    nn = -n * n + n - n + -1;
+    nn = +(n / n) * array[0] / array[0] + 1 + 'c' + fun('a', 'b');
+    if (n == 1) {
+        output();
+    }
+    if (n > 1) {
+        result = result * n;
+        calcul(n - 1);
+    }
+    return(0);
+}
+
+void test_while_and_switch() {
+    while (num >= 1) {
+        switch(num) {
+            case +1: printf("num=1");
+            default:;
+        }
+        switch(num) {
+            case -1: printf("num=-1");
+            case 1: printf("num=1");
+            default: num = num;
+        }
+        switch(num) {
+            case 1: printf("num=1");
+        }
+        num = num - 1;
+    }
+    while (num >= 1) {
+        printf("error");
+        num = 0;
+    }
+}
+
+void test_relation(char ch){
+    if (ch < 98)
+        printf("<");
+    if (ch <= 98)
+        printf("<=");
+    if (ch == 98)
+        printf("==");
+    if (ch > 98)
+        printf(">");
+    if (ch >= 98)
+        printf(">=");
+    if (ch != 98)
+        printf("!=");
+}
+
+void test_other(){
+    const char a = '+', b = '-', c = '*', d = '/', e = '_', f = 'a', g = '0', h = '1';
+    printf(" !#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvwxyz{|}~");
+    switch(b) {
+        case '+': printf("+");
+        default: printf("error");
+    }
+}
+
+void main() {
+    const char myId = '1';
+    int flag, myArray[100], test;
+    char ch;
+    flag = 0;
+    result = 1;
+    array[0] = 1;
+    scanf(num);
+    scanf(test);
+    scanf(ch);
+    if (num > max) {
+        printf(fail);
+        return;
+    }
+    if (num < min) {
+        printf("n");
+        return;
+    }
+    if (num == 0) {
+        flag = 1;
+    }
+    if (flag) {
+        printf("result:", num + 1);
+        return;    
+    }
+    calcul(num);
+    if (test == 1) {
+        test_while_and_switch();
+    }
+    if (test == 2) {
+        test_relation(ch);
+    }
+    if (test == 3) {
+        test_other();
+    }
+}
