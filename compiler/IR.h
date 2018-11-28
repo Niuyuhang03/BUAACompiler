@@ -1,8 +1,9 @@
 #pragma once
 #define	MAX_IR_NUMBER	100000
+#define IR_NUMBER	19
 
 enum OP {
-	varop, arrop, conop, assop, stoaop, getaop, callop, paraop, gtop, geop, ltop, leop, eqop, neop,
+	varop = 0, arrop, conop, assop, stoaop, getaop, callop, paraop, gtop, geop, ltop, leop, eqop, neop,
 	addop, subop, multop, divop, jop
 };
 
@@ -14,4 +15,7 @@ struct IR {
 };
 
 struct IR IRlist[MAX_IR_NUMBER];
+char IRlistName[IR_NUMBER][10];
 int IRtop;
+
+void insertIntoIRlist(enum OP op, char* op1, char* op2, char* res);
