@@ -1,2 +1,10 @@
-int num, array[100], result;
-char id, pwd[20], _a2;
+int calcul(int n) {
+    switch(b) {
+        case '+': printf("+");
+        default: printf("error");
+    }
+}
+
+void main() {
+    a = 1;
+}

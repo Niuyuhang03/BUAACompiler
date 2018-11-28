@@ -48,7 +48,7 @@ void complexsentence();
 void program();
 void valueparatable();
 void casesentence(char* temp1, char *endlabel);
-void casetable(char* temp1, char *endlabel);
+void casetable(char* switchVar, char *endlabel);
 void defau();
 
 /*
@@ -581,15 +581,16 @@ void expression() {
 	}
 	term();
 	if (coefficient == -1) {
-		char temp1[100];
-		_itoa(0, temp1, 10);
+		char temp1[100], temp2[100], temp3[100], temp4[100];
 		nameATempVarByIndex(tempResIndex - 1);
-		char temp2[100];
 		strcpy(temp2, tempRes);
 		nameATempVar();
-		char temp3[100];
+		strcpy(temp4, tempRes);
+		_itoa(0, temp1, 10);
+		insertIntoIRlist(getiop, temp1, "", temp4);
+		nameATempVar();
 		strcpy(temp3, tempRes);
-		insertIntoIRlist(subop, temp1, temp2, temp3);
+		insertIntoIRlist(subop, temp4, temp2, temp3);
 	}
 	while (sym == PLUS || sym == MINUS) {
 		int lastIndex = tempResIndex - 1;
@@ -654,14 +655,16 @@ void factor() {
 			symList_index -= 2;
 			getsym();
 			funccall();
+			char temp3[100];
+			nameATempVar();
+			strcpy(temp3, tempRes);
+			insertIntoIRlist(getrop, temp3, "", name);
 		}
 		else {
-			char temp1[100];
-			_itoa(0, temp1, 10);
 			nameATempVar();
-			char temp2[100];
-			strcpy(temp2, tempRes);
-			insertIntoIRlist(addop, temp1, name, temp2);
+			char temp1[100];
+			strcpy(temp1, tempRes);
+			insertIntoIRlist(getop, name, "", temp1);
 		}
 	}
 	else if (sym == LPAR) {
@@ -675,23 +678,19 @@ void factor() {
 		getsym();
 	}
 	else if (sym == CHAR) {
-		char temp1[100];
-		_itoa(0, temp1, 10);
 		nameATempVar();
-		char temp2[100];
-		strcpy(temp2, tempRes);
-		insertIntoIRlist(addiop, temp1, cValue, temp2);
+		char temp1[100];
+		strcpy(temp1, tempRes);
+		insertIntoIRlist(getiop, cValue, "", temp1);
 		getsym();
 	}
 	else if (isInteger()) {
 		char temp1[100];
-		_itoa(0, temp1, 10);
-		char temp2[100];
-		_itoa(iValue, temp2, 10);
+		_itoa(iValue, temp1, 10);
 		nameATempVar();
-		char temp3[100];
-		strcpy(temp3, tempRes);
-		insertIntoIRlist(addiop, temp1, temp2, temp3);
+		char temp2[100];
+		strcpy(temp2, tempRes);
+		insertIntoIRlist(getiop, temp1, "", temp2);
 		getsym();
 	}
 	else {
@@ -866,11 +865,10 @@ void ifsentence() {
 	}
 	getsym();
 	conditionsentence();
+	char temp1[100], temp2[100];
 	nameATempVarByIndex(tempResIndex - 1);
-	char temp1[100];
 	strcpy(temp1, tempRes);
 	nameALabel();
-	char temp2[100];
 	strcpy(temp2, label);
 	insertIntoIRlist(bezop, temp1, "", temp2);
 	if (sym != RPAR) {
@@ -880,7 +878,6 @@ void ifsentence() {
 	}
 	getsym();
 	sentence();
-	nameALabel();
 	insertIntoIRlist(setop, "", "", temp2);
 	printf("This is a if sentence!\n");
 }
@@ -909,7 +906,9 @@ void valueparatable() {
 * Summary: function call
 */
 void funccall() {
-	char name[100];
+	char name[100], returnlabel[100];
+	nameALabel();
+	strcpy(returnlabel, label);
 	if (sym != IDENT) {
 		// error
 		// return;
@@ -930,6 +929,7 @@ void funccall() {
 		valueparatable();
 	}
 	insertIntoIRlist(callop, "", "", name);
+	insertIntoIRlist(setop, "", "", returnlabel);
 	if (sym != RPAR) {
 		// error
 		// return;
@@ -973,7 +973,7 @@ void assignsentence() {
 	nameATempVarByIndex(tempResIndex - 1);
 	char temp2[100];
 	strcpy(temp2, tempRes);
-	insertIntoIRlist(stoaop, temp2, name, temp1);
+	insertIntoIRlist(stoop, temp2, temp1, name);
 	printf("This is an assign sentence!\n");
 }
 /*
@@ -1061,40 +1061,37 @@ void printfsentence() {
 
 /*
 Summary: case substatement*/
-void casesentence(char* temp1, char *endlabel) {
+void casesentence(char* switchVar, char *endlabel) {
 	if (sym != CASESY) {
 		// error
 		// return;
 		error(MISSING_CASE_KEYWORD);
 	}
 	getsym();
-	char temp6[100];
+	char endOfThisCase[100];
 	nameALabel();
-	strcpy(temp6, label);
+	strcpy(endOfThisCase, label);
 	if (sym == CHAR) {
-		char temp2[100], temp3[100], temp4[100], temp5[100];
-		strcpy(temp2, cValue);
-		_itoa(0, temp3, 10);
+		char temp2[100], temp3[100];
 		nameATempVar();
-		strcpy(temp4, tempRes);
-		insertIntoIRlist(addiop, temp3, temp2, temp4);
+		strcpy(temp2, tempRes);
+		insertIntoIRlist(getiop, cValue, "", temp2);
 		nameATempVar();
-		strcpy(temp5, tempRes);
-		insertIntoIRlist(eqop, temp1, temp4, temp5);
-		insertIntoIRlist(bezop, temp5, "", temp6);
+		strcpy(temp3, tempRes);
+		insertIntoIRlist(eqop, switchVar, temp2, temp3);
+		insertIntoIRlist(bezop, temp3, "", endOfThisCase);
 		getsym();
 	}
 	else if (isInteger()) {
-		char temp2[100], temp3[100], temp4[100], temp5[100];
+		char temp2[100], temp3[100], temp4[100];
 		_itoa(iValue, temp2, 10);
-		_itoa(0, temp3, 10);
+		nameATempVar();
+		strcpy(temp3, tempRes);
+		insertIntoIRlist(getiop, temp2, "", temp3);
 		nameATempVar();
 		strcpy(temp4, tempRes);
-		insertIntoIRlist(addiop, temp3, temp2, temp4);
-		nameATempVar();
-		strcpy(temp5, tempRes);
-		insertIntoIRlist(eqop, temp1, temp4, temp5);
-		insertIntoIRlist(bezop, temp5, "", temp6);
+		insertIntoIRlist(eqop, switchVar, temp3, temp4);
+		insertIntoIRlist(bezop, temp4, "", endOfThisCase);
 		getsym();
 	}
 	else {
@@ -1110,21 +1107,21 @@ void casesentence(char* temp1, char *endlabel) {
 	getsym();
 	sentence();
 	insertIntoIRlist(jop, "", "", endlabel);
-	insertIntoIRlist(setop, "", "", temp6);
+	insertIntoIRlist(setop, "", "", endOfThisCase);
 	printf("This is a case sentence!\n");
 }
 
 /*
 * Summary: case table
 */
-void casetable(char* temp1, char* endlabel) {
+void casetable(char* switchVar, char* endlabel) {
 	if (sym != CASESY) {
 		// error
 		// return;
 		error(MISSING_CASE_KEYWORD);
 	}
 	do {
-		casesentence(temp1, endlabel);
+		casesentence(switchVar, endlabel);
 	} while (sym == CASESY);
 	printf("This is a case table!\n");
 }
@@ -1162,9 +1159,9 @@ void switchsentence() {
 	}
 	getsym();
 	expression();
+	char switchVar[100];
 	nameATempVarByIndex(tempResIndex - 1);
-	char temp1[100];
-	strcpy(temp1, tempRes);
+	strcpy(switchVar, tempRes);
 	if (sym != RPAR) {
 		// error
 		// return;
@@ -1177,10 +1174,10 @@ void switchsentence() {
 		error(MISSING_LBRACE);
 	}
 	getsym();
-	nameALabel();
 	char endlabel[100];
+	nameALabel();
 	strcpy(endlabel, label);
-	casetable(temp1, endlabel);
+	casetable(switchVar, endlabel);
 	if (sym == DEFAULTSY) {
 		defau();
 	}
@@ -1202,10 +1199,10 @@ void returnsentence() {
 	if (sym == LPAR) {
 		getsym();
 		expression();
-		char temp[100];
+		char temp1[100], temp2[100];
 		nameATempVarByIndex(tempResIndex - 1);
-		strcpy(temp, tempRes);
-		insertIntoIRlist(retop, "", "", temp);
+		strcpy(temp1, tempRes);
+		insertIntoIRlist(retop, "", "", temp1);
 		if (sym != RPAR) {
 			// error
 			// return;
@@ -1341,12 +1338,12 @@ void complexsentence() {
 * Summary: function define
 */
 void funcdef(char* mainlabel) {
-	char temp1[100];
-	nameALabel();
-	strcpy(temp1, label);
-	insertIntoIRlist(setop, "", "", temp1);
 	insertIntoIRlist(jop, "", "", mainlabel);
 	while (1) {
+		char temp1[100];
+		nameALabel();
+		strcpy(temp1, label);
+		insertIntoIRlist(setop, "", "", temp1);
 		char name[100];
 		int kind = 3, type = 0, number = 0;
 		if (sym == VOIDSY) {

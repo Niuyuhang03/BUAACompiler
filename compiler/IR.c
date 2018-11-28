@@ -4,9 +4,9 @@
 struct IR IRlist[MAX_IR_NUMBER];
 int IRtop = 0;
 
-char IRlistName[IR_NUMBER][10] = { "varop", "arrop", "conop", "assop", "stoaop", "getaop", "callop",
+char IRlistName[IR_NUMBER][10] = { "varop", "arrop", "conop", "stoop", "getaop", "callop",
 	"paraop", "gtop", "geop", "ltop", "leop", "eqop", "neop", "addop", "subop", "multop", "divop", 
-	"jop", "setop", "bezop", "scaop", "priop", "addiop", "retop" };
+	"jop", "setop", "bezop", "scaop", "priop", "retop", "getop", "getiop", "getrop" };
 
 void insertIntoIRlist(enum OP op, char* op1, char* op2, char* res) {
 	IRlist[IRtop].op = op;

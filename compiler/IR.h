@@ -1,10 +1,10 @@
 #pragma once
 #define	MAX_IR_NUMBER	100000
-#define IR_NUMBER	25
+#define IR_NUMBER	26
 
 enum OP {
-	varop = 0, arrop, conop, assop, stoaop, getaop, callop, paraop, gtop, geop, ltop, leop, eqop, 
-	neop, addop, subop, multop, divop, jop, setop, bezop, scaop, priop, addiop, retop
+	varop = 0, arrop, conop, stoop, getaop, callop, paraop, gtop, geop, ltop, leop, eqop, 
+	neop, addop, subop, multop, divop, jop, setop, bezop, scaop, priop, retop, getop, getiop, getrop
 };
 
 struct IR {
