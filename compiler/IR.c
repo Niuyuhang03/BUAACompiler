@@ -6,7 +6,7 @@ int IRtop = 0;
 
 char IRlistName[IR_NUMBER][10] = { "varop", "arrop", "conop", "assop", "stoaop", "getaop", "callop",
 	"paraop", "gtop", "geop", "ltop", "leop", "eqop", "neop", "addop", "subop", "multop", "divop", 
-	"jop" };
+	"jop", "setop", "bezop", "scaop", "priop", "addiop", "retop" };
 
 void insertIntoIRlist(enum OP op, char* op1, char* op2, char* res) {
 	IRlist[IRtop].op = op;

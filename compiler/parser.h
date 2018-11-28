@@ -1,7 +1,8 @@
 #pragma once
 #define MAX_SYMTABLE_SIZE	1000000	// 最多标识符个数
 #define MAX_LAYER	10000			// 最大嵌套层数
-#define MAX_TEMP_NUMBER	100		// 最大四元式临时变量位数
+#define MAX_TEMP_NUMBER	100			// 最大四元式临时变量位数
+#define MAX_LABEL_NUMBER	100		// 最大label位数
 
 struct node {
 	char name[100];		// 标识符名称
