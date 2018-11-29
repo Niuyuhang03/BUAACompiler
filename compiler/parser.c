@@ -588,9 +588,13 @@ void expression() {
 		strcpy(temp4, tempRes);
 		_itoa(0, temp1, 10);
 		insertIntoIRlist(getiop, temp1, "", temp4);
+		enter(temp4, 5, 2, 0, 0, addrIndex);
+		addrIndex += 4;
 		nameATempVar();
 		strcpy(temp3, tempRes);
 		insertIntoIRlist(subop, temp4, temp2, temp3);
+		enter(temp3, 5, 2, 0, 0, addrIndex);
+		addrIndex += 4;
 	}
 	while (sym == PLUS || sym == MINUS) {
 		int lastIndex = tempResIndex - 1;
@@ -607,6 +611,8 @@ void expression() {
 			char temp3[100];
 			strcpy(temp3, tempRes);
 			insertIntoIRlist(addop, temp1, temp2, temp3);
+			enter(temp3, 5, 2, 0, 0, addrIndex);
+			addrIndex += 4;
 		}
 		else {
 			getsym();
@@ -621,6 +627,8 @@ void expression() {
 			char temp3[100];
 			strcpy(temp3, tempRes);
 			insertIntoIRlist(subop, temp1, temp2, temp3);
+			enter(temp3, 5, 2, 0, 0, addrIndex);
+			addrIndex += 4;
 		}
 	}
 	printf("This is an expression!\n");
@@ -644,6 +652,8 @@ void factor() {
 			char temp2[100];
 			strcpy(temp2, tempRes);
 			insertIntoIRlist(getaop, name, temp1, temp2);
+			enter(temp2, 5, 2, 0, 0, addrIndex);
+			addrIndex += 4;
 			if (sym != RBRACK) {
 				// error
 				// return;
@@ -659,12 +669,16 @@ void factor() {
 			nameATempVar();
 			strcpy(temp3, tempRes);
 			insertIntoIRlist(getrop, temp3, "", name);
+			enter(temp3, 5, 2, 0, 0, addrIndex);
+			addrIndex += 4;
 		}
 		else {
 			nameATempVar();
 			char temp1[100];
 			strcpy(temp1, tempRes);
 			insertIntoIRlist(getop, name, "", temp1);
+			enter(temp1, 5, 2, 0, 0, addrIndex);
+			addrIndex += 4;
 		}
 	}
 	else if (sym == LPAR) {
@@ -682,6 +696,8 @@ void factor() {
 		char temp1[100];
 		strcpy(temp1, tempRes);
 		insertIntoIRlist(getiop, cValue, "", temp1);
+		enter(temp1, 5, 2, 0, 0, addrIndex);
+		addrIndex += 4;
 		getsym();
 	}
 	else if (isInteger()) {
@@ -691,6 +707,8 @@ void factor() {
 		char temp2[100];
 		strcpy(temp2, tempRes);
 		insertIntoIRlist(getiop, temp1, "", temp2);
+		enter(temp2, 5, 2, 0, 0, addrIndex);
+		addrIndex += 4;
 		getsym();
 	}
 	else {
@@ -721,6 +739,8 @@ void term() {
 			char temp3[100];
 			strcpy(temp3, tempRes);
 			insertIntoIRlist(multop, temp1, temp2, temp3);
+			enter(temp3, 5, 2, 0, 0, addrIndex);
+			addrIndex += 4;
 		}else{
 			getsym();
 			factor();
@@ -734,6 +754,8 @@ void term() {
 			char temp3[100];
 			strcpy(temp3, tempRes);
 			insertIntoIRlist(divop, temp1, temp2, temp3);
+			enter(temp3, 5, 2, 0, 0, addrIndex);
+			addrIndex += 4;
 		}
 	}
 	printf("This is a term!\n");
@@ -758,6 +780,8 @@ void conditionsentence() {
 			char temp3[100];
 			strcpy(temp3, tempRes);
 			insertIntoIRlist(ltop, temp1, temp2, temp3);
+			enter(temp3, 5, 2, 0, 0, addrIndex);
+			addrIndex += 4;
 		}
 		else if (sym == LE) {
 			getsym();
@@ -769,6 +793,8 @@ void conditionsentence() {
 			char temp3[100];
 			strcpy(temp3, tempRes);
 			insertIntoIRlist(leop, temp1, temp2, temp3);
+			enter(temp3, 5, 2, 0, 0, addrIndex);
+			addrIndex += 4;
 		}
 		else if (sym == GE) {
 			getsym();
@@ -780,6 +806,8 @@ void conditionsentence() {
 			char temp3[100];
 			strcpy(temp3, tempRes);
 			insertIntoIRlist(geop, temp1, temp2, temp3);
+			enter(temp3, 5, 2, 0, 0, addrIndex);
+			addrIndex += 4;
 		}
 		else if (sym == GT) {
 			getsym();
@@ -791,6 +819,8 @@ void conditionsentence() {
 			char temp3[100];
 			strcpy(temp3, tempRes);
 			insertIntoIRlist(gtop, temp1, temp2, temp3);
+			enter(temp3, 5, 2, 0, 0, addrIndex);
+			addrIndex += 4;
 		}
 		else if (sym == EQ) {
 			getsym();
@@ -802,6 +832,8 @@ void conditionsentence() {
 			char temp3[100];
 			strcpy(temp3, tempRes);
 			insertIntoIRlist(eqop, temp1, temp2, temp3);
+			enter(temp3, 5, 2, 0, 0, addrIndex);
+			addrIndex += 4;
 		}
 		else {
 			getsym();
@@ -813,6 +845,8 @@ void conditionsentence() {
 			char temp3[100];
 			strcpy(temp3, tempRes);
 			insertIntoIRlist(neop, temp1, temp2, temp3);
+			enter(temp3, 5, 2, 0, 0, addrIndex);
+			addrIndex += 4;
 		}
 	}
 	printf("This is a condition sentence!\n");
@@ -1076,9 +1110,13 @@ void casesentence(char* switchVar, char *endlabel) {
 		nameATempVar();
 		strcpy(temp2, tempRes);
 		insertIntoIRlist(getiop, cValue, "", temp2);
+		enter(temp2, 5, 2, 0, 0, addrIndex);
+		addrIndex += 4;
 		nameATempVar();
 		strcpy(temp3, tempRes);
 		insertIntoIRlist(eqop, switchVar, temp2, temp3);
+		enter(temp3, 5, 2, 0, 0, addrIndex);
+		addrIndex += 4;
 		insertIntoIRlist(bezop, temp3, "", endOfThisCase);
 		getsym();
 	}
@@ -1088,9 +1126,13 @@ void casesentence(char* switchVar, char *endlabel) {
 		nameATempVar();
 		strcpy(temp3, tempRes);
 		insertIntoIRlist(getiop, temp2, "", temp3);
+		enter(temp3, 5, 2, 0, 0, addrIndex);
+		addrIndex += 4;
 		nameATempVar();
 		strcpy(temp4, tempRes);
 		insertIntoIRlist(eqop, switchVar, temp3, temp4);
+		enter(temp4, 5, 2, 0, 0, addrIndex);
+		addrIndex += 4;
 		insertIntoIRlist(bezop, temp4, "", endOfThisCase);
 		getsym();
 	}
@@ -1199,7 +1241,7 @@ void returnsentence() {
 	if (sym == LPAR) {
 		getsym();
 		expression();
-		char temp1[100], temp2[100];
+		char temp1[100];
 		nameATempVarByIndex(tempResIndex - 1);
 		strcpy(temp1, tempRes);
 		insertIntoIRlist(retop, "", "", temp1);

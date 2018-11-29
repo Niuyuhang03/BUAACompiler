@@ -6,7 +6,7 @@
 
 struct node {
 	char name[100];		// 标识符名称
-	int kind;			// 标识符类型，1:constant,2:variable,3:function,4:para
+	int kind;			// 标识符类型，1:constant,2:variable,3:function,4:para,5:tempVar
 	int type;			// 函数的返回值类型或其他标识符的小类型，1:void,2:int,3:char,4:int arrays,5:char arrays
 	int value;			// 常量的值或ascii码，其他类型此处为0
 	int number;			// 函数参数个数或数组元素个数，其他类型此处为0
