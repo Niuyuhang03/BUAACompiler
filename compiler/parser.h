@@ -11,6 +11,7 @@ struct node {
 	int value;			// 常量的值或ascii码，其他类型此处为0
 	int number;			// 函数参数个数或数组元素个数，其他类型此处为0
 	int addr;			// 内存中标识符相对于所在AR首地址的偏移量，数组为数组首地址的偏移量
+	char STRING[100];	// 字符串的内容
 };
 
 struct symtable {
