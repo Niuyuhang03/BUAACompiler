@@ -6,12 +6,12 @@
 
 struct symtable *symTable;
 
-int addrIndex = 0;					// 内存中下一变量、常量或参数的addr
-int tempResIndex = 0;				// 生成四元式的中间变量名称下标，如$temp_0
-char tempRes[MAX_TEMP_NUMBER + 7];	// 生成四元式的中间变量名
-int labelIndex = 0;					// 生成四元式的label名称下标，如label_0
-char label[MAX_LABEL_NUMBER + 7];	// 生成四元式的label名
-int stringIndex = 0;				// 生成四元式的STRING名称下标，如$string_0
+int addrIndex = 0;						// 内存中下一变量、常量或参数的addr
+int tempResIndex = 0;					// 生成四元式的中间变量名称下标，如$temp_0
+char tempRes[MAX_TEMP_NUMBER + 7];		// 生成四元式的中间变量名
+int labelIndex = 0;						// 生成四元式的label名称下标，如label_0
+char label[MAX_LABEL_NUMBER + 7];		// 生成四元式的label名
+int stringIndex = 0;					// 生成四元式的STRING名称下标，如$string_0
 char tempString[MAX_LABEL_NUMBER + 7];	// 生成四元式的STRING名
 
 void init();
@@ -111,7 +111,7 @@ void nameAString() {
 /*
 * Summary: enter into symbol table
 * name: name of identifier
-* kind: 1:constant,2:variable,3:function,4:para,5:temp,6:STRING
+* kind: 1:constant,2:variable,3:function,4:para,5:tempVar,6:STRING
 * type: 1:void,2:int,3:char,4:int arrays,5:char arrays
 * value: value of variable
 * number: number of parameters in function
@@ -1090,10 +1090,10 @@ void printfsentence() {
 			nameATempVarByIndex(tempResIndex - 1);
 			char temp1[100];
 			strcpy(temp1, tempRes);
-			insertIntoIRlist(priop, string, "", temp1);
+			insertIntoIRlist(priop, stringName, "", temp1);
 		}
 		else {
-			insertIntoIRlist(priop, string, "", "");
+			insertIntoIRlist(priop, stringName, "", "");
 		}
 	}
 	else {
