@@ -3,6 +3,7 @@
 #include "parser.h"
 #include "error.h"
 #include "IR.h"
+#include "gencode.h"
 
 struct symtable *symTable;
 
@@ -19,9 +20,8 @@ void nameATempVarByIndex(int number);
 void nameATempVar();
 void nameALabel();
 void nameAString();
-void enter(char *name, int kind, int type, int value, int number, int addr, char* STRING);
+void enter(char *name, int kind, int type, int value, int number, int addr, char* STRING, char* label);
 void updateParaNumber(char* name, int value);
-void updateIdentValue(char* name, int type, int index, int value);
 struct node findIdentInSymTable(char* name);
 int isInteger();
 void constdef();
@@ -46,8 +46,8 @@ void returnsentence();
 void sentence();
 void sentenceslist();
 void complexsentence();
-void funcdef(char* mainlabel);
-void mainprog();
+void funcdef();
+void mainprog(char *mainlabel);
 void complexsentence();
 void program();
 void valueparatable();
@@ -115,8 +115,11 @@ void nameAString() {
 * type: 1:void,2:int,3:char,4:int arrays,5:char arrays
 * value: value of variable
 * number: number of parameters in function
+* addr: offsite by its function
+* STRING: value of STRING in printf
+* label: label of function
 */
-void enter(char *name, int kind, int type, int value, int number, int addr, char* STRING) {
+void enter(char *name, int kind, int type, int value, int number, int addr, char* STRING, char* label) {
 	strcpy(symTable->table[symTable->top].name, name);
 	symTable->table[symTable->top].kind = kind;
 	symTable->table[symTable->top].type = type;
@@ -124,8 +127,11 @@ void enter(char *name, int kind, int type, int value, int number, int addr, char
 	symTable->table[symTable->top].number = number;
 	symTable->table[symTable->top].addr = addr;
 	strcpy(symTable->table[symTable->top].STRING, STRING);
+	strcpy(symTable->table[symTable->top].label, label);
 	if (kind == 3 || symTable->subprogramNumber == 0) {
 		symTable->subprogramTable[symTable->subprogramNumber] = symTable->top;
+		if (kind == 3)
+			symTable->table[symTable->top].value = symTable->subprogramNumber;
 		symTable->subprogramNumber++;
 	}
 	symTable->top++;
@@ -150,50 +156,21 @@ void updateParaNumber(char* name, int value) {
 }
 
 /*
-* Summary: update value of identifier
-* name: name of identifier
-* type: type of identifier,1:variable,2:variable array
-* index: index of array if identifier is array
-* value: value to be update
-*/
-void updateIdentValue(char* name, int type, int index, int value) {
-	int i;
-	for (i = symList_index - 1; i >= symTable->subprogramTable[symTable->subprogramNumber - 1]; i--) {
-		if (strcmp(symTable->table[i].name, name) == 0) {
-			symTable->table[i].value = value;
-			break;
-		}
-	}
-	if (i < symTable->subprogramTable[symTable->subprogramNumber - 1]) {
-		if (symTable->table[0].kind != 3) {         // 存在全局变量
-			for (i = symTable->subprogramTable[1]; i >= 0; i--) {
-				if (strcmp(symTable->table[i].name, name) == 0) {
-					if (type == 2) {
-						// 处理数组
-					}
-					else {
-						symTable->table[i].value = value;
-						break;
-					}
-				}
-			}
-			if (i == -1)
-				error(UNDEF_ID);
-		}
-		else {
-			error(UNDEF_ID);
-		}
-	}
-}
-
-/*
 * Summary: find identidier in symTable and return its whole struct
 */
 struct node findIdentInSymTable(char* name) {
 	int i;
-	for (i = symList_index - 1; i >= symTable->subprogramTable[symTable->subprogramNumber - 1]; i--) {
-		if (strcmp(symTable->table[i].name, name) == 0)
-			return (symTable->table[i]);
+	if (curLayer < symTable->subprogramNumber - 1) {
+		for (i = symTable->subprogramTable[curLayer + 1] - 1; i >= symTable->subprogramTable[curLayer]; i--) {
+			if (strcmp(symTable->table[i].name, name) == 0)
+				return (symTable->table[i]);
+		}
+	}
+	else {
+		for (i = symTable->top - 1; i >= symTable->subprogramTable[curLayer]; i--) {
+			if (strcmp(symTable->table[i].name, name) == 0)
+				return (symTable->table[i]);
+		}
 	}
 	if (symTable->table[0].kind != 3) {         // 存在全局变量
 		for (i = symTable->subprogramTable[1] - 1; i >= 0; i--) {
@@ -260,7 +237,7 @@ void constdef() {
 			}
 			// printf("This is a constant int define!\n");
 			if (sym == SEMICOLON) {
-				enter(name, kind, type, value, 0, addrIndex, "");
+				enter(name, kind, type, value, 0, addrIndex, "", "");
 				addrIndex += 4;
 				char op1[100];
 				_itoa(value, op1, 10);
@@ -269,7 +246,7 @@ void constdef() {
 				break;
 			}
 			else if (sym == COMMA) {
-				enter(name, kind, type, value, 0, addrIndex, "");
+				enter(name, kind, type, value, 0, addrIndex, "", "");
 				addrIndex += 4;
 				char op1[100];
 				_itoa(value, op1, 10);
@@ -311,7 +288,7 @@ void constdef() {
 			// printf("This is a constant char define!\n");
 			getsym();
 			if (sym == SEMICOLON) {
-				enter(name, kind, type, value, 0, addrIndex, "");
+				enter(name, kind, type, value, 0, addrIndex, "", "");
 				addrIndex += 4;
 				char op1[100];
 				_itoa(value, op1, 10);
@@ -320,7 +297,7 @@ void constdef() {
 				break;
 			}
 			else if (sym == COMMA) {
-				enter(name, kind, type, value, 0, addrIndex, "");
+				enter(name, kind, type, value, 0, addrIndex, "", "");
 				addrIndex += 4;
 				char op1[100];
 				_itoa(value, op1, 10);
@@ -387,7 +364,7 @@ void vardef() {
 			}
 			if (sym == SEMICOLON) {
 				// printf("This is a variable int define!\n");
-				enter(name, kind, type, 0, number, addrIndex, "");
+				enter(name, kind, type, 0, number, addrIndex, "", "");
 				if (number == 0)
 					addrIndex += 4;
 				else
@@ -400,7 +377,7 @@ void vardef() {
 			}
 			else if (sym == COMMA) {
 				// printf("This is a variable int define!\n");
-				enter(name, kind, type, 0, number, addrIndex, "");
+				enter(name, kind, type, 0, number, addrIndex, "", "");
 				if (number == 0)
 					addrIndex += 4;
 				else
@@ -449,7 +426,7 @@ void vardef() {
 			}
 			if (sym == SEMICOLON) {
 				// printf("This is a variable char define!\n");
-				enter(name, kind, type, 0, number, addrIndex, "");
+				enter(name, kind, type, 0, number, addrIndex, "", "");
 				if (number == 0)
 					addrIndex += 4;
 				else
@@ -462,7 +439,7 @@ void vardef() {
 			}
 			else if (sym == COMMA) {
 				// printf("This is a variable char define!\n");
-				enter(name, kind, type, 0, number, addrIndex, "");
+				enter(name, kind, type, 0, number, addrIndex, "", "");
 				if (number == 0)
 					addrIndex += 4;
 				else
@@ -538,8 +515,9 @@ void para() {
 			// return;
 			error(MISSING_RPARENT);
 		}
-		enter(name, kind, type, 0, 0, addrIndex, "");
+		enter(name, kind, type, 0, 0, addrIndex, "", "");
 		addrIndex += 4;
+		insertIntoIRlist(getpop, "", "", name);
 	}
 	else if (sym == CHARSY) {
 		type = 3;
@@ -560,8 +538,9 @@ void para() {
 			// return;
 			error(MISSING_RPARENT);
 		}
-		enter(name, kind, type, 0, 0, addrIndex, "");
+		enter(name, kind, type, 0, 0, addrIndex, "", "");
 		addrIndex += 4;
+		insertIntoIRlist(getpop, "", "", name);
 	}
 	else {
 		// error
@@ -604,12 +583,12 @@ void expression() {
 		strcpy(temp4, tempRes);
 		_itoa(0, temp1, 10);
 		insertIntoIRlist(getiop, temp1, "", temp4);
-		enter(temp4, 5, 2, 0, 0, addrIndex, "");
+		enter(temp4, 5, 2, 0, 0, addrIndex, "", "");
 		addrIndex += 4;
 		nameATempVar();
 		strcpy(temp3, tempRes);
 		insertIntoIRlist(subop, temp4, temp2, temp3);
-		enter(temp3, 5, 2, 0, 0, addrIndex, "");
+		enter(temp3, 5, 2, 0, 0, addrIndex, "", "");
 		addrIndex += 4;
 	}
 	while (sym == PLUS || sym == MINUS) {
@@ -627,7 +606,7 @@ void expression() {
 			char temp3[100];
 			strcpy(temp3, tempRes);
 			insertIntoIRlist(addop, temp1, temp2, temp3);
-			enter(temp3, 5, 2, 0, 0, addrIndex, "");
+			enter(temp3, 5, 2, 0, 0, addrIndex, "", "");
 			addrIndex += 4;
 		}
 		else {
@@ -643,7 +622,7 @@ void expression() {
 			char temp3[100];
 			strcpy(temp3, tempRes);
 			insertIntoIRlist(subop, temp1, temp2, temp3);
-			enter(temp3, 5, 2, 0, 0, addrIndex, "");
+			enter(temp3, 5, 2, 0, 0, addrIndex, "", "");
 			addrIndex += 4;
 		}
 	}
@@ -668,7 +647,7 @@ void factor() {
 			char temp2[100];
 			strcpy(temp2, tempRes);
 			insertIntoIRlist(getaop, name, temp1, temp2);
-			enter(temp2, 5, 2, 0, 0, addrIndex, "");
+			enter(temp2, 5, 2, 0, 0, addrIndex, "", "");
 			addrIndex += 4;
 			if (sym != RBRACK) {
 				// error
@@ -685,7 +664,7 @@ void factor() {
 			nameATempVar();
 			strcpy(temp3, tempRes);
 			insertIntoIRlist(getrop, temp3, "", name);
-			enter(temp3, 5, 2, 0, 0, addrIndex, "");
+			enter(temp3, 5, 2, 0, 0, addrIndex, "", "");
 			addrIndex += 4;
 		}
 		else {
@@ -693,7 +672,7 @@ void factor() {
 			char temp1[100];
 			strcpy(temp1, tempRes);
 			insertIntoIRlist(getop, name, "", temp1);
-			enter(temp1, 5, 2, 0, 0, addrIndex, "");
+			enter(temp1, 5, 2, 0, 0, addrIndex, "", "");
 			addrIndex += 4;
 		}
 	}
@@ -712,7 +691,7 @@ void factor() {
 		char temp1[100];
 		strcpy(temp1, tempRes);
 		insertIntoIRlist(getiop, cValue, "", temp1);
-		enter(temp1, 5, 2, 0, 0, addrIndex, "");
+		enter(temp1, 5, 2, 0, 0, addrIndex, "", "");
 		addrIndex += 4;
 		getsym();
 	}
@@ -723,7 +702,7 @@ void factor() {
 		char temp2[100];
 		strcpy(temp2, tempRes);
 		insertIntoIRlist(getiop, temp1, "", temp2);
-		enter(temp2, 5, 2, 0, 0, addrIndex, "");
+		enter(temp2, 5, 2, 0, 0, addrIndex, "", "");
 		addrIndex += 4;
 		getsym();
 	}
@@ -755,7 +734,7 @@ void term() {
 			char temp3[100];
 			strcpy(temp3, tempRes);
 			insertIntoIRlist(multop, temp1, temp2, temp3);
-			enter(temp3, 5, 2, 0, 0, addrIndex, "");
+			enter(temp3, 5, 2, 0, 0, addrIndex, "", "");
 			addrIndex += 4;
 		}else{
 			getsym();
@@ -770,7 +749,7 @@ void term() {
 			char temp3[100];
 			strcpy(temp3, tempRes);
 			insertIntoIRlist(divop, temp1, temp2, temp3);
-			enter(temp3, 5, 2, 0, 0, addrIndex, "");
+			enter(temp3, 5, 2, 0, 0, addrIndex, "", "");
 			addrIndex += 4;
 		}
 	}
@@ -796,7 +775,7 @@ void conditionsentence() {
 			char temp3[100];
 			strcpy(temp3, tempRes);
 			insertIntoIRlist(ltop, temp1, temp2, temp3);
-			enter(temp3, 5, 2, 0, 0, addrIndex, "");
+			enter(temp3, 5, 2, 0, 0, addrIndex, "", "");
 			addrIndex += 4;
 		}
 		else if (sym == LE) {
@@ -809,7 +788,7 @@ void conditionsentence() {
 			char temp3[100];
 			strcpy(temp3, tempRes);
 			insertIntoIRlist(leop, temp1, temp2, temp3);
-			enter(temp3, 5, 2, 0, 0, addrIndex, "");
+			enter(temp3, 5, 2, 0, 0, addrIndex, "", "");
 			addrIndex += 4;
 		}
 		else if (sym == GE) {
@@ -822,7 +801,7 @@ void conditionsentence() {
 			char temp3[100];
 			strcpy(temp3, tempRes);
 			insertIntoIRlist(geop, temp1, temp2, temp3);
-			enter(temp3, 5, 2, 0, 0, addrIndex, "");
+			enter(temp3, 5, 2, 0, 0, addrIndex, "", "");
 			addrIndex += 4;
 		}
 		else if (sym == GT) {
@@ -835,7 +814,7 @@ void conditionsentence() {
 			char temp3[100];
 			strcpy(temp3, tempRes);
 			insertIntoIRlist(gtop, temp1, temp2, temp3);
-			enter(temp3, 5, 2, 0, 0, addrIndex, "");
+			enter(temp3, 5, 2, 0, 0, addrIndex, "", "");
 			addrIndex += 4;
 		}
 		else if (sym == EQ) {
@@ -848,7 +827,7 @@ void conditionsentence() {
 			char temp3[100];
 			strcpy(temp3, tempRes);
 			insertIntoIRlist(eqop, temp1, temp2, temp3);
-			enter(temp3, 5, 2, 0, 0, addrIndex, "");
+			enter(temp3, 5, 2, 0, 0, addrIndex, "", "");
 			addrIndex += 4;
 		}
 		else {
@@ -861,7 +840,7 @@ void conditionsentence() {
 			char temp3[100];
 			strcpy(temp3, tempRes);
 			insertIntoIRlist(neop, temp1, temp2, temp3);
-			enter(temp3, 5, 2, 0, 0, addrIndex, "");
+			enter(temp3, 5, 2, 0, 0, addrIndex, "", "");
 			addrIndex += 4;
 		}
 	}
@@ -1083,7 +1062,7 @@ void printfsentence() {
 		nameAString();
 		strcpy(stringName, tempString);
 		getsym();
-		enter(stringName, 6, 5, 0, 0, 0, string);
+		enter(stringName, 6, 5, 0, 0, 0, string, "");
 		if (sym == COMMA) {
 			getsym();
 			expression();
@@ -1129,12 +1108,12 @@ void casesentence(char* switchVar, char *endlabel) {
 		nameATempVar();
 		strcpy(temp2, tempRes);
 		insertIntoIRlist(getiop, cValue, "", temp2);
-		enter(temp2, 5, 2, 0, 0, addrIndex, "");
+		enter(temp2, 5, 2, 0, 0, addrIndex, "", "");
 		addrIndex += 4;
 		nameATempVar();
 		strcpy(temp3, tempRes);
 		insertIntoIRlist(eqop, switchVar, temp2, temp3);
-		enter(temp3, 5, 2, 0, 0, addrIndex, "");
+		enter(temp3, 5, 2, 0, 0, addrIndex, "", "");
 		addrIndex += 4;
 		insertIntoIRlist(bezop, temp3, "", endOfThisCase);
 		getsym();
@@ -1145,12 +1124,12 @@ void casesentence(char* switchVar, char *endlabel) {
 		nameATempVar();
 		strcpy(temp3, tempRes);
 		insertIntoIRlist(getiop, temp2, "", temp3);
-		enter(temp3, 5, 2, 0, 0, addrIndex, "");
+		enter(temp3, 5, 2, 0, 0, addrIndex, "", "");
 		addrIndex += 4;
 		nameATempVar();
 		strcpy(temp4, tempRes);
 		insertIntoIRlist(eqop, switchVar, temp3, temp4);
-		enter(temp4, 5, 2, 0, 0, addrIndex, "");
+		enter(temp4, 5, 2, 0, 0, addrIndex, "", "");
 		addrIndex += 4;
 		insertIntoIRlist(bezop, temp4, "", endOfThisCase);
 		getsym();
@@ -1398,8 +1377,7 @@ void complexsentence() {
 /*
 * Summary: function define
 */
-void funcdef(char* mainlabel) {
-	insertIntoIRlist(jop, "", "", mainlabel);
+void funcdef() {
 	addrIndex = 0;
 	while (1) {
 		char temp1[100];
@@ -1408,15 +1386,12 @@ void funcdef(char* mainlabel) {
 		insertIntoIRlist(setop, "", "", temp1);
 		char name[100];
 		int kind = 3, type = 0, number = 0;
-		if (sym == VOIDSY) {
+		if (sym == VOIDSY)
 			type = 1;
-		}
-		else if (sym == INTSY) {
+		else if (sym == INTSY)
 			type = 2;
-		}
-		else {
+		else
 			type = 3;
-		}
 		getsym();
 		if (sym != IDENT) {
 			// error
@@ -1424,7 +1399,7 @@ void funcdef(char* mainlabel) {
 			error(MISSING_IDENT);
 		}
 		strcpy(name, cValue);
-		enter(name, kind, type, 0, number, addrIndex, "");
+		enter(name, kind, type, 0, number, addrIndex, "", temp1);
 		addrIndex += 4;
 		getsym();
 		if (sym != LPAR) {
@@ -1458,6 +1433,7 @@ void funcdef(char* mainlabel) {
 			// return;
 			error(MISSING_RBRACE);
 		}
+		insertIntoIRlist(jrop, "", "", "");
 		// if (type == 1)
 			// printf("This is a Non-return function!\n");
 		// else if (type == 3)
@@ -1487,14 +1463,14 @@ void funcdef(char* mainlabel) {
 /*
 * Summary: main program
 */
-void mainprog() {
+void mainprog(char *mainlabel) {
 	getsym();
 	if (sym != MAINSY) {
 		// error
 		// return;
 		error(MISSING_MAIN);
 	}
-	enter("main", 3, 1, 0, 0, 0, "");
+	enter("main", 3, 1, 0, 0, 0, "", mainlabel);
 	getsym();
 	if (sym != LPAR) {
 		// error
@@ -1565,12 +1541,13 @@ void program() {
 		else {
 			symList_index -= 2;
 			getsym();
-			funcdef(mainlabel);
+			insertIntoIRlist(jop, "", "", mainlabel);
+			funcdef();
 		}
 	}
 	if (sym == VOIDSY) {
 		insertIntoIRlist(setop, "", "", mainlabel);
-		mainprog();
+		mainprog(mainlabel);
 		// printf("This is a program!\n");
 	}
 	else {
