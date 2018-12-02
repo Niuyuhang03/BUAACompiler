@@ -193,6 +193,10 @@ void gentext() {
 				}
 				break;
 			}
+			case(sraop): {
+				fprintf(outputfp, "\tsw $ra, ($sp)\n");
+				break;
+			}
 			case(scaop): {
 				struct node curNode = findIdentInSymTable(IRlist[i].res);
 				if (curNode.type == 2) {
@@ -306,7 +310,9 @@ void gentext() {
 				int sum = (curNode.sum + 1) * 4;
 				if (strcmp(IRlist[i].res, "main") != 0) {
 					fprintf(outputfp, "\taddiu, $sp, $sp, -%d\n", sum);
+					fprintf(outputfp, "\tsw $ra, ($sp)\n");
 					fprintf(outputfp, "\tjal %s\n", curNode.label);
+					fprintf(outputfp, "\tlw $ra, ($sp)\n");
 					fprintf(outputfp, "\taddiu, $sp, $sp, %d\n", sum);
 				}
 				else
