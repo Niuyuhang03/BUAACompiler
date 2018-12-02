@@ -12,7 +12,7 @@ int tempResIndex = 0;					// 生成四元式的中间变量名称下标，如$temp_0
 char tempRes[MAX_TEMP_NUMBER + 7];		// 生成四元式的中间变量名
 int labelIndex = 0;						// 生成四元式的label名称下标，如label_0
 char label[MAX_LABEL_NUMBER + 7];		// 生成四元式的label名
-int stringIndex = 0;					// 生成四元式的STRING名称下标，如$string_0
+int stringIndex = 1;					// 生成四元式的STRING名称下标，如$string_0
 char tempString[MAX_LABEL_NUMBER + 7];	// 生成四元式的STRING名
 
 void init();
@@ -23,6 +23,9 @@ void nameAString();
 void enter(char *name, int kind, int type, int value, int number, int addr, char* STRING, char* label);
 void updateParaNumber(char* name, int value);
 struct node findIdentInSymTable(char* name);
+struct node findFunction(char* name);
+struct node findLabel(char* name);
+void updateFuncVarNum();
 int isInteger();
 void constdef();
 void condecl();
@@ -63,6 +66,38 @@ void init() {
 	symTable->top = 0;
 	symTable->subprogramNumber = 0;
 	symTable->subprogramTable[0] = 0;
+}
+
+/*
+* Summary: update all function's parameters,variables and constants number, sum up and save
+*/
+void updateFuncVarNum() {
+	int j, sum;
+	for (j = 0; j < symTable->subprogramNumber; j++) {
+		if (symTable->table[symTable->subprogramTable[j]].kind == 3) {
+			sum = 0;
+			if (j == symTable->subprogramNumber - 1) {
+				for (int k = symTable->subprogramTable[j] + 1; ; k++) {
+					if (k == symTable->top)
+						break;
+					if (symTable->table[k].kind == 6)
+						continue;
+					sum++;
+				}
+			}
+			else {
+				for (int k = symTable->subprogramTable[j] + 1; ; k++) {
+					if (k == symTable->subprogramTable[j + 1])
+						break;
+					if (symTable->table[k].kind == 6)
+						continue;
+					sum++;
+				}
+			}
+			symTable->table[symTable->subprogramTable[j]].sum = sum;
+		}
+	}
+	
 }
 
 /*
@@ -156,18 +191,18 @@ void updateParaNumber(char* name, int value) {
 }
 
 /*
-* Summary: find identidier in symTable and return its whole struct
+* Summary: find identidier in current layer of symTable and return its whole struct
 */
 struct node findIdentInSymTable(char* name) {
 	int i;
-	if (curLayer < symTable->subprogramNumber - 1) {
-		for (i = symTable->subprogramTable[curLayer + 1] - 1; i >= symTable->subprogramTable[curLayer]; i--) {
+	if (layer[layerTop - 1] < symTable->subprogramNumber - 1) {
+		for (i = symTable->subprogramTable[layer[layerTop - 1] + 1] - 1; i >= symTable->subprogramTable[layer[layerTop - 1]]; i--) {
 			if (strcmp(symTable->table[i].name, name) == 0)
 				return (symTable->table[i]);
 		}
 	}
 	else {
-		for (i = symTable->top - 1; i >= symTable->subprogramTable[curLayer]; i--) {
+		for (i = symTable->top - 1; i >= symTable->subprogramTable[layer[layerTop - 1]]; i--) {
 			if (strcmp(symTable->table[i].name, name) == 0)
 				return (symTable->table[i]);
 		}
@@ -181,6 +216,34 @@ struct node findIdentInSymTable(char* name) {
 	}
 	else
 		error(UNDEF_ID);
+}
+
+/*
+* Summary: find a label and return the whole node
+*/
+struct node findLabel(char* name) {
+	int i;
+	for (i = 0; i < symTable->subprogramNumber; i++) {
+		if (symTable->table[symTable->subprogramTable[i]].kind != 3)
+			continue;
+		if (strcmp(symTable->table[symTable->subprogramTable[i]].label, name) == 0) {
+			return symTable->table[symTable->subprogramTable[i]];
+		}
+	}
+}
+
+/*
+* Summary: find a function and return the whole node
+*/
+struct node findFunction(char* name) {
+	int i;
+	for (i = 0; i < symTable->subprogramNumber; i++) {
+		if (symTable->table[symTable->subprogramTable[i]].kind != 3)
+			continue;
+		if (strcmp(symTable->table[symTable->subprogramTable[i]].name, name) == 0) {
+			return symTable->table[symTable->subprogramTable[i]];
+		}
+	}
 }
 
 /*
@@ -958,7 +1021,6 @@ void funccall() {
 		valueparatable();
 	}
 	insertIntoIRlist(callop, "", "", name);
-	insertIntoIRlist(setop, "", "", returnlabel);
 	if (sym != RPAR) {
 		// error
 		// return;
@@ -1383,7 +1445,6 @@ void funcdef() {
 		char temp1[100];
 		nameALabel();
 		strcpy(temp1, label);
-		insertIntoIRlist(setop, "", "", temp1);
 		char name[100];
 		int kind = 3, type = 0, number = 0;
 		if (sym == VOIDSY)
@@ -1399,6 +1460,8 @@ void funcdef() {
 			error(MISSING_IDENT);
 		}
 		strcpy(name, cValue);
+		insertIntoIRlist(fstaop, "", "", name);
+		insertIntoIRlist(setop, "", "", temp1);
 		enter(name, kind, type, 0, number, addrIndex, "", temp1);
 		addrIndex += 4;
 		getsym();
@@ -1541,13 +1604,15 @@ void program() {
 		else {
 			symList_index -= 2;
 			getsym();
-			insertIntoIRlist(jop, "", "", mainlabel);
+			insertIntoIRlist(callop, "", "", "main");
 			funcdef();
 		}
 	}
 	if (sym == VOIDSY) {
+		insertIntoIRlist(fstaop, "", "", "main");
 		insertIntoIRlist(setop, "", "", mainlabel);
 		mainprog(mainlabel);
+		insertIntoIRlist(endop, "", "", "");
 		// printf("This is a program!\n");
 	}
 	else {

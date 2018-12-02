@@ -5,4 +5,5 @@ FILE *outputfp;
 void gendata();
 void gentext();
 
-int curLayer;			// 当前函数在分程序表的下标
+int layer[10000];			// 运行栈中的分程序信息
+int layerTop;			// 运行栈中的分程序信息的顶部

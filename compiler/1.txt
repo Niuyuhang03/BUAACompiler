@@ -1,4 +1,12 @@
-char fun() {
+int num, array[100];
+
+char fun(int b) {
     int a;
     a = 3 + 2;
+}
+
+void main() {
+    int b;
+    b = 0;
+    fun(b);
 }

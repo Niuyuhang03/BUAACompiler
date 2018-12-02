@@ -13,6 +13,7 @@ struct node {
 	int addr;			// 内存中标识符相对于所在AR首地址的偏移量，数组为数组首地址的偏移量
 	char STRING[100];	// 字符串的内容
 	char label[100];	// 函数的label
+	int sum;			// 一个函数中变量、常量、临时变量、参数的总和
 };
 
 struct symtable {
@@ -25,5 +26,8 @@ struct symtable {
 void init();
 void program();
 struct node findIdentInSymTable(char* name);
+void updateFuncVarNum();
+struct node findFunction(char* name);
+struct node findLabel(char* name);
 
 struct symtable *symTable;
