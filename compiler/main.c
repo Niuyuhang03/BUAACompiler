@@ -40,9 +40,11 @@ int main(void) {
 	}
 
 	// printf IRlist
-	printf("\n");
+	char IRoutputname[100] = "mid_output.txt";
+	FILE *IRoutput;
+	fopen_s(&IRoutput, IRoutputname, "w");
 	for (i = 0; i < IRtop; i++) {
-		printf("%s,%s,%s,%s\n", IRlistName[IRlist[i].op], IRlist[i].op1, IRlist[i].op2, IRlist[i].res);
+		fprintf(IRoutput, "%s,%s,%s,%s\n", IRlistName[IRlist[i].op], IRlist[i].op1, IRlist[i].op2, IRlist[i].res);
 	}
 
 	fclose(fp);

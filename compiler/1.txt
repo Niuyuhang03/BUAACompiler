@@ -1,5 +1,18 @@
+const int max = +100, min = -0;
+const char fail = 'n';
+int num;
+
+void fun(int a, char b) {
+    printf(a);
+    printf(b);
+    return(a+1);
+}
+
 void main() {
-    char a, b, c;
-    a = 'a';
+    char res;
+    int a;
+    scanf(num);
+    scanf(res);
+    a = fun(num, res);
     printf(a);
 }

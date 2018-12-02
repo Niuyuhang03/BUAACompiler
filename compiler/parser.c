@@ -37,7 +37,7 @@ int paratable();
 void factor();
 void term();
 void expression();
-void conditionsentence();
+void conditionsentence(char* elselabel);
 void whilesentence();
 void ifsentence();
 void funccall();
@@ -165,10 +165,9 @@ void enter(char *name, int kind, int type, int value, int number, int addr, char
 	strcpy(symTable->table[symTable->top].label, label);
 	if (kind == 3 || symTable->subprogramNumber == 0) {
 		symTable->subprogramTable[symTable->subprogramNumber] = symTable->top;
-		if (kind == 3)
-			symTable->table[symTable->top].value = symTable->subprogramNumber;
 		symTable->subprogramNumber++;
 	}
+	symTable->table[symTable->top].level = symTable->subprogramNumber - 1;
 	symTable->top++;
 }
 
@@ -206,6 +205,26 @@ struct node findIdentInSymTable(char* name) {
 			if (strcmp(symTable->table[i].name, name) == 0)
 				return (symTable->table[i]);
 		}
+	}
+	if (symTable->table[0].kind != 3) {         // 存在全局变量
+		for (i = symTable->subprogramTable[1] - 1; i >= 0; i--) {
+			if (strcmp(symTable->table[i].name, name) == 0)
+				return (symTable->table[i]);
+		}
+		error(UNDEF_ID);
+	}
+	else
+		error(UNDEF_ID);
+}
+
+/*
+* Summary: find identidier in last layer of symTable or global area, and return its whole struct
+*/
+struct node findIdentInLastSymTable(char* name) {
+	int i;
+	for (i = symTable->top - 1; i >= symTable->subprogramTable[symTable->subprogramNumber - 1]; i--) {
+		if (strcmp(symTable->table[i].name, name) == 0)
+			return (symTable->table[i]);
 	}
 	if (symTable->table[0].kind != 3) {         // 存在全局变量
 		for (i = symTable->subprogramTable[1] - 1; i >= 0; i--) {
@@ -735,7 +754,8 @@ void factor() {
 			char temp1[100];
 			strcpy(temp1, tempRes);
 			insertIntoIRlist(getop, name, "", temp1);
-			enter(temp1, 5, 2, 0, 0, addrIndex, "", "");
+			struct node curNode = findIdentInLastSymTable(name);
+			enter(temp1, 5, curNode.type, 0, 0, addrIndex, "", "");
 			addrIndex += 4;
 		}
 	}
@@ -824,24 +844,19 @@ void term() {
 /*
 * Summary: condition sentence
 */
-void conditionsentence() {
+void conditionsentence(char *elselabel) {
 	expression();
+	char temp1[100];
+	nameATempVarByIndex(tempResIndex - 1);
+	strcpy(temp1, tempRes);
 	if (sym == LT || sym == LE || sym == GE || sym == GT || sym == EQ || sym == NEQ) {
-		nameATempVarByIndex(tempResIndex - 1);
-		char temp1[100];
-		strcpy(temp1, tempRes);
 		if (sym == LT) {
 			getsym();
 			expression();
 			nameATempVarByIndex(tempResIndex - 1);
 			char temp2[100];
 			strcpy(temp2, tempRes);
-			nameATempVar();
-			char temp3[100];
-			strcpy(temp3, tempRes);
-			insertIntoIRlist(ltop, temp1, temp2, temp3);
-			enter(temp3, 5, 2, 0, 0, addrIndex, "", "");
-			addrIndex += 4;
+			insertIntoIRlist(bgezop, temp1, temp2, elselabel);
 		}
 		else if (sym == LE) {
 			getsym();
@@ -849,12 +864,7 @@ void conditionsentence() {
 			nameATempVarByIndex(tempResIndex - 1);
 			char temp2[100];
 			strcpy(temp2, tempRes);
-			nameATempVar();
-			char temp3[100];
-			strcpy(temp3, tempRes);
-			insertIntoIRlist(leop, temp1, temp2, temp3);
-			enter(temp3, 5, 2, 0, 0, addrIndex, "", "");
-			addrIndex += 4;
+			insertIntoIRlist(bgtzop, temp1, temp2, elselabel);
 		}
 		else if (sym == GE) {
 			getsym();
@@ -862,12 +872,7 @@ void conditionsentence() {
 			nameATempVarByIndex(tempResIndex - 1);
 			char temp2[100];
 			strcpy(temp2, tempRes);
-			nameATempVar();
-			char temp3[100];
-			strcpy(temp3, tempRes);
-			insertIntoIRlist(geop, temp1, temp2, temp3);
-			enter(temp3, 5, 2, 0, 0, addrIndex, "", "");
-			addrIndex += 4;
+			insertIntoIRlist(bltzop, temp1, temp2, elselabel);
 		}
 		else if (sym == GT) {
 			getsym();
@@ -875,12 +880,7 @@ void conditionsentence() {
 			nameATempVarByIndex(tempResIndex - 1);
 			char temp2[100];
 			strcpy(temp2, tempRes);
-			nameATempVar();
-			char temp3[100];
-			strcpy(temp3, tempRes);
-			insertIntoIRlist(gtop, temp1, temp2, temp3);
-			enter(temp3, 5, 2, 0, 0, addrIndex, "", "");
-			addrIndex += 4;
+			insertIntoIRlist(blezop, temp1, temp2, elselabel);
 		}
 		else if (sym == EQ) {
 			getsym();
@@ -888,12 +888,7 @@ void conditionsentence() {
 			nameATempVarByIndex(tempResIndex - 1);
 			char temp2[100];
 			strcpy(temp2, tempRes);
-			nameATempVar();
-			char temp3[100];
-			strcpy(temp3, tempRes);
-			insertIntoIRlist(eqop, temp1, temp2, temp3);
-			enter(temp3, 5, 2, 0, 0, addrIndex, "", "");
-			addrIndex += 4;
+			insertIntoIRlist(bneop, temp1, temp2, elselabel);
 		}
 		else {
 			getsym();
@@ -901,13 +896,18 @@ void conditionsentence() {
 			nameATempVarByIndex(tempResIndex - 1);
 			char temp2[100];
 			strcpy(temp2, tempRes);
-			nameATempVar();
-			char temp3[100];
-			strcpy(temp3, tempRes);
-			insertIntoIRlist(neop, temp1, temp2, temp3);
-			enter(temp3, 5, 2, 0, 0, addrIndex, "", "");
-			addrIndex += 4;
+			insertIntoIRlist(beqop, temp1, temp2, elselabel);
 		}
+	}
+	else {
+		nameATempVar();
+		char temp2[100], temp3[100];
+		strcpy(temp3, tempRes);
+		_itoa(0, temp2, 10);
+		insertIntoIRlist(getiop, temp2, "", temp3);
+		enter(temp3, 5, 2, 0, 0, addrIndex, "", "");
+		addrIndex += 4;
+		insertIntoIRlist(beqop, temp1, temp3, elselabel);
 	}
 	// printf("This is a condition sentence!\n");
 }
@@ -927,20 +927,16 @@ void whilesentence() {
 		error(MISSING_LPARENT);
 	}
 	getsym();
-	conditionsentence();
-	nameATempVarByIndex(tempResIndex - 1);
-	char temp3[100];
-	strcpy(temp3, tempRes);
+	nameALabel();
+	char temp2[100];
+	strcpy(temp2, label);
+	conditionsentence(temp2);
 	if (sym != RPAR) {
 		// error
 		// return;
 		error(MISSING_RPARENT);
 	}
 	getsym();
-	nameALabel();
-	char temp2[100];
-	strcpy(temp2, label);
-	insertIntoIRlist(bezop, temp3, "", temp2);
 	sentence();
 	insertIntoIRlist(jop, "", "", temp1);
 	insertIntoIRlist(setop, "", "", temp2);
@@ -958,13 +954,10 @@ void ifsentence() {
 		error(MISSING_LPARENT);
 	}
 	getsym();
-	conditionsentence();
-	char temp1[100], temp2[100];
-	nameATempVarByIndex(tempResIndex - 1);
-	strcpy(temp1, tempRes);
+	char temp1[100];
 	nameALabel();
-	strcpy(temp2, label);
-	insertIntoIRlist(bezop, temp1, "", temp2);
+	strcpy(temp1, label);
+	conditionsentence(temp1);
 	if (sym != RPAR) {
 		// error
 		// return;
@@ -972,7 +965,7 @@ void ifsentence() {
 	}
 	getsym();
 	sentence();
-	insertIntoIRlist(setop, "", "", temp2);
+	insertIntoIRlist(setop, "", "", temp1);
 	// printf("This is a if sentence!\n");
 }
 
@@ -1168,35 +1161,25 @@ void casesentence(char* switchVar, char *endlabel) {
 	nameALabel();
 	strcpy(endOfThisCase, label);
 	if (sym == CHAR) {
-		char temp2[100], temp3[100], temp4[100];
+		char temp2[100], temp3[100];
 		_itoa((int)cValue[0], temp2, 10);
 		nameATempVar();
 		strcpy(temp3, tempRes);
 		insertIntoIRlist(getiop, temp2, "", temp3);
 		enter(temp3, 5, 2, 0, 0, addrIndex, "", "");
 		addrIndex += 4;
-		nameATempVar();
-		strcpy(temp4, tempRes);
-		insertIntoIRlist(eqop, switchVar, temp3, temp4);
-		enter(temp4, 5, 2, 0, 0, addrIndex, "", "");
-		addrIndex += 4;
-		insertIntoIRlist(bezop, temp4, "", endOfThisCase);
+		insertIntoIRlist(bneop, switchVar, temp3, endOfThisCase);
 		getsym();
 	}
 	else if (isInteger()) {
-		char temp2[100], temp3[100], temp4[100];
+		char temp2[100], temp3[100];
 		_itoa(iValue, temp2, 10);
 		nameATempVar();
 		strcpy(temp3, tempRes);
 		insertIntoIRlist(getiop, temp2, "", temp3);
 		enter(temp3, 5, 2, 0, 0, addrIndex, "", "");
 		addrIndex += 4;
-		nameATempVar();
-		strcpy(temp4, tempRes);
-		insertIntoIRlist(eqop, switchVar, temp3, temp4);
-		enter(temp4, 5, 2, 0, 0, addrIndex, "", "");
-		addrIndex += 4;
-		insertIntoIRlist(bezop, temp4, "", endOfThisCase);
+		insertIntoIRlist(bneop, switchVar, temp3, endOfThisCase);
 		getsym();
 	}
 	else {
@@ -1598,6 +1581,7 @@ void program() {
 			error(MISSING_SEMICOLON);
 		}
 	}
+	insertIntoIRlist(callop, "", "", "main");
 	if (sym == INTSY || sym == CHARSY || sym == VOIDSY) {
 		getsym();
 		if (sym == MAINSY && symList[symList_index - 2]->sym == VOIDSY) {
@@ -1607,7 +1591,6 @@ void program() {
 		else {
 			symList_index -= 2;
 			getsym();
-			insertIntoIRlist(callop, "", "", "main");
 			funcdef();
 		}
 	}
