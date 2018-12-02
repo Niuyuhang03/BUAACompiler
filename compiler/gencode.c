@@ -114,8 +114,7 @@ void gentext() {
 			}
 			case(paraop): {
 				struct node curNode = findIdentInSymTable(IRlist[i].res);
-				fprintf(outputfp, "\tlw $t0, %d($sp)\n", curNode.addr);
-				fprintf(outputfp, "\tmove $a%d, $t0\n", setParaIndex);
+				fprintf(outputfp, "\tlw $a%d, %d($sp)\n", setParaIndex, curNode.addr);
 				setParaIndex++;
 				break;
 			}
@@ -230,12 +229,12 @@ void gentext() {
 				break;
 			}
 			case(priop): {
-				if (IRlist[i].op1 != "") {
+				if (IRlist[i].op1) {
 					fprintf(outputfp, "\tla $a0, %s\n", IRlist[i].op1);
 					fprintf(outputfp, "\tli $v0, 4\n");
 					fprintf(outputfp, "\tsyscall\n");
 				}
-				if (IRlist[i].res != ""){
+				if (strcmp(IRlist[i].res, "") != 0) {
 					struct node curNode = findIdentInSymTable(IRlist[i].res);
 					if (curNode.type == 2) {
 						fprintf(outputfp, "\tlw $a0, %d($sp)\n", curNode.addr);
@@ -315,7 +314,6 @@ void gentext() {
 				retFlag = 0;
 				struct node curNode = findFunction(IRlist[i].res);
 				int sum = (curNode.sum + 1) * 4;
-				char csum[100];
 				if (strcmp(IRlist[i].res, "main") != 0) {
 					fprintf(outputfp, "\taddiu, $sp, $sp, -%d\n", sum);
 					fprintf(outputfp, "\tjal %s\n", curNode.label);
@@ -323,7 +321,6 @@ void gentext() {
 				}
 				else
 					fprintf(outputfp, "\tj %s\n", curNode.label);
-				layer[layerTop++] = curNode.value;
 				break;
 			}
 		}

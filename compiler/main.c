@@ -2,8 +2,8 @@
 #include "lexer.h"
 #include "parser.h"
 #include "error.h"
-#include "IR.h"
 #include "gencode.h"
+#include "IR.h"
 
 int main(void) {
 	char filename[100], outfilename[100];

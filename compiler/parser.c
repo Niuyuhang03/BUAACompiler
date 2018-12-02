@@ -750,11 +750,13 @@ void factor() {
 		getsym();
 	}
 	else if (sym == CHAR) {
-		nameATempVar();
 		char temp1[100];
-		strcpy(temp1, tempRes);
-		insertIntoIRlist(getiop, cValue, "", temp1);
-		enter(temp1, 5, 2, 0, 0, addrIndex, "", "");
+		_itoa((int)cValue[0], temp1, 10);
+		nameATempVar();
+		char temp2[100];
+		strcpy(temp2, tempRes);
+		insertIntoIRlist(getiop, temp1, "", temp2);
+		enter(temp2, 5, 2, 0, 0, addrIndex, "", "");
 		addrIndex += 4;
 		getsym();
 	}
@@ -1166,18 +1168,19 @@ void casesentence(char* switchVar, char *endlabel) {
 	nameALabel();
 	strcpy(endOfThisCase, label);
 	if (sym == CHAR) {
-		char temp2[100], temp3[100];
-		nameATempVar();
-		strcpy(temp2, tempRes);
-		insertIntoIRlist(getiop, cValue, "", temp2);
-		enter(temp2, 5, 2, 0, 0, addrIndex, "", "");
-		addrIndex += 4;
+		char temp2[100], temp3[100], temp4[100];
+		_itoa((int)cValue[0], temp2, 10);
 		nameATempVar();
 		strcpy(temp3, tempRes);
-		insertIntoIRlist(eqop, switchVar, temp2, temp3);
+		insertIntoIRlist(getiop, temp2, "", temp3);
 		enter(temp3, 5, 2, 0, 0, addrIndex, "", "");
 		addrIndex += 4;
-		insertIntoIRlist(bezop, temp3, "", endOfThisCase);
+		nameATempVar();
+		strcpy(temp4, tempRes);
+		insertIntoIRlist(eqop, switchVar, temp3, temp4);
+		enter(temp4, 5, 2, 0, 0, addrIndex, "", "");
+		addrIndex += 4;
+		insertIntoIRlist(bezop, temp4, "", endOfThisCase);
 		getsym();
 	}
 	else if (isInteger()) {
