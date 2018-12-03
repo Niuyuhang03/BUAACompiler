@@ -1,16 +1,21 @@
 const int max = +100, min = -0;
 const char fail = 'n';
-int num, result;
-char id, _a2;
+int num, array[100], result;
+char id, pwd[20], _a2;
 
 char fun(char c1, char c2) {
     return(c1 + c2);
 }
 
+void output() {
+    printf("result:", result);
+}
+
 int calcul(int n) {
     int nn;
+    nn = fun('a', 'b');
     if (n == 1) {
-        printf("result:", result);
+        output();
     }
     if (n > 1) {
         result = result * n;
@@ -24,6 +29,7 @@ void main() {
     int flag, test;
     char ch;
     flag = 0;
+    array[0] = 1;
     result = 1;
     scanf(num);
     calcul(num);

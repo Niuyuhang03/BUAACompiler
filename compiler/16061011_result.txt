@@ -1,0 +1,95 @@
+测试用例1:
+输入:
+0 0 b
+输出:
+result:1
+分析:
+编译时程序没有报错，说明常量声明、变量声明、函数声明、主函数声明是正确的。同时也可以说明主函数中的scanf和return被正确调用。程序求0阶乘部分正确。if部分正确，printf部分正确。
+
+测试用例2:
+输入：
+5 0 b
+输出：
+result:120
+0
+分析：
+正确输出num不为0时的结果结果，说明函数声明、调用部分正确。if部分正确。
+
+测试用例3:
+输入：
+3 1 b
+输出：
+result:6
+0
+num=1
+num=1
+num=1
+分析：
+运行test_while_and_switch()函数正确，说明while部分正确。switch后为整数情况正确调用。程序未输出error，while至此完整覆盖。
+
+测试用例4:
+输入：
+3 3 b
+输出：
+result:6
+0
+!#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvwxyz{|}~
+error
+分析：
+运行test_other()函数正确，程序输出error，说明switch进入default，至此switch完整覆盖。
+
+测试用例5:
+输入：
+3 2 b
+输出：
+result:6
+0
+<=
+==
+>=
+分析：
+运行test_relation()函数正确，关系运算符部分正确。
+
+测试用例6:
+输入：
+3 2 a
+输出：
+result:6
+0
+<
+<=
+!=
+分析：
+运行test_relation()函数正确，关系运算符部分正确。
+
+测试用例7:
+输入：
+3 2 c
+输出：
+result:6
+0
+>
+>=
+!=
+分析：
+运行test_relation()函数正确，至此关系运算符完整覆盖。
+
+测试用例8:
+输入：
+105 0 c
+输出：
+above max
+-1
+分析：
+num大于最大值，程序报错，if部分正确。printf部分覆盖。
+
+测试用例9:
+输入：
+-1 0 c
+输出：
+below min
+-1
+分析：
+num小于最小值，程序报错，至此if完整覆盖。printf完整覆盖。
+
+至此整个程序所有分支都已覆盖。

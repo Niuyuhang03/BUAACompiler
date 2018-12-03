@@ -302,13 +302,14 @@ void gentext() {
 				break;
 			}
 			case(callop): {
+				setParaIndex = 0;
+				getParaIndex = 0;
 				struct node curNode = findFunction(IRlist[i].res);
-				int sum = (curNode.sum + 1) * 4;
 				if (strcmp(IRlist[i].res, "main") != 0) {
 					fprintf(outputfp, "\tsw $ra, ($sp)\n");
-					fprintf(outputfp, "\taddiu $sp, $sp, -%d\n", sum);
+					fprintf(outputfp, "\taddiu $sp, $sp, -%d\n", curNode.sum);
 					fprintf(outputfp, "\tjal %s\n", curNode.label);
-					fprintf(outputfp, "\taddiu $sp, $sp, %d\n", sum);
+					fprintf(outputfp, "\taddiu $sp, $sp, %d\n", curNode.sum);
 					fprintf(outputfp, "\tlw $ra, ($sp)\n");
 				}
 				else

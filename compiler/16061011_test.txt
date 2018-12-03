@@ -18,6 +18,14 @@ int calcul(int n) {
     if (n == 1) {
         output();
     }
+    if (n > max) {
+        printf("above max");
+        return(-1);
+    }
+    if (n < min) {
+        printf("below min");
+        return(-1);
+    }
     if (n > 1) {
         result = result * n;
         calcul(n - 1);
@@ -73,7 +81,7 @@ void test_other(){
 
 void main() {
     const char myId = '1';
-    int flag, myArray[100], test;
+    int flag, myArray[100], test, returnvalue;
     char ch;
     flag = 0;
     result = 1;
@@ -81,22 +89,16 @@ void main() {
     scanf(num);
     scanf(test);
     scanf(ch);
-    if (num > max) {
-        printf(fail);
-        return;
-    }
-    if (num < min) {
-        printf("n");
-        return;
-    }
     if (num == 0) {
         flag = 1;
     }
     if (flag) {
         printf("result:", num + 1);
-        return;    
     }
-    calcul(num);
+    if (flag == 0) {
+        returnvalue = calcul(num);
+        printf(returnvalue);
+    }
     if (test == 1) {
         test_while_and_switch();
     }
