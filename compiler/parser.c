@@ -77,24 +77,32 @@ void updateFuncVarNum() {
 		if (symTable->table[symTable->subprogramTable[j]].kind == 3) {
 			sum = 0;
 			if (j == symTable->subprogramNumber - 1) {
-				for (int k = symTable->subprogramTable[j] + 1; ; k++) {
-					if (k == symTable->top)
+				for (int k = symTable->subprogramTable[j]; ; k++) {
+					if (k == symTable->top - 1) {
+						if (symTable->table[k].number == 0)
+							symTable->table[symTable->subprogramTable[j]].sum = symTable->table[k].addr + 4;
+						else
+							symTable->table[symTable->subprogramTable[j]].sum = symTable->table[k].addr + symTable->table[k].number * 4;
 						break;
-					if (symTable->table[k].kind == 6)
+					}
+					else
 						continue;
-					sum++;
 				}
 			}
 			else {
-				for (int k = symTable->subprogramTable[j] + 1; ; k++) {
-					if (k == symTable->subprogramTable[j + 1])
+				for (int k = symTable->subprogramTable[j]; ; k++) {
+					if (k + 1 == symTable->subprogramTable[j + 1]) {
+						if (symTable->table[k].number == 0)
+							symTable->table[symTable->subprogramTable[j]].sum = symTable->table[k].addr + 4;
+						else
+							symTable->table[symTable->subprogramTable[j]].sum = symTable->table[k].addr + symTable->table[k].number * 4;
 						break;
-					if (symTable->table[k].kind == 6)
+					}
+					else
 						continue;
-					sum++;
 				}
 			}
-			symTable->table[symTable->subprogramTable[j]].sum = sum;
+
 		}
 	}
 	
@@ -1513,13 +1521,15 @@ void funcdef() {
 * Summary: main program
 */
 void mainprog(char *mainlabel) {
+	addrIndex = 0;
 	getsym();
 	if (sym != MAINSY) {
 		// error
 		// return;
 		error(MISSING_MAIN);
 	}
-	enter("main", 3, 1, 0, 0, 0, "", mainlabel);
+	enter("main", 3, 1, 0, 0, addrIndex, "", mainlabel);
+	addrIndex += 4;
 	getsym();
 	if (sym != LPAR) {
 		// error

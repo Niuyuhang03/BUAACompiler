@@ -52,6 +52,8 @@ void gentext() {
 				break;
 			}
 			case(fstaop): {
+				getParaIndex = 0;
+				setParaIndex = 0;
 				struct node curNode = findFunction(IRlist[i].res);
 				layer[layerTop++] = curNode.level;
 				break;
@@ -193,10 +195,6 @@ void gentext() {
 				}
 				break;
 			}
-			case(sraop): {
-				fprintf(outputfp, "\tsw $ra, ($sp)\n");
-				break;
-			}
 			case(scaop): {
 				struct node curNode = findIdentInSymTable(IRlist[i].res);
 				if (curNode.type == 2) {
@@ -304,16 +302,14 @@ void gentext() {
 				break;
 			}
 			case(callop): {
-				getParaIndex = 0;
-				setParaIndex = 0;
 				struct node curNode = findFunction(IRlist[i].res);
 				int sum = (curNode.sum + 1) * 4;
 				if (strcmp(IRlist[i].res, "main") != 0) {
-					fprintf(outputfp, "\taddiu, $sp, $sp, -%d\n", sum);
 					fprintf(outputfp, "\tsw $ra, ($sp)\n");
+					fprintf(outputfp, "\taddiu $sp, $sp, -%d\n", sum);
 					fprintf(outputfp, "\tjal %s\n", curNode.label);
+					fprintf(outputfp, "\taddiu $sp, $sp, %d\n", sum);
 					fprintf(outputfp, "\tlw $ra, ($sp)\n");
-					fprintf(outputfp, "\taddiu, $sp, $sp, %d\n", sum);
 				}
 				else
 					fprintf(outputfp, "\tj %s\n", curNode.label);
