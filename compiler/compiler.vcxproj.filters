@@ -67,5 +67,13 @@
     <Text Include="16061011_test.txt">
       <Filter>资源文件</Filter>
     </Text>
+    <Text Include="mid_output.txt">
+      <Filter>资源文件</Filter>
+    </Text>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="output.asm">
+      <Filter>资源文件</Filter>
+    </None>
   </ItemGroup>
 </Project>
