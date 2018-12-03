@@ -57,4 +57,15 @@
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
+  <ItemGroup>
+    <Text Include="1.txt">
+      <Filter>资源文件</Filter>
+    </Text>
+    <Text Include="16061011_result.txt">
+      <Filter>资源文件</Filter>
+    </Text>
+    <Text Include="16061011_test.txt">
+      <Filter>资源文件</Filter>
+    </Text>
+  </ItemGroup>
 </Project>

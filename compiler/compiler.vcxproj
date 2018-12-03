@@ -132,6 +132,11 @@
     <ClInclude Include="parser.h" />
     <ClInclude Include="stdafx.h" />
   </ItemGroup>
+  <ItemGroup>
+    <Text Include="1.txt" />
+    <Text Include="16061011_result.txt" />
+    <Text Include="16061011_test.txt" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
