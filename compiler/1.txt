@@ -1,36 +1,11 @@
-const int max = +100, min = -0;
-const char fail = 'n';
-int num, array[100], result;
-char id, pwd[20], _a2;
-
-char fun(char c1, char c2) {
-    return(c1 + c2);
+int temp(int a, int b) {
+    return(a + b);
 }
 
-void output() {
-    printf("result:", result);
-}
-
-int calcul(int n) {
-    int nn;
-    nn = fun('a', 'b');
-    if (n == 1) {
-        output();
-    }
-    if (n > 1) {
-        result = result * n;
-        calcul(n - 1);
-    }
-    return(0);
+int calcul(int a, int b) {
+    print(a + b);
 }
 
 void main() {
-    const char myId = '1';
-    int flag, test;
-    char ch;
-    flag = 0;
-    array[0] = 1;
-    result = 1;
-    scanf(num);
-    calcul(num);
+    calcul(3, temp(1, 2));
 }
