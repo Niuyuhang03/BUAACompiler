@@ -77,35 +77,19 @@ void updateFuncVarNum() {
 		if (symTable->table[symTable->subprogramTable[j]].kind == 3) {
 			sum = 0;
 			if (j == symTable->subprogramNumber - 1) {
-				for (int k = symTable->subprogramTable[j]; ; k++) {
-					if (k == symTable->top - 1) {
-						if (symTable->table[k].number == 0)
-							symTable->table[symTable->subprogramTable[j]].sum = symTable->table[k].addr + 4;
-						else
-							symTable->table[symTable->subprogramTable[j]].sum = symTable->table[k].addr + symTable->table[k].number * 4;
-						break;
-					}
-					else
-						continue;
-				}
+				if (symTable->table[symTable->top - 1].number == 0)
+					symTable->table[symTable->subprogramTable[j]].sum = symTable->table[symTable->top - 1].addr + 4;
+				else
+					symTable->table[symTable->subprogramTable[j]].sum = symTable->table[symTable->top - 1].addr + symTable->table[symTable->top - 1].number * 4;
 			}
 			else {
-				for (int k = symTable->subprogramTable[j]; ; k++) {
-					if (k + 1 == symTable->subprogramTable[j + 1]) {
-						if (symTable->table[k].number == 0)
-							symTable->table[symTable->subprogramTable[j]].sum = symTable->table[k].addr + 4;
-						else
-							symTable->table[symTable->subprogramTable[j]].sum = symTable->table[k].addr + symTable->table[k].number * 4;
-						break;
-					}
-					else
-						continue;
-				}
+				if (symTable->table[symTable->subprogramTable[j + 1] - 1].number == 0)
+					symTable->table[symTable->subprogramTable[j]].sum = symTable->table[symTable->subprogramTable[j + 1] - 1].addr + 4;
+				else
+					symTable->table[symTable->subprogramTable[j]].sum = symTable->table[symTable->subprogramTable[j + 1] - 1].addr + symTable->table[symTable->subprogramTable[j + 1] - 1].number * 4;
 			}
-
 		}
 	}
-	
 }
 
 /*
@@ -990,7 +974,6 @@ void valueparatable() {
 		getsym();
 		expression();
 		nameATempVarByIndex(tempResIndex - 1);
-		char temp1[100];
 		strcpy(temp1, tempRes);
 		insertIntoIRlist(paraop, "", "", temp1);
 	}
@@ -1127,7 +1110,7 @@ void printfsentence() {
 		nameAString();
 		strcpy(stringName, tempString);
 		getsym();
-		enter(stringName, 6, 5, 0, 0, 0, string, "");
+		enter(stringName, 6, 5, 0, 0, addrIndex - 4, string, "");
 		if (sym == COMMA) {
 			getsym();
 			expression();
@@ -1434,7 +1417,7 @@ void complexsentence() {
 * Summary: function define
 */
 void funcdef() {
-	addrIndex = 0;
+	addrIndex = 0;			// ra存入栈，地址为参数后的4位
 	while (1) {
 		char temp1[100];
 		nameALabel();
@@ -1456,8 +1439,7 @@ void funcdef() {
 		strcpy(name, cValue);
 		insertIntoIRlist(fstaop, "", "", name);
 		insertIntoIRlist(setop, "", "", temp1);
-		enter(name, kind, type, 0, number, addrIndex, "", temp1);
-		addrIndex += 4;
+		enter(name, kind, type, 0, number, 0, "", temp1);
 		getsym();
 		if (sym != LPAR) {
 			// error
@@ -1472,6 +1454,7 @@ void funcdef() {
 		else {
 			// printf("This is a empty parameter list!\n");
 		}
+		addrIndex += 8;
 		if (sym != RPAR) {
 			// error
 			// return;
@@ -1507,6 +1490,7 @@ void funcdef() {
 				break;
 			}
 			else {
+				addrIndex = 0;
 				symList_index -= 2;
 				getsym();
 			}
@@ -1528,8 +1512,7 @@ void mainprog(char *mainlabel) {
 		// return;
 		error(MISSING_MAIN);
 	}
-	enter("main", 3, 1, 0, 0, addrIndex, "", mainlabel);
-	addrIndex += 4;
+	enter("main", 3, 1, 0, 0, 0, "", mainlabel);
 	getsym();
 	if (sym != LPAR) {
 		// error

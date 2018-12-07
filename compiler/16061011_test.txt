@@ -7,6 +7,14 @@ char fun(char c1, char c2) {
     return(c1 + c2);
 }
 
+int fun2(int c1, int c2) {
+    return(c1 + c2);
+}
+
+int fun3(int a, int b, int c, int d, int e) {
+    printf(a+b+c+d+e);
+}
+
 void output() {
     printf("result:", result);
 }
@@ -14,7 +22,7 @@ void output() {
 int calcul(int n) {
     int nn;
     nn = -n * n + n - n + -1;
-    nn = +(n / n) * array[0] / array[0] + 1 + 'c' + fun('a', 'b');
+    nn = +(n / n) * array[0] / array[0] + 1 + 'c' + fun('a', fun('c', 'd'));
     if (n == 1) {
         output();
     }
@@ -81,7 +89,7 @@ void test_other(){
 
 void main() {
     const char myId = '1';
-    int flag, myArray[100], test, returnvalue;
+    int flag, myArray[100], test, returnvalue, nn;
     char ch;
     flag = 0;
     result = 1;
@@ -107,5 +115,12 @@ void main() {
     }
     if (test == 3) {
         test_other();
+    }
+    if (test == 4) {
+        nn = 1 + fun2(3, 7);
+        printf(nn);
+        nn = 1 + fun2(3, fun(5, 2));
+        printf(nn);
+        fun3(1,2,3,4,5);
     }
 }
