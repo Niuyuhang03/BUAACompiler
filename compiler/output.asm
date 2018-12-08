@@ -29,7 +29,7 @@
 	_a2: .word 0
 .text
 	move $fp, $sp
-	addiu $sp, $fp, -668
+	addiu $sp, $fp, -696
 	j label_0
 label_1:
 	lw $t0, -0($fp)
@@ -923,19 +923,25 @@ label_46:
 	la $a0, $string_0
 	li $v0, 4
 	syscall
-	li $t0, 0
-	sw $t0, -640($fp)
 	li $t0, 3
+	sw $t0, -640($fp)
+	li $t0, 4
 	sw $t0, -644($fp)
 	lw $t0, -644($fp)
 	la $t1, array
 	lw $t2, -640($fp)
+	li $t3, 4
+	mult $t2, $t3
+	mflo $t2
 	add $t1, $t1, $t2
 	sw $t0, ($t1)
-	li $t0, 0
+	li $t0, 3
 	sw $t0, -648($fp)
 	la $t0, array
 	lw $t1, -648($fp)
+	li $t2, 4
+	mult $t1, $t2
+	mflo $t1
 	add $t0, $t0, $t1
 	lw $t0, ($t0)
 	sw $t0, -652($fp)
@@ -945,10 +951,13 @@ label_46:
 	la $a0, $string_0
 	li $v0, 4
 	syscall
-	li $t0, 0
+	li $t0, 3
 	sw $t0, -656($fp)
 	la $t0, array
 	lw $t1, -656($fp)
+	li $t2, 4
+	mult $t1, $t2
+	mflo $t1
 	add $t0, $t0, $t1
 	lw $t0, ($t0)
 	sw $t0, -660($fp)
@@ -959,6 +968,59 @@ label_46:
 	lw $t0, ($t0)
 	sw $t0, -664($fp)
 	lw $a0, -664($fp)
+	li $v0, 1
+	syscall
+	la $a0, $string_0
+	li $v0, 4
+	syscall
+	li $t0, 4
+	sw $t0, -668($fp)
+	li $t0, 5
+	sw $t0, -672($fp)
+	lw $t0, -672($fp)
+	lw $t1, -8($fp)
+	lw $t2, -668($fp)
+	li $t3, 4
+	mult $t2, $t3
+	mflo $t2
+	sub $t2, $0, $t2
+	add $t1, $t1, $t2
+	sw $t0, ($t1)
+	li $t0, 4
+	sw $t0, -676($fp)
+	lw $t0, -8($fp)
+	lw $t1, -676($fp)
+	li $t2, 4
+	mult $t1, $t2
+	mflo $t1
+	sub $t1, $0, $t1
+	add $t0, $t0, $t1
+	lw $t0, ($t0)
+	sw $t0, -680($fp)
+	lw $a0, -680($fp)
+	li $v0, 1
+	syscall
+	la $a0, $string_0
+	li $v0, 4
+	syscall
+	li $t0, 4
+	sw $t0, -684($fp)
+	lw $t0, -8($fp)
+	lw $t1, -684($fp)
+	li $t2, 4
+	mult $t1, $t2
+	mflo $t1
+	sub $t1, $0, $t1
+	add $t0, $t0, $t1
+	lw $t0, ($t0)
+	sw $t0, -688($fp)
+	lw $t0, -688($fp)
+	la $t1, num
+	sw $t0, ($t1)
+	la $t0, num
+	lw $t0, ($t0)
+	sw $t0, -692($fp)
+	lw $a0, -692($fp)
 	li $v0, 1
 	syscall
 	la $a0, $string_0
