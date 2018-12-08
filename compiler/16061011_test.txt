@@ -22,7 +22,7 @@ void output() {
 int calcul(int n) {
     int nn;
     nn = -n * n + n - n + -1;
-    nn = +(n / n) * array[0] / array[0] + 1 + 'c' + fun('a', fun('c', 'd'));
+    nn = +(n / n) + 1 + 'c' + fun('a', fun('c', 'd'));
     if (n == 1) {
         output();
     }
@@ -93,7 +93,6 @@ void main() {
     char ch;
     flag = 0;
     result = 1;
-    array[0] = 1;
     scanf(num);
     scanf(test);
     scanf(ch);
@@ -122,5 +121,20 @@ void main() {
         nn = 1 + fun2(3, fun(5, 2));
         printf(nn);
         fun3(1,2,3,4,5);
+    }
+    if (test == 5) {
+        nn = 1;
+        printf(nn);
+        num = 2;
+        printf(num);
+        nn = num;
+        printf(nn);
+        num = 3;
+        num = nn;
+        printf(num);
+        array[0] = 3;
+        printf(array[0]);
+        num = array[0];
+        printf(num);
     }
 }

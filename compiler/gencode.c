@@ -95,34 +95,54 @@ void gentext() {
 			}
 			case(getaop): {
 				struct node curNode = findIdentInSymTable(IRlist[i].op1);
-				fprintf(outputfp, "\tlw $t0, -%d($fp)\n", atoi(IRlist[i].op2) * 4 + curNode.addr);
+				if (curNode.level == 0 && symTable->table[0].kind != 3) {
+					fprintf(outputfp, "\tla $t0, %s\n", curNode.name);
+					curNode = findIdentInSymTable(IRlist[i].op2);
+					fprintf(outputfp, "\tlw $t1, -%d($fp)\n", curNode.addr);
+					fprintf(outputfp, "\tadd $t0, $t0, $t1\n");
+				}
+				else {
+					fprintf(outputfp, "\tlw $t0, -%d($fp)\n", curNode.addr);
+					curNode = findIdentInSymTable(IRlist[i].op2);
+					fprintf(outputfp, "\tlw $t1, -%d($fp)\n", curNode.addr);
+					fprintf(outputfp, "\tadd $t0, $t0, -$t1\n");
+				}
+				fprintf(outputfp, "\tlw $t0, ($t0)\n");
 				curNode = findIdentInSymTable(IRlist[i].res);
 				fprintf(outputfp, "\tsw $t0, -%d($fp)\n", curNode.addr);
 				break;
 			}
 			case(stoop): {
-				if (strcmp(IRlist[i].op2, "") == 0) {
-					struct node curNode = findIdentInSymTable(IRlist[i].op1);
+				struct node curNode = findIdentInSymTable(IRlist[i].op1);
+				if (curNode.level == 0 && symTable->table[0].kind != 3) {
+					fprintf(outputfp, "\tla $t0, %s\n", curNode.name);
+					fprintf(outputfp, "\tlw $t0, ($t0)\n");
+				}
+				else
 					fprintf(outputfp, "\tlw $t0, -%d($fp)\n", curNode.addr);
-					curNode = findIdentInSymTable(IRlist[i].res);
+				curNode = findIdentInSymTable(IRlist[i].res);
+				if (strcmp(IRlist[i].op2, "") == 0) {
 					if (curNode.level == 0 && symTable->table[0].kind != 3) {
 						fprintf(outputfp, "\tla $t1, %s\n", curNode.name);
 						fprintf(outputfp, "\tsw $t0, ($t1)\n");
 					}
-					else {
+					else
 						fprintf(outputfp, "\tsw $t0, -%d($fp)\n", curNode.addr);
-					}
 				}
 				else {
-					struct node curNode = findIdentInSymTable(IRlist[i].op1);
-					fprintf(outputfp, "\tlw $t0, -%d($fp)\n", curNode.addr);
-					curNode = findIdentInSymTable(IRlist[i].res);
 					if (curNode.level == 0 && symTable->table[0].kind != 3) {
 						fprintf(outputfp, "\tla $t1, %s\n", curNode.name);
-						fprintf(outputfp, "\tsw $t0, %d($t1)\n", atoi(IRlist[i].op2) * 4);
+						curNode = findIdentInSymTable(IRlist[i].op2);
+						fprintf(outputfp, "\tlw $t2, -%d($fp)\n", curNode.addr);
+						fprintf(outputfp, "\tadd $t1, $t1, $t2\n");
+						fprintf(outputfp, "\tsw $t0, ($t1)\n");
 					}
 					else {
-						fprintf(outputfp, "\tsw $t0, -%d($fp)\n", atoi(IRlist[i].op2) * 4 + curNode.addr);
+						fprintf(outputfp, "\tlw $t1, -%d($fp)\n", curNode.addr);
+						curNode = findIdentInSymTable(IRlist[i].op2);
+						fprintf(outputfp, "\tlw $t2, -%d($fp)\n", curNode.addr);
+						fprintf(outputfp, "\tadd $t1, $t1, -$t2\n");
+						fprintf(outputfp, "\tsw $t0, ($t1)\n");
 					}
 				}
 				break;

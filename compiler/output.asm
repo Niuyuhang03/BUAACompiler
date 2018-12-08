@@ -29,7 +29,7 @@
 	_a2: .word 0
 .text
 	move $fp, $sp
-	addiu $sp, $fp, -604
+	addiu $sp, $fp, -668
 	j label_0
 label_1:
 	lw $t0, -0($fp)
@@ -148,49 +148,31 @@ label_5:
 	div $t0, $t1
 	mflo $t0
 	sw $t0, -68($fp)
-	li $t0, 0
-	sw $t0, -72($fp)
-	lw $t0, -16($fp)
-	sw $t0, -76($fp)
-	lw $t0, -68($fp)
-	lw $t1, -76($fp)
-	mult $t0, $t1
-	mflo $t0
-	sw $t0, -80($fp)
-	li $t0, 0
-	sw $t0, -84($fp)
-	lw $t0, -16($fp)
-	sw $t0, -88($fp)
-	lw $t0, -80($fp)
-	lw $t1, -88($fp)
-	div $t0, $t1
-	mflo $t0
-	sw $t0, -92($fp)
 	li $t0, 1
-	sw $t0, -96($fp)
-	lw $t0, -92($fp)
-	lw $t1, -96($fp)
+	sw $t0, -72($fp)
+	lw $t0, -68($fp)
+	lw $t1, -72($fp)
 	add $t0, $t0, $t1
-	sw $t0, -100($fp)
+	sw $t0, -76($fp)
 	li $t0, 99
-	sw $t0, -104($fp)
-	lw $t0, -100($fp)
-	lw $t1, -104($fp)
+	sw $t0, -80($fp)
+	lw $t0, -76($fp)
+	lw $t1, -80($fp)
 	add $t0, $t0, $t1
-	sw $t0, -108($fp)
+	sw $t0, -84($fp)
 	li $t0, 97
-	sw $t0, -112($fp)
-	lw $t0, -112($fp)
+	sw $t0, -88($fp)
+	lw $t0, -88($fp)
 	sw $t0, ($sp)
 	addiu $sp, $sp, -4
 	li $t0, 99
-	sw $t0, -116($fp)
-	lw $t0, -116($fp)
+	sw $t0, -92($fp)
+	lw $t0, -92($fp)
 	sw $t0, ($sp)
 	addiu $sp, $sp, -4
 	li $t0, 100
-	sw $t0, -120($fp)
-	lw $t0, -120($fp)
+	sw $t0, -96($fp)
+	lw $t0, -96($fp)
 	sw $t0, ($sp)
 	addiu $sp, $sp, -4
 	sw $ra, ($sp)
@@ -202,8 +184,8 @@ label_5:
 	move $sp, $fp
 	lw $fp, -12($sp)
 	lw $ra, -8($sp)
-	sw $v0, -124($fp)
-	lw $t0, -124($fp)
+	sw $v0, -100($fp)
+	lw $t0, -100($fp)
 	sw $t0, ($sp)
 	addiu $sp, $sp, -4
 	sw $ra, ($sp)
@@ -215,19 +197,19 @@ label_5:
 	move $sp, $fp
 	lw $fp, -12($sp)
 	lw $ra, -8($sp)
-	sw $v0, -128($fp)
-	lw $t0, -108($fp)
-	lw $t1, -128($fp)
+	sw $v0, -104($fp)
+	lw $t0, -84($fp)
+	lw $t1, -104($fp)
 	add $t0, $t0, $t1
-	sw $t0, -132($fp)
-	lw $t0, -132($fp)
+	sw $t0, -108($fp)
+	lw $t0, -108($fp)
 	sw $t0, -12($fp)
 	lw $t0, -0($fp)
-	sw $t0, -136($fp)
+	sw $t0, -112($fp)
 	li $t0, 1
-	sw $t0, -140($fp)
-	lw $t0, -136($fp)
-	lw $t1, -140($fp)
+	sw $t0, -116($fp)
+	lw $t0, -112($fp)
+	lw $t1, -116($fp)
 	bne $t0, $t1, label_8
 	sw $ra, ($sp)
 	sw $fp, -4($sp)
@@ -240,12 +222,12 @@ label_5:
 	lw $ra, -0($sp)
 label_8:
 	lw $t0, -0($fp)
-	sw $t0, -144($fp)
+	sw $t0, -120($fp)
 	la $t0, max
 	lw $t0, ($t0)
-	sw $t0, -148($fp)
-	lw $t0, -144($fp)
-	lw $t1, -148($fp)
+	sw $t0, -124($fp)
+	lw $t0, -120($fp)
+	lw $t1, -124($fp)
 	sub $t0, $t0, $t1
 	blez $t0, label_10
 	la $a0, $string_2
@@ -255,23 +237,23 @@ label_8:
 	li $v0, 4
 	syscall
 	li $t0, 1
-	sw $t0, -152($fp)
+	sw $t0, -128($fp)
 	li $t0, 0
-	sw $t0, -156($fp)
-	lw $t0, -156($fp)
-	lw $t1, -152($fp)
+	sw $t0, -132($fp)
+	lw $t0, -132($fp)
+	lw $t1, -128($fp)
 	sub $t0, $t0, $t1
-	sw $t0, -160($fp)
-	lw $v0, -160($fp)
+	sw $t0, -136($fp)
+	lw $v0, -136($fp)
 	jr $ra
 label_10:
 	lw $t0, -0($fp)
-	sw $t0, -164($fp)
+	sw $t0, -140($fp)
 	la $t0, min
 	lw $t0, ($t0)
-	sw $t0, -168($fp)
-	lw $t0, -164($fp)
-	lw $t1, -168($fp)
+	sw $t0, -144($fp)
+	lw $t0, -140($fp)
+	lw $t1, -144($fp)
 	sub $t0, $t0, $t1
 	bgez $t0, label_11
 	la $a0, $string_3
@@ -281,61 +263,61 @@ label_10:
 	li $v0, 4
 	syscall
 	li $t0, 1
-	sw $t0, -172($fp)
+	sw $t0, -148($fp)
 	li $t0, 0
-	sw $t0, -176($fp)
-	lw $t0, -176($fp)
-	lw $t1, -172($fp)
+	sw $t0, -152($fp)
+	lw $t0, -152($fp)
+	lw $t1, -148($fp)
 	sub $t0, $t0, $t1
-	sw $t0, -180($fp)
-	lw $v0, -180($fp)
+	sw $t0, -156($fp)
+	lw $v0, -156($fp)
 	jr $ra
 label_11:
 	lw $t0, -0($fp)
-	sw $t0, -184($fp)
+	sw $t0, -160($fp)
 	li $t0, 1
-	sw $t0, -188($fp)
-	lw $t0, -184($fp)
-	lw $t1, -188($fp)
+	sw $t0, -164($fp)
+	lw $t0, -160($fp)
+	lw $t1, -164($fp)
 	sub $t0, $t0, $t1
 	blez $t0, label_12
 	la $t0, result
 	lw $t0, ($t0)
-	sw $t0, -192($fp)
+	sw $t0, -168($fp)
 	lw $t0, -0($fp)
-	sw $t0, -196($fp)
-	lw $t0, -192($fp)
-	lw $t1, -196($fp)
+	sw $t0, -172($fp)
+	lw $t0, -168($fp)
+	lw $t1, -172($fp)
 	mult $t0, $t1
 	mflo $t0
-	sw $t0, -200($fp)
-	lw $t0, -200($fp)
+	sw $t0, -176($fp)
+	lw $t0, -176($fp)
 	la $t1, result
 	sw $t0, ($t1)
 	lw $t0, -0($fp)
-	sw $t0, -204($fp)
+	sw $t0, -180($fp)
 	li $t0, 1
-	sw $t0, -208($fp)
-	lw $t0, -204($fp)
-	lw $t1, -208($fp)
+	sw $t0, -184($fp)
+	lw $t0, -180($fp)
+	lw $t1, -184($fp)
 	sub $t0, $t0, $t1
-	sw $t0, -212($fp)
-	lw $t0, -212($fp)
+	sw $t0, -188($fp)
+	lw $t0, -188($fp)
 	sw $t0, ($sp)
 	addiu $sp, $sp, -4
 	sw $ra, ($sp)
 	sw $fp, -4($sp)
 	addiu $sp, $sp, 4
 	move $fp, $sp
-	addiu $sp, $fp, -220
+	addiu $sp, $fp, -196
 	jal label_5
 	move $sp, $fp
 	lw $fp, -8($sp)
 	lw $ra, -4($sp)
 label_12:
 	li $t0, 0
-	sw $t0, -216($fp)
-	lw $v0, -216($fp)
+	sw $t0, -192($fp)
+	lw $v0, -192($fp)
 	jr $ra
 	jr $ra
 label_14:
@@ -605,13 +587,6 @@ label_0:
 	lw $t0, -428($fp)
 	la $t1, result
 	sw $t0, ($t1)
-	li $t0, 0
-	sw $t0, -432($fp)
-	li $t0, 1
-	sw $t0, -436($fp)
-	lw $t0, -436($fp)
-	la $t1, array
-	sw $t0, 0($t1)
 	li $v0, 5
 	syscall
 	la $t1, num
@@ -624,37 +599,37 @@ label_0:
 	sw $v0, -420($fp)
 	la $t0, num
 	lw $t0, ($t0)
-	sw $t0, -440($fp)
+	sw $t0, -432($fp)
 	li $t0, 0
-	sw $t0, -444($fp)
-	lw $t0, -440($fp)
-	lw $t1, -444($fp)
+	sw $t0, -436($fp)
+	lw $t0, -432($fp)
+	lw $t1, -436($fp)
 	bne $t0, $t1, label_36
 	li $t0, 1
-	sw $t0, -448($fp)
-	lw $t0, -448($fp)
+	sw $t0, -440($fp)
+	lw $t0, -440($fp)
 	sw $t0, -4($fp)
 label_36:
 	lw $t0, -4($fp)
-	sw $t0, -452($fp)
+	sw $t0, -444($fp)
 	li $t0, 0
-	sw $t0, -456($fp)
-	lw $t0, -452($fp)
-	lw $t1, -456($fp)
+	sw $t0, -448($fp)
+	lw $t0, -444($fp)
+	lw $t1, -448($fp)
 	beq $t0, $t1, label_37
 	la $t0, num
 	lw $t0, ($t0)
-	sw $t0, -460($fp)
+	sw $t0, -452($fp)
 	li $t0, 1
-	sw $t0, -464($fp)
-	lw $t0, -460($fp)
-	lw $t1, -464($fp)
+	sw $t0, -456($fp)
+	lw $t0, -452($fp)
+	lw $t1, -456($fp)
 	add $t0, $t0, $t1
-	sw $t0, -468($fp)
+	sw $t0, -460($fp)
 	la $a0, $string_18
 	li $v0, 4
 	syscall
-	lw $a0, -468($fp)
+	lw $a0, -460($fp)
 	li $v0, 1
 	syscall
 	la $a0, $string_0
@@ -662,33 +637,33 @@ label_36:
 	syscall
 label_37:
 	lw $t0, -4($fp)
-	sw $t0, -472($fp)
+	sw $t0, -464($fp)
 	li $t0, 0
-	sw $t0, -476($fp)
-	lw $t0, -472($fp)
-	lw $t1, -476($fp)
+	sw $t0, -468($fp)
+	lw $t0, -464($fp)
+	lw $t1, -468($fp)
 	bne $t0, $t1, label_38
 	la $t0, num
 	lw $t0, ($t0)
-	sw $t0, -480($fp)
-	lw $t0, -480($fp)
+	sw $t0, -472($fp)
+	lw $t0, -472($fp)
 	sw $t0, ($sp)
 	addiu $sp, $sp, -4
 	sw $ra, ($sp)
 	sw $fp, -4($sp)
 	addiu $sp, $sp, 4
 	move $fp, $sp
-	addiu $sp, $fp, -220
+	addiu $sp, $fp, -196
 	jal label_5
 	move $sp, $fp
 	lw $fp, -8($sp)
 	lw $ra, -4($sp)
-	sw $v0, -484($fp)
-	lw $t0, -484($fp)
+	sw $v0, -476($fp)
+	lw $t0, -476($fp)
 	sw $t0, -412($fp)
 	lw $t0, -412($fp)
-	sw $t0, -488($fp)
-	lw $a0, -488($fp)
+	sw $t0, -480($fp)
+	lw $a0, -480($fp)
 	li $v0, 1
 	syscall
 	la $a0, $string_0
@@ -696,11 +671,11 @@ label_37:
 	syscall
 label_38:
 	lw $t0, -408($fp)
-	sw $t0, -492($fp)
+	sw $t0, -484($fp)
 	li $t0, 1
-	sw $t0, -496($fp)
-	lw $t0, -492($fp)
-	lw $t1, -496($fp)
+	sw $t0, -488($fp)
+	lw $t0, -484($fp)
+	lw $t1, -488($fp)
 	bne $t0, $t1, label_40
 	sw $ra, ($sp)
 	sw $fp, -4($sp)
@@ -713,15 +688,15 @@ label_38:
 	lw $ra, -0($sp)
 label_40:
 	lw $t0, -408($fp)
-	sw $t0, -500($fp)
+	sw $t0, -492($fp)
 	li $t0, 2
-	sw $t0, -504($fp)
-	lw $t0, -500($fp)
-	lw $t1, -504($fp)
+	sw $t0, -496($fp)
+	lw $t0, -492($fp)
+	lw $t1, -496($fp)
 	bne $t0, $t1, label_42
 	lw $t0, -420($fp)
-	sw $t0, -508($fp)
-	lw $t0, -508($fp)
+	sw $t0, -500($fp)
+	lw $t0, -500($fp)
 	sw $t0, ($sp)
 	addiu $sp, $sp, -4
 	sw $ra, ($sp)
@@ -735,11 +710,11 @@ label_40:
 	lw $ra, -4($sp)
 label_42:
 	lw $t0, -408($fp)
-	sw $t0, -512($fp)
+	sw $t0, -504($fp)
 	li $t0, 3
-	sw $t0, -516($fp)
-	lw $t0, -512($fp)
-	lw $t1, -516($fp)
+	sw $t0, -508($fp)
+	lw $t0, -504($fp)
+	lw $t1, -508($fp)
 	bne $t0, $t1, label_44
 	sw $ra, ($sp)
 	sw $fp, -4($sp)
@@ -752,22 +727,22 @@ label_42:
 	lw $ra, -0($sp)
 label_44:
 	lw $t0, -408($fp)
-	sw $t0, -520($fp)
+	sw $t0, -512($fp)
 	li $t0, 4
-	sw $t0, -524($fp)
-	lw $t0, -520($fp)
-	lw $t1, -524($fp)
+	sw $t0, -516($fp)
+	lw $t0, -512($fp)
+	lw $t1, -516($fp)
 	bne $t0, $t1, label_46
 	li $t0, 1
-	sw $t0, -528($fp)
+	sw $t0, -520($fp)
 	li $t0, 3
-	sw $t0, -532($fp)
-	lw $t0, -532($fp)
+	sw $t0, -524($fp)
+	lw $t0, -524($fp)
 	sw $t0, ($sp)
 	addiu $sp, $sp, -4
 	li $t0, 7
-	sw $t0, -536($fp)
-	lw $t0, -536($fp)
+	sw $t0, -528($fp)
+	lw $t0, -528($fp)
 	sw $t0, ($sp)
 	addiu $sp, $sp, -4
 	sw $ra, ($sp)
@@ -779,36 +754,36 @@ label_44:
 	move $sp, $fp
 	lw $fp, -12($sp)
 	lw $ra, -8($sp)
-	sw $v0, -540($fp)
-	lw $t0, -528($fp)
-	lw $t1, -540($fp)
+	sw $v0, -532($fp)
+	lw $t0, -520($fp)
+	lw $t1, -532($fp)
 	add $t0, $t0, $t1
-	sw $t0, -544($fp)
-	lw $t0, -544($fp)
+	sw $t0, -536($fp)
+	lw $t0, -536($fp)
 	sw $t0, -416($fp)
 	lw $t0, -416($fp)
-	sw $t0, -548($fp)
-	lw $a0, -548($fp)
+	sw $t0, -540($fp)
+	lw $a0, -540($fp)
 	li $v0, 1
 	syscall
 	la $a0, $string_0
 	li $v0, 4
 	syscall
 	li $t0, 1
-	sw $t0, -552($fp)
+	sw $t0, -544($fp)
 	li $t0, 3
-	sw $t0, -556($fp)
-	lw $t0, -556($fp)
+	sw $t0, -548($fp)
+	lw $t0, -548($fp)
 	sw $t0, ($sp)
 	addiu $sp, $sp, -4
 	li $t0, 5
-	sw $t0, -560($fp)
-	lw $t0, -560($fp)
+	sw $t0, -552($fp)
+	lw $t0, -552($fp)
 	sw $t0, ($sp)
 	addiu $sp, $sp, -4
 	li $t0, 2
-	sw $t0, -564($fp)
-	lw $t0, -564($fp)
+	sw $t0, -556($fp)
+	lw $t0, -556($fp)
 	sw $t0, ($sp)
 	addiu $sp, $sp, -4
 	sw $ra, ($sp)
@@ -820,8 +795,8 @@ label_44:
 	move $sp, $fp
 	lw $fp, -12($sp)
 	lw $ra, -8($sp)
-	sw $v0, -568($fp)
-	lw $t0, -568($fp)
+	sw $v0, -560($fp)
+	lw $t0, -560($fp)
 	sw $t0, ($sp)
 	addiu $sp, $sp, -4
 	sw $ra, ($sp)
@@ -833,44 +808,44 @@ label_44:
 	move $sp, $fp
 	lw $fp, -12($sp)
 	lw $ra, -8($sp)
-	sw $v0, -572($fp)
-	lw $t0, -552($fp)
-	lw $t1, -572($fp)
+	sw $v0, -564($fp)
+	lw $t0, -544($fp)
+	lw $t1, -564($fp)
 	add $t0, $t0, $t1
-	sw $t0, -576($fp)
-	lw $t0, -576($fp)
+	sw $t0, -568($fp)
+	lw $t0, -568($fp)
 	sw $t0, -416($fp)
 	lw $t0, -416($fp)
-	sw $t0, -580($fp)
-	lw $a0, -580($fp)
+	sw $t0, -572($fp)
+	lw $a0, -572($fp)
 	li $v0, 1
 	syscall
 	la $a0, $string_0
 	li $v0, 4
 	syscall
 	li $t0, 1
+	sw $t0, -576($fp)
+	lw $t0, -576($fp)
+	sw $t0, ($sp)
+	addiu $sp, $sp, -4
+	li $t0, 2
+	sw $t0, -580($fp)
+	lw $t0, -580($fp)
+	sw $t0, ($sp)
+	addiu $sp, $sp, -4
+	li $t0, 3
 	sw $t0, -584($fp)
 	lw $t0, -584($fp)
 	sw $t0, ($sp)
 	addiu $sp, $sp, -4
-	li $t0, 2
+	li $t0, 4
 	sw $t0, -588($fp)
 	lw $t0, -588($fp)
 	sw $t0, ($sp)
 	addiu $sp, $sp, -4
-	li $t0, 3
+	li $t0, 5
 	sw $t0, -592($fp)
 	lw $t0, -592($fp)
-	sw $t0, ($sp)
-	addiu $sp, $sp, -4
-	li $t0, 4
-	sw $t0, -596($fp)
-	lw $t0, -596($fp)
-	sw $t0, ($sp)
-	addiu $sp, $sp, -4
-	li $t0, 5
-	sw $t0, -600($fp)
-	lw $t0, -600($fp)
 	sw $t0, ($sp)
 	addiu $sp, $sp, -4
 	sw $ra, ($sp)
@@ -883,5 +858,112 @@ label_44:
 	lw $fp, -24($sp)
 	lw $ra, -20($sp)
 label_46:
+	lw $t0, -408($fp)
+	sw $t0, -596($fp)
+	li $t0, 5
+	sw $t0, -600($fp)
+	lw $t0, -596($fp)
+	lw $t1, -600($fp)
+	bne $t0, $t1, label_51
+	li $t0, 1
+	sw $t0, -604($fp)
+	lw $t0, -604($fp)
+	sw $t0, -416($fp)
+	lw $t0, -416($fp)
+	sw $t0, -608($fp)
+	lw $a0, -608($fp)
+	li $v0, 1
+	syscall
+	la $a0, $string_0
+	li $v0, 4
+	syscall
+	li $t0, 2
+	sw $t0, -612($fp)
+	lw $t0, -612($fp)
+	la $t1, num
+	sw $t0, ($t1)
+	la $t0, num
+	lw $t0, ($t0)
+	sw $t0, -616($fp)
+	lw $a0, -616($fp)
+	li $v0, 1
+	syscall
+	la $a0, $string_0
+	li $v0, 4
+	syscall
+	la $t0, num
+	lw $t0, ($t0)
+	sw $t0, -620($fp)
+	lw $t0, -620($fp)
+	sw $t0, -416($fp)
+	lw $t0, -416($fp)
+	sw $t0, -624($fp)
+	lw $a0, -624($fp)
+	li $v0, 1
+	syscall
+	la $a0, $string_0
+	li $v0, 4
+	syscall
+	li $t0, 3
+	sw $t0, -628($fp)
+	lw $t0, -628($fp)
+	la $t1, num
+	sw $t0, ($t1)
+	lw $t0, -416($fp)
+	sw $t0, -632($fp)
+	lw $t0, -632($fp)
+	la $t1, num
+	sw $t0, ($t1)
+	la $t0, num
+	lw $t0, ($t0)
+	sw $t0, -636($fp)
+	lw $a0, -636($fp)
+	li $v0, 1
+	syscall
+	la $a0, $string_0
+	li $v0, 4
+	syscall
+	li $t0, 0
+	sw $t0, -640($fp)
+	li $t0, 3
+	sw $t0, -644($fp)
+	lw $t0, -644($fp)
+	la $t1, array
+	lw $t2, -640($fp)
+	add $t1, $t1, $t2
+	sw $t0, ($t1)
+	li $t0, 0
+	sw $t0, -648($fp)
+	la $t0, array
+	lw $t1, -648($fp)
+	add $t0, $t0, $t1
+	lw $t0, ($t0)
+	sw $t0, -652($fp)
+	lw $a0, -652($fp)
+	li $v0, 1
+	syscall
+	la $a0, $string_0
+	li $v0, 4
+	syscall
+	li $t0, 0
+	sw $t0, -656($fp)
+	la $t0, array
+	lw $t1, -656($fp)
+	add $t0, $t0, $t1
+	lw $t0, ($t0)
+	sw $t0, -660($fp)
+	lw $t0, -660($fp)
+	la $t1, num
+	sw $t0, ($t1)
+	la $t0, num
+	lw $t0, ($t0)
+	sw $t0, -664($fp)
+	lw $a0, -664($fp)
+	li $v0, 1
+	syscall
+	la $a0, $string_0
+	li $v0, 4
+	syscall
+label_51:
 	li $v0, 10
 	syscall
