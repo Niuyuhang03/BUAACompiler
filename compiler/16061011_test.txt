@@ -80,7 +80,7 @@ void test_relation(char ch){
 
 void test_other(){
     const char a = '+', b = '-', c = '*', d = '/', e = '_', f = 'a', g = '0', h = '1';
-    printf(" !#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvwxyz{|}~");
+    printf(" !#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvwxyz{|}~\n");
     switch(b) {
         case '+': printf("+");
         default: printf("error");

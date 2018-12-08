@@ -180,6 +180,8 @@ void getsym() {
 			if (ch == ' ' || ch == '!' || (ch >= '#' && ch <= '~')) {
 				while (ch != '\"' && ch >= ' ' && ch <= '~' && startRow == row) {
 					cValue[cCnt++] = ch;
+					if (ch == '\\')
+						cValue[cCnt++] = '\\';
 					getch();
 					maxColumn = column > maxColumn ? column : maxColumn;
 				}

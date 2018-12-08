@@ -14,7 +14,7 @@
 	$string_12: .asciiz ">"
 	$string_13: .asciiz ">="
 	$string_14: .asciiz "!="
-	$string_15: .asciiz " !#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvwxyz{|}~"
+	$string_15: .asciiz " !#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~\\n"
 	$string_16: .asciiz "+"
 	$string_17: .asciiz "error"
 	$string_18: .asciiz "result:"
