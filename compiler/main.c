@@ -29,7 +29,7 @@ int main(void) {
 	// printf symTable and subTable
 	int i, cnt = 0;
 	for (i = 0; i < symTable->top; i++) {
-		printf("%d name:%s kind:%d type:%d value:%d number:%d addr:%d ", cnt, symTable->table[i].name, symTable->table[i].kind, symTable->table[i].type, symTable->table[i].value, symTable->table[i].number, symTable->table[i].addr);
+		printf("%d name:%s kind:%d type:%d value:%d number:%d addr:%d level:%d ", cnt, symTable->table[i].name, symTable->table[i].kind, symTable->table[i].type, symTable->table[i].value, symTable->table[i].number, symTable->table[i].addr, symTable->table[i].level);
 		if (symTable->table[i].kind == 3)
 			printf("sum:%d", symTable->table[i].sum);
 		printf("\n");

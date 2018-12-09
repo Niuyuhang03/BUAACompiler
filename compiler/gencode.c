@@ -222,12 +222,19 @@ void gentext() {
 				break;
 			}
 			case(retop): {
-				if (strcmp("", IRlist[i].res) == 0)
-					fprintf(outputfp, "\tjr $ra\n");
+				struct node curNode = findFunction("main");
+				if (layer[layerTop - 1] == curNode.level) {
+					fprintf(outputfp, "\tli $v0, 10\n");
+					fprintf(outputfp, "\tsyscall\n");
+				}
 				else {
-					struct node curNode = findIdentInSymTable(IRlist[i].res);
-					fprintf(outputfp, "\tlw $v0, -%d($fp)\n", curNode.addr);
-					fprintf(outputfp, "\tjr $ra\n");
+					if (strcmp("", IRlist[i].res) == 0)
+						fprintf(outputfp, "\tjr $ra\n");
+					else {
+						struct node curNode = findIdentInSymTable(IRlist[i].res);
+						fprintf(outputfp, "\tlw $v0, -%d($fp)\n", curNode.addr);
+						fprintf(outputfp, "\tjr $ra\n");
+					}
 				}
 				break;
 			}

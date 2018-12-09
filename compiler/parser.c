@@ -738,7 +738,8 @@ void factor() {
 			nameATempVar();
 			strcpy(temp3, tempRes);
 			insertIntoIRlist(getrop, temp3, "", name);
-			enter(temp3, 5, 2, 0, 0, addrIndex, "", "");
+			struct node curNode = findFunction(name);
+			enter(temp3, 5, curNode.type, 0, 0, addrIndex, "", "");
 			addrIndex += 4;
 		}
 		else {
@@ -768,7 +769,7 @@ void factor() {
 		char temp2[100];
 		strcpy(temp2, tempRes);
 		insertIntoIRlist(getiop, temp1, "", temp2);
-		enter(temp2, 5, 2, 0, 0, addrIndex, "", "");
+		enter(temp2, 5, 3, 0, 0, addrIndex, "", "");
 		addrIndex += 4;
 		getsym();
 	}
