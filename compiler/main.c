@@ -32,6 +32,8 @@ int main(void) {
 		printf("%d name:%s kind:%d type:%d value:%d number:%d addr:%d level:%d ", cnt, symTable->table[i].name, symTable->table[i].kind, symTable->table[i].type, symTable->table[i].value, symTable->table[i].number, symTable->table[i].addr, symTable->table[i].level);
 		if (symTable->table[i].kind == 3)
 			printf("sum:%d", symTable->table[i].sum);
+		if (symTable->table[i].kind == 3 && strcmp(symTable->table[i].name, "main") != 0)
+			printf("label:%s", symTable->table[i].label);
 		printf("\n");
 		cnt++;
 	}

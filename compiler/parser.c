@@ -721,7 +721,8 @@ void factor() {
 			char temp2[100];
 			strcpy(temp2, tempRes);
 			insertIntoIRlist(getaop, name, temp1, temp2);
-			enter(temp2, 5, 2, 0, 0, addrIndex, "", "");
+			struct node curNode = findIdentInLastSymTable(name);
+			enter(temp2, 5, curNode.type - 2, 0, 0, addrIndex, "", "");
 			addrIndex += 4;
 			if (sym != RBRACK) {
 				// error

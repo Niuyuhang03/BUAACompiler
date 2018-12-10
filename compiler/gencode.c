@@ -98,21 +98,32 @@ void gentext() {
 				if (curNode.level == 0 && symTable->table[0].kind != 3) {
 					fprintf(outputfp, "\tla $t0, %s\n", curNode.name);
 					curNode = findIdentInSymTable(IRlist[i].op2);
-					fprintf(outputfp, "\tlw $t1, -%d($fp)\n", curNode.addr);
+					if (curNode.level == 0 && symTable->table[0].kind != 3) {
+						fprintf(outputfp, "\tla $t1, %s\n", curNode.name);
+						fprintf(outputfp, "\tlw $t1, ($t1)\n");
+					}
+					else {
+						fprintf(outputfp, "\tlw $t1, -%d($fp)\n", curNode.addr);
+					}
 					fprintf(outputfp, "\tli $t2, 4\n");
 					fprintf(outputfp, "\tmult $t1, $t2\n");
 					fprintf(outputfp, "\tmflo $t1\n");
 					fprintf(outputfp, "\tadd $t0, $t0, $t1\n");
 				}
 				else {
-					fprintf(outputfp, "\tlw $t0, -%d($fp)\n", curNode.addr);
+					fprintf(outputfp, "\taddi $t0, $fp, -%d\n", curNode.addr);
 					curNode = findIdentInSymTable(IRlist[i].op2);
-					fprintf(outputfp, "\tlw $t1, -%d($fp)\n", curNode.addr);
+					if (curNode.level == 0 && symTable->table[0].kind != 3) {
+						fprintf(outputfp, "\tla $t1, %s\n", curNode.name);
+						fprintf(outputfp, "\tlw $t1, ($t1)\n");
+					}
+					else {
+						fprintf(outputfp, "\tlw $t1, -%d($fp)\n", curNode.addr);
+					}
 					fprintf(outputfp, "\tli $t2, 4\n");
 					fprintf(outputfp, "\tmult $t1, $t2\n");
 					fprintf(outputfp, "\tmflo $t1\n");
-					fprintf(outputfp, "\tsub $t1, $0, $t1\n");
-					fprintf(outputfp, "\tadd $t0, $t0, $t1\n");
+					fprintf(outputfp, "\tsub $t0, $t0, $t1\n");
 				}
 				fprintf(outputfp, "\tlw $t0, ($t0)\n");
 				curNode = findIdentInSymTable(IRlist[i].res);
@@ -148,14 +159,13 @@ void gentext() {
 						fprintf(outputfp, "\tsw $t0, ($t1)\n");
 					}
 					else {
-						fprintf(outputfp, "\tlw $t1, -%d($fp)\n", curNode.addr);
+						fprintf(outputfp, "\taddi $t1, $fp, -%d\n", curNode.addr);
 						curNode = findIdentInSymTable(IRlist[i].op2);
 						fprintf(outputfp, "\tlw $t2, -%d($fp)\n", curNode.addr);
 						fprintf(outputfp, "\tli $t3, 4\n");
 						fprintf(outputfp, "\tmult $t2, $t3\n");
 						fprintf(outputfp, "\tmflo $t2\n");
-						fprintf(outputfp, "\tsub $t2, $0, $t2\n");
-						fprintf(outputfp, "\tadd $t1, $t1, $t2\n");
+						fprintf(outputfp, "\tsub $t1, $t1, $t2\n");
 						fprintf(outputfp, "\tsw $t0, ($t1)\n");
 					}
 				}

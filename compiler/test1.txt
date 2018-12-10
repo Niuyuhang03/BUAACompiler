@@ -1,137 +1,346 @@
-const int _a = 97, b = +10;
-const char d = 'a';
-int apples[100];
-char str[100];
+const int const_int_1 = 12345679, const_int_2 = 0;
+const int const_int_3 = -0, const_int_4 = -12345679;
+const char const_char_1 = '9', const_char_2 = '_', const_char_3 = '+', const_char_4 = '*';
 
+int global_int_array_1[5], global_int_1;
+char global_char_array_1[5], global_char_1;
+int global_int_2, global_int_array_2[5];
+char global_char_2, global_char_array_2[5], global_char_array_3[10];
 
-void BoringGreetings(){
-    const int temp=-1;
-    int control;
-    control = 2;
-    while(control*1*1/1){
-        printf("empty parameter list & condition is a single expression",control);
-        control = control - 1;
+void hanoi(int n, char from, char tmp, char to)
+{
+    if (n > 0) {
+        hanoi(n - 1, from, to, tmp);
+        printf("take");
+        printf(n);
+        printf("from");
+        printf(from);
+        printf("to");
+        printf(to);
+        hanoi(n - 1, tmp, from, to);
     }
-                                             
-    if (1+1<3)
-        printf("as plain as daylight 1");
-    if (1+1>1)
-        printf("as plain as daylight 2");
-
-    printf("Print an expression alone & print string with expression & all the <zi fu>");
-    apples[0] = 1;
-    apples[1] = 12340;
-    apples[2] = 56789;
-    if (_a=='a')
-        printf("apples[0] is",apples[0]);
-    printf(+(-temp)*10/10+_a+b-d+apples[0]+'_'+'+'+'-'+'*'+'/'+'A'+'B'+'C'+'D'+'E'+'F'+'G'+'H'+'I'+'J'+'K'+'L'+'M'+'N'+'O'+'P'+'Q'+'R'+'S'+'T'+'U'+'V'+'W'+'X'+'Y'+'Z'+'a'+'b'+'c'+'d'+'e'+'f'+'g'+'h'+'i'+'j'+'k'+'l'+'m'+'n'+'o'+'p'+'q'+'r'+'s'+'t'+'u'+'v'+'w'+'x'+'y');
-    printf(" !#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvwxyz{|}~");
-}
-                                                
-char BoringGreetings2(){
-    {
-        {
-            {
-
-            }
-        }
-    }
-    ;
-    printf("Some empty sentences");
-    return ('d');
-}
-
-void AllValidCharInt(char min, char max){
-    char c;
-    int signal;
-    signal=0;
-
-    c=min;
-    printf("if & switch & condition is a relation expression & all valid string & valid char,num");
-    while(c<=max){
-        if (c!=34){
-            if (c>=32){
-                switch(c-95+95){
-                    case '_':
-                        signal = 1;
-                    case '+':
-                        signal = 1;
-                    case '-':
-                        signal = 1;
-                    case '*':
-                        signal = 1;
-                    case '/':
-                        signal = 1;
-                    default:
-                    {
-                        if (c-'0'>=0){
-                            if (c-'9'<=0){
-                                signal = 1;
-                            }
-                        }
-                        if (c-'A'>=0){
-                            if (c-'Z'<=0){
-                                signal = 1;
-                            }
-                        }
-                        if (c-'a'>=0){
-                            if (c-'z'<=0){
-                                signal = 1;
-                            }
-                        }
-                    }
-                }
-            }
-            str[c-min]=c;
-            if (signal==1){
-                printf("A valid <zi fu>",str[c-min]);
-                signal=0;
-            }
-            
-            
-        }
-        if (c==34+-34+34)
-            printf("char 34 is not included!");
-        c = c+1;
-    }
-
     return;
 }
 
-int RecursionGCD(int a, int b){
-    if (b==0)
-        return (a);
-    if (b!=0)
-        return (RecursionGCD(b, a-a/b*b));
+int Fibonacci(int n) {
+    if (n == 0)
+        return (0);
+    if (n == 1)
+        return (1);
+    return (Fibonacci(n - 1) + Fibonacci(n - 2));
 }
 
-                                        
+int fac(int n) {
+    if (n == 1)
+        return (1);
+       return (n * fac(n - 1));
+}
 
-void main(){
-    const char name='n';
-    int A, B;
-    int temp;
-    printf("Input two numbers to calculate GCD");
-    scanf(A,B);
-    printf("Two input for GCD ", A);
-    printf(B);
-    temp = RecursionGCD(A, B);
-    printf("Greatest Common Division of ",A);
-    printf(B);
-    printf("is ",temp);
+void initGlobalArray() {
+    global_int_array_1[0] = 0;
+    global_int_array_1[1] = 1;
+    global_int_array_1[2] = global_int_array_1[0] + global_int_array_1[1];
+    global_int_array_1[3] = global_int_array_1[2] + global_int_array_1[1];
+    global_int_array_1[4] = global_int_array_1[3] + global_int_array_1[2];
+    global_int_array_2[0] = global_int_array_1[1];
+    global_int_array_2[1] = global_int_array_2[0] * global_int_array_1[2];
+    global_int_array_2[2] = global_int_array_2[1] * global_int_array_1[3];
+    global_int_array_2[3] = global_int_array_2[2] * global_int_array_1[4];
+    global_int_array_2[4] = global_int_array_2[3] / global_int_array_1[4];
+    global_char_array_1[0] = 'a';
+    global_char_array_1[1] = 'A';
+    global_char_array_1[2] = 'z';
+    global_char_array_1[3] = 'Z';
+    global_char_array_1[4] = '_';
+    global_char_array_2[0] = '+';
+    global_char_array_2[1] = '-';
+    global_char_array_2[2] = '*';
+    global_char_array_2[3] = '/';
+    global_char_array_2[4] = '6';
+    return;
+}
 
-    switch(A){
-        case +100:
-            {
-                printf("100");
-                BoringGreetings();
-                printf("Hello Worl",BoringGreetings2());              
-                AllValidCharInt(32,126);
-            }             
-        case -1:
-            printf("Empty Default Case");
-        default:
+void assignGlobal(int a, char b, int c, char d) {
+    global_int_1 = a;
+    global_char_1 = b;
+    global_int_2 = c;
+    global_char_2 = d;
+    return;
+}
+
+void printGlobalConst() {
+    printf(const_int_1);
+    printf(const_int_2);
+    printf(const_int_3);
+    printf(const_int_4);
+    printf(const_char_1);
+    printf(const_char_2);
+    printf(const_char_3);
+    printf(const_char_4);
+    return;
+}
+
+void printGlobalVar() {
+    printf(global_int_1);
+    printf(global_int_2);
+    printf(global_char_1);
+    printf(global_char_2);
+    return;
+}
+void printGlobalArray() {
+    printf(global_int_array_1[0]);
+    printf(global_int_array_1[1]);
+    printf(global_int_array_1[2]);
+    printf(global_int_array_1[3]);
+    printf(global_int_array_1[4]);
+    printf(global_int_array_2[0]);
+    printf(global_int_array_2[1]);
+    printf(global_int_array_2[2]);
+    printf(global_int_array_2[3]);
+    printf(global_int_array_2[4]);
+    printf(global_char_array_1[0]);
+    printf(global_char_array_1[1]);
+    printf(global_char_array_1[2]);
+    printf(global_char_array_1[3]);
+    printf(global_char_array_1[4]);
+    printf(global_char_array_2[0]);
+    printf(global_char_array_2[1]);
+    printf(global_char_array_2[2]);
+    printf(global_char_array_2[3]);
+    printf(global_char_array_2[4]);
+    return;
+}
+
+void testGlobal() {
+    initGlobalArray();
+    assignGlobal(const_int_1, const_char_1, const_int_4, const_char_4);
+    printGlobalConst();
+    printGlobalVar();
+    printGlobalArray();
+    return;
+}
+
+int testReturnInt(int a) {
+    return (a + 1);
+}
+
+char testReturnChar(int a) {
+    switch (a) {
+    case 1:
+        return ('a');
+    case 2:
+        return ('b');
+    case 3:
+        return ('c');
+    default: {
+
     }
+    }
+    return ('_');
+}
 
-    return;                             
+void testReturn() {
+    printf(testReturnInt(Fibonacci(fac(3) + fac(2))));
+    printf(testReturnChar(1));
+    printf(testReturnChar(2));
+    printf(testReturnChar(3));
+    printf(testReturnChar(4));
+    return;
+}
+
+void testAssignAndExp() {
+   const int const_int_1 = 1, const_int_2 = -1, const_int_3 = 0;
+    const char const_char_1 = 'a', const_char_2 = 'A', const_char_3 = 'b';
+
+    int int_temp_1, int_temp_2, int_array[2], int_temp_3;
+    char char_temp_1, char_array[2], char_temp_2;
+
+    int_temp_1 = const_int_1 + (Fibonacci(Fibonacci(Fibonacci(5))) + const_int_1 / (const_int_2 * const_int_4)) / fac(3);
+    int_temp_2 = fac(fac(3) + fac(2));
+    int_array[const_int_3] = testReturnInt(0);
+    int_array[const_int_1 - (const_int_2 * const_int_4 + testReturnInt(0) * const_int_4)] = const_int_1 + testReturnInt(const_int_1);
+    int_temp_3 = int_array[const_int_3] - (int_array[const_int_1 - (const_int_2 * const_int_4 + testReturnInt(0) * const_int_4)] * ('b' - 'a'));
+    char_array[0] = testReturnChar(int_array[0]);
+    char_array[const_int_1 - (const_int_2 * const_int_4 + testReturnInt(0) * const_int_4)] = testReturnChar(int_array[1] + const_int_1);
+    char_temp_1 = char_array[0];
+    char_temp_2 = char_array[const_int_1 - (const_int_2 * const_int_4 + testReturnInt(0) * const_int_4)];
+    printf(int_temp_1);
+    printf(int_temp_2);
+    printf(int_temp_3);
+    printf(int_array[const_int_3]);
+    printf(int_array[const_int_1 - (const_int_2 * const_int_4 + testReturnInt(0) * const_int_4)]);
+    printf(char_temp_1);
+    printf(char_temp_2);
+    printf(char_array[0]);
+    printf(char_array[const_int_1]);
+    printf(char_temp_1 * (char_array[0] + char_array[0] * char_temp_2));
+    return;
+}
+
+void testIO() {
+    scanf(global_int_1);
+    scanf(global_char_1);
+    printf("!@\n#$^&*()Qqaa123[];',./");
+    printf(global_int_1);
+    printf(global_char_1);
+    scanf(global_int_1, global_char_1);
+    printf("!@\n#$^&*()Qqaa123[];',./", global_int_1);
+    printf(global_char_1);
+    scanf(global_char_1, global_int_1);
+    printf("!@\n#$^&*()Qqaa123[];',./", global_char_1);
+    printf(global_int_1);
+    return;
+}
+
+void testIfWhile()
+{
+    int i, j, k;
+    char a, b, c, d;
+    k = 10;
+    a = '+';
+    b = '-';
+    c = '*';
+    d = '/';
+    if (k > 0)
+    {
+        if (k <= 10)
+        {
+            i = 0;
+            while (i < k / 2)
+            {
+                switch (i - (i / 2 * 2)) {
+                case 0: {
+                    global_char_array_3[i] = a;
+                }
+                case 1: {
+                    global_char_array_3[i] = b;
+                }
+                }
+                printf(global_char_array_3[i]);
+                i = i + 1;
+            }
+            while (i < k)
+            {
+                switch (i - (i / 2 * 2)) {
+                case 0: {
+                    global_char_array_3[i] = c;
+                }
+                default: {
+                    global_char_array_3[i] = d;
+                }
+                }
+                printf(global_char_array_3[i]);
+                i = i + 1;
+            }
+        }
+    }
+    return;
+}
+
+void testSwitch() {
+    const int sum = 3;
+    int int_1, i;
+    char char_1;
+    i = 0;
+    int_1 = 0;
+    while (i < sum) {
+        switch (int_1) {
+        case 0: {
+            char_1 = 'a';
+            printf(char_1);
+        }
+        case 1: {
+            char_1 = 'b';
+            printf(char_1);
+        }
+        default: {
+            char_1 = const_char_2;
+            printf(char_1);
+        }
+        }
+        switch (char_1) {
+        case 'a': {
+            int_1 = i + 1;
+            printf(int_1);
+        }
+        case 'b': {
+            int_1 = sum;
+            printf(int_1);
+        }
+        }
+        i = i + 1;
+    }
+    return;
+}
+
+int func_ret_int_1(int i_1, int i_2, char c_1, char c_2) {
+    int i_temp;
+    char c_temp;
+    printf("INPUT of func_ret_int_1:");
+    printf(i_1);
+    printf(i_2);
+    printf(c_1);
+    printf(c_2);
+    i_temp = i_1;
+    i_1 = i_2;
+    i_2 = i_temp;
+    c_temp = c_1;
+    c_1 = c_2;
+    c_2 = c_temp;
+    printf("OPERATE of func_ret_int_1:");
+    printf(i_1);
+    printf(i_2);
+    printf(c_1);
+    printf(c_2);
+    return (i_1);
+
+}
+
+void testPara() {
+    int i, j;
+    char c, d;
+    i = const_int_1;
+    j = const_int_4;
+    c = 'A';
+    d = 'Z';
+    printf(func_ret_int_1(i, j, c, d));
+    return;
+}
+
+void testRecursion() {
+    hanoi((Fibonacci(fac(2) * fac(3)) - fac(Fibonacci(3) + Fibonacci(4))) / fac(Fibonacci(2) + Fibonacci(3)), 'a', 'b', 'c');
+    return;
+}
+
+void main()
+{
+    int int_temp_2;
+    int_temp_2 = fac(fac(3) + fac(2));
+    printf(int_temp_2);
+    printf("************************************************");
+    printf("Start testing recursion:");
+    testRecursion();
+    printf("************************************************");
+    printf("Start testing global:");
+    testGlobal();
+    printf("************************************************");
+    printf("Start testing return:");
+    testReturn();
+    printf("************************************************");
+    printf("Start testing I/O:");
+    testIO();
+    printf("************************************************");
+    printf("Start testing assign & exp:");
+    testAssignAndExp();
+    printf("************************************************");
+    printf("Start testing if & while:");
+    testIfWhile();
+    printf("************************************************");
+    printf("Start testing switch:");
+    testSwitch();
+    printf("************************************************");
+    printf("Start testing parameter:");
+    testPara();
+    printf("************************************************");
+    return;
 }
