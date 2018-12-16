@@ -29,6 +29,7 @@ void program();
 struct node findIdentInSymTable(char* name);
 void updateFuncVarNum();
 struct node findFunction(char* name);
+struct node findFunctionByLayer(int cur_layer);
 struct node findLabel(char* name);
 
 struct symtable *symTable;

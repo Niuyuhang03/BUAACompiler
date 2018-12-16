@@ -2,14 +2,17 @@
 #include "lexer.h"
 #include "error.h"
 
+int errorflag = 0;
+
 void error(enum errorType errorNum) {
+	errorflag = 1;
 	switch (errorNum) {
-		case(UNDEF_ID): {
+		case(UNDEF_ID): {							// 标识符未定义
 			printf("row:%d column:%d <the identifier is not defined!>\n", row, column);
 			break;
 		}
-		case(MULTI_DEF): {
-			printf("this identifier was defined before!\n");
+		case(MULTI_DEF): {							// 标识符重定义
+			printf("row:%d column:%d <this identifier was defined before!>\n", row, column);
 			break;
 		}
 		case(IDENT_TOO_LONG): {
@@ -25,15 +28,15 @@ void error(enum errorType errorNum) {
 			break;
 		}
 		case(STR_CONTENT_ERROR): {					// 字符串内有非法字符，不保存当前字符串，跳读到本行下一个右双引号，若本行没有右双引号则跳过本行
-			printf("row:%d column:%d <the string in printf has illegel character!>\n", startRow, startColumn + 1);
+			printf("row:%d column:%d <the string in printf has illegel character!>\n", row, column);
 			break;
 		}
 		case(STR_MISSINT_RPARENT): {				// 字符串在该行没有右双引号，容错，在行尾补一个右双引号，保存之前的字符串
 			printf("row:%d column:%d <missing right parentheses in string!>\n", startRow, maxColumn + 1);
 			break;
 		}
-		case(ZERO_HEAD_NUM): {						// 非零字符以零开头，容错，去掉前导零
-			printf("row:%d column:%d <non-zero number can't start with zero!>\n", row, column);
+		case(ZERO_HEAD_NUM): {						// 数字开头有前导零，容错，去掉前导零
+			printf("row:%d column:%d <number can't start with extra zero!>\n", row, column);
 			break;
 		}
 		case(NUM_HEAD_IDENT): {
@@ -60,8 +63,8 @@ void error(enum errorType errorNum) {
 			printf("row:%d column:%d <missing a \'=\' after \'!\'!>\n", row, column);
 			break;
 		}
-		case(MISSING_SEMICOLON): {					// 丢失分号
-			printf("row:%d column:%d <missing a \';\'!>\n", row, column);
+		case(MISSING_SEMICOLON): {					// 丢失分号，容错，补一个分号
+			printf("row:%d column:%d <missing a \';\'!>\n", row, -1);
 			break;
 		}
 		case(MISSING_COLON): {						// 丢失冒号
@@ -84,8 +87,8 @@ void error(enum errorType errorNum) {
 			printf("row:%d column:%d <missing a identifier!>\n", row, column);
 			break;
 		}
-		case(ERROR_PARA_NUM): {
-			printf("the number of parameter is wrong!\n");
+		case(ERROR_PARA_NUM): {						// 参数数目错误
+			printf("row:%d column:%d <the number of parameter is wrong!>\n", row, column);
 			break;
 		}
 		case(MISSING_LPARENT): {					// 丢失左小括号
@@ -124,8 +127,8 @@ void error(enum errorType errorNum) {
 			printf("row:%d column:%d <missing Non-sign number!>\n", row, column);
 			break;
 		}
-		case(RETURN_ERROR): {
-			printf("error occurs in return!\n");
+		case(RETURN_ERROR): {						// 返回值类型错误或缺少返回值
+			printf("row:%d column:%d <error occurs in return!>\n", row, column);
 			break;
 		}
 		case(MISSING_MAIN): {						// 丢失主函数
@@ -165,26 +168,30 @@ void error(enum errorType errorNum) {
 			break;
 		}
 		case(FUNC_NO_RET): {
-			printf("Non-return function can't be in experision!\n");
+			printf("row:%d column:%d <Non-return function can't be in experision!>\n", row, column);
 			break;
 		}
 		case(OUT_OF_TABLE): {
 			printf("symbol table is full!\n");
 			break;
 		}
-		case(OUT_OF_ARRAY): {
-			printf("the index is out of array range!\n");
+		case(OUT_OF_ARRAY): {						// 数组越界
+			printf("row:%d column:%d <the index is out of array range!>\n", row, column);
 			break;
 		}
 		case(WRONG_TYPE): {							// 声明类型错误
 			printf("row:%d column:%d <wrong type when declear!>\n", row, column);
 			break;
 		}
+		case(WRONG_ASSIGN_TYPE): {					// 赋值类型错误
+			printf("row:%d column:%d <wrong type when assign!>\n", row, column);
+			break;
+		}
 		case(FILE_NOT_EXIST): {
 			printf("file doesn't exist！\n");
 			break;
 		}
-		case(ILLEGAL_WORD): {						// 非法字符（如汉字），若在ascii范围内则跳过，否则程序结束
+		case(ILLEGAL_WORD): {						// 非法字符（如汉字），跳过该字符
 			printf("row:%d column:%d <the word is not in ascii [-1, 255]!>\n", row, column);
 			break;
 		}

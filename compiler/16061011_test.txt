@@ -3,7 +3,7 @@ const char fail = 'n';
 int num, array[100], result;
 char id, pwd[20], _a2;
 
-char fun(char c1, char c2) {
+int fun(char c1, char c2) {
     return(c1 + c2);
 }
 
@@ -11,7 +11,7 @@ int fun2(int c1, int c2) {
     return(c1 + c2);
 }
 
-int fun3(int a, int b, int c, int d, int e) {
+void fun3(int a, int b, int c, int d, int e) {
     printf(a+b+c+d+e);
 }
 

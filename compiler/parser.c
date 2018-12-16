@@ -14,6 +14,7 @@ int labelIndex = 0;						// 生成四元式的label名称下标，如label_0
 char label[MAX_LABEL_NUMBER + 7];		// 生成四元式的label名
 int stringIndex = 1;					// 生成四元式的STRING名称下标，如$string_0
 char tempString[MAX_LABEL_NUMBER + 7];	// 生成四元式的STRING名
+int retflag;							// 判断是否有返回值标志
 
 void init();
 void nameATempVarByIndex(int number);
@@ -23,7 +24,9 @@ void nameAString();
 void enter(char *name, int kind, int type, int value, int number, int addr, char* STRING, char* label);
 void updateParaNumber(char* name, int value);
 struct node findIdentInSymTable(char* name);
+struct node findIdentInLastSymTable(char* name);
 struct node findFunction(char* name);
+struct node findFunctionByLayer(int cur_layer);
 struct node findLabel(char* name);
 void updateFuncVarNum();
 int isInteger();
@@ -53,7 +56,7 @@ void funcdef();
 void mainprog(char *mainlabel);
 void complexsentence();
 void program();
-void valueparatable();
+void valueparatable(char* name);
 void casesentence(char* temp1, char *endlabel);
 void casetable(char* switchVar, char *endlabel);
 void defau();
@@ -182,7 +185,7 @@ void updateParaNumber(char* name, int value) {
 }
 
 /*
-* Summary: find identidier in current layer of symTable and return its whole struct
+* Summary: find identidier in current layer of symTable or global area and return its whole struct
 */
 struct node findIdentInSymTable(char* name) {
 	int i;
@@ -203,10 +206,27 @@ struct node findIdentInSymTable(char* name) {
 			if (strcmp(symTable->table[i].name, name) == 0)
 				return (symTable->table[i]);
 		}
-		error(UNDEF_ID);
+		struct node error_node;
+		error_node.addr = 0;
+		error_node.kind = 5;
+		error_node.level = 0;
+		strcpy(error_node.name, "$error");
+		error_node.number = 0;
+		error_node.type = 2;
+		error_node.value = 0;
+		return error_node;
 	}
-	else
-		error(UNDEF_ID);
+	else {
+		struct node error_node;
+		error_node.addr = 0;
+		error_node.kind = 5;
+		error_node.level = 0;
+		strcpy(error_node.name, "$error");
+		error_node.number = 0;
+		error_node.type = 2;
+		error_node.value = 0;
+		return error_node;
+	}
 }
 
 /*
@@ -223,10 +243,27 @@ struct node findIdentInLastSymTable(char* name) {
 			if (strcmp(symTable->table[i].name, name) == 0)
 				return (symTable->table[i]);
 		}
-		error(UNDEF_ID);
+		struct node error_node;
+		error_node.addr = 0;
+		error_node.kind = 5;
+		error_node.level = 0;
+		strcpy(error_node.name, "$error");
+		error_node.number = 0;
+		error_node.type = 2;
+		error_node.value = 0;
+		return error_node;
 	}
-	else
-		error(UNDEF_ID);
+	else {
+		struct node error_node;
+		error_node.addr = 0;
+		error_node.kind = 5;
+		error_node.level = 0;
+		strcpy(error_node.name, "$error");
+		error_node.number = 0;
+		error_node.type = 2;
+		error_node.value = 0;
+		return error_node;
+	}
 }
 
 /*
@@ -252,6 +289,20 @@ struct node findFunction(char* name) {
 		if (symTable->table[symTable->subprogramTable[i]].kind != 3)
 			continue;
 		if (strcmp(symTable->table[symTable->subprogramTable[i]].name, name) == 0) {
+			return symTable->table[symTable->subprogramTable[i]];
+		}
+	}
+}
+
+/*
+* Summary: find a function by layer and return the whole node
+*/
+struct node findFunctionByLayer(int cur_layer) {
+	int i;
+	for (i = 0; i < symTable->subprogramNumber; i++) {
+		if (symTable->table[symTable->subprogramTable[i]].kind != 3)
+			continue;
+		if (symTable->table[symTable->subprogramTable[i]].level == cur_layer) {
 			return symTable->table[symTable->subprogramTable[i]];
 		}
 	}
@@ -311,6 +362,9 @@ void constdef() {
 			}
 			// printf("This is a constant int define!\n");
 			if (sym == SEMICOLON) {
+				struct node curNode = findIdentInLastSymTable(name);
+				if (strcmp(curNode.name, "$error") != 0 && curNode.level == symTable->subprogramNumber - 1)
+					error(MULTI_DEF);
 				enter(name, kind, type, value, 0, addrIndex, "", "");
 				addrIndex += 4;
 				char op1[100];
@@ -320,6 +374,9 @@ void constdef() {
 				break;
 			}
 			else if (sym == COMMA) {
+				struct node curNode = findIdentInLastSymTable(name);
+				if (strcmp(curNode.name, "$error") != 0 && curNode.level == symTable->subprogramNumber - 1)
+					error(MULTI_DEF);
 				enter(name, kind, type, value, 0, addrIndex, "", "");
 				addrIndex += 4;
 				char op1[100];
@@ -328,8 +385,6 @@ void constdef() {
 				getsym();
 			}
 			else {
-				// error
-				// return;
 				error(MISSING_SEMICOLON);
 			}
 		}
@@ -362,6 +417,9 @@ void constdef() {
 			// printf("This is a constant char define!\n");
 			getsym();
 			if (sym == SEMICOLON) {
+				struct node curNode = findIdentInLastSymTable(name);
+				if (strcmp(curNode.name, "$error") != 0 && curNode.level == symTable->subprogramNumber - 1)
+					error(MULTI_DEF);
 				enter(name, kind, type, value, 0, addrIndex, "", "");
 				addrIndex += 4;
 				char op1[100];
@@ -371,6 +429,9 @@ void constdef() {
 				break;
 			}
 			else if (sym == COMMA) {
+				struct node curNode = findIdentInLastSymTable(name);
+				if (strcmp(curNode.name, "$error") != 0 && curNode.level == symTable->subprogramNumber - 1)
+					error(MULTI_DEF);
 				enter(name, kind, type, value, 0, addrIndex, "", "");
 				addrIndex += 4;
 				char op1[100];
@@ -438,6 +499,9 @@ void vardef() {
 			}
 			if (sym == SEMICOLON) {
 				// printf("This is a variable int define!\n");
+				struct node curNode = findIdentInLastSymTable(name);
+				if (strcmp(curNode.name, "$error") != 0 && curNode.level == symTable->subprogramNumber - 1)
+					error(MULTI_DEF);
 				enter(name, kind, type, 0, number, addrIndex, "", "");
 				if (number == 0)
 					addrIndex += 4;
@@ -451,6 +515,9 @@ void vardef() {
 			}
 			else if (sym == COMMA) {
 				// printf("This is a variable int define!\n");
+				struct node curNode = findIdentInLastSymTable(name);
+				if (strcmp(curNode.name, "$error") != 0 && curNode.level == symTable->subprogramNumber - 1)
+					error(MULTI_DEF);
 				enter(name, kind, type, 0, number, addrIndex, "", "");
 				if (number == 0)
 					addrIndex += 4;
@@ -500,6 +567,9 @@ void vardef() {
 			}
 			if (sym == SEMICOLON) {
 				// printf("This is a variable char define!\n");
+				struct node curNode = findIdentInLastSymTable(name);
+				if (strcmp(curNode.name, "$error") != 0 && curNode.level == symTable->subprogramNumber - 1)
+					error(MULTI_DEF);
 				enter(name, kind, type, 0, number, addrIndex, "", "");
 				if (number == 0)
 					addrIndex += 4;
@@ -512,6 +582,9 @@ void vardef() {
 				break;
 			}
 			else if (sym == COMMA) {
+				struct node curNode = findIdentInLastSymTable(name);
+				if (strcmp(curNode.name, "$error") != 0 && curNode.level == symTable->subprogramNumber - 1)
+					error(MULTI_DEF);
 				// printf("This is a variable char define!\n");
 				enter(name, kind, type, 0, number, addrIndex, "", "");
 				if (number == 0)
@@ -722,6 +795,8 @@ void factor() {
 			strcpy(temp2, tempRes);
 			insertIntoIRlist(getaop, name, temp1, temp2);
 			struct node curNode = findIdentInLastSymTable(name);
+			if (strcmp(curNode.name, "$error") == 0)
+				error(UNDEF_ID);
 			enter(temp2, 5, curNode.type - 2, 0, 0, addrIndex, "", "");
 			addrIndex += 4;
 			if (sym != RBRACK) {
@@ -749,6 +824,8 @@ void factor() {
 			strcpy(temp1, tempRes);
 			insertIntoIRlist(getop, name, "", temp1);
 			struct node curNode = findIdentInLastSymTable(name);
+			if (strcmp(curNode.name, "$error") == 0)
+				error(UNDEF_ID);
 			enter(temp1, 5, curNode.type, 0, 0, addrIndex, "", "");
 			addrIndex += 4;
 		}
@@ -966,20 +1043,26 @@ void ifsentence() {
 /*
 * Summary: value parameter table
 */
-void valueparatable() {
+void valueparatable(char* name) {
+	int sum = 0;
 	expression();
 	nameATempVarByIndex(tempResIndex - 1);
 	char temp1[100];
 	strcpy(temp1, tempRes);
 	insertIntoIRlist(paraop, "", "", temp1);
+	sum++;
 	while (sym == COMMA) {
 		getsym();
 		expression();
 		nameATempVarByIndex(tempResIndex - 1);
 		strcpy(temp1, tempRes);
 		insertIntoIRlist(paraop, "", "", temp1);
+		sum++;
 	}
 	// printf("This is a value parameter table!\n");
+	struct node curNode = findFunction(name);
+	if (curNode.number != sum)
+		error(ERROR_PARA_NUM);
 }
 
 /*
@@ -1006,7 +1089,7 @@ void funccall() {
 		// printf("This is an empty value parameter table!\n");
 	}
 	else {
-		valueparatable();
+		valueparatable(name);
 	}
 	insertIntoIRlist(callop, "", "", name);
 	if (sym != RPAR) {
@@ -1276,6 +1359,7 @@ void switchsentence() {
 * Summary: return sentence
 */
 void returnsentence() {
+	retflag = 1;
 	getsym();
 	if (sym == LPAR) {
 		getsym();
@@ -1419,8 +1503,9 @@ void complexsentence() {
 * Summary: function define
 */
 void funcdef() {
-	addrIndex = 0;			// ra存入栈，地址为参数后的4位
+	addrIndex = 0;
 	while (1) {
+		retflag = 0;
 		char temp1[100];
 		nameALabel();
 		strcpy(temp1, label);
@@ -1470,6 +1555,9 @@ void funcdef() {
 		}
 		getsym();
 		complexsentence();
+		if (retflag == 0 && type != 1)
+			error(RETURN_ERROR);
+		retflag = 1;
 		if (sym != RBRACE) {
 			// error
 			// return;

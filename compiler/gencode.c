@@ -2,6 +2,7 @@
 #include "parser.h"
 #include "IR.h"
 #include "gencode.h"
+#include "error.h"
 
 FILE *outputfp;
 char line[100];				// 写入文件的一行
@@ -72,17 +73,23 @@ void gentext() {
 			case(getiop): {
 				fprintf(outputfp, "\tli $t0, %s\n", IRlist[i].op1);
 				struct node curNode = findIdentInSymTable(IRlist[i].res);
+				if (strcmp(curNode.name, "$error") == 0)
+					error(UNDEF_ID);
 				fprintf(outputfp, "\tsw $t0, -%d($fp)\n", curNode.addr);
 				break;
 			}
 			case(conop): {
 				fprintf(outputfp, "\tli $t0, %s\n", IRlist[i].op2);
 				struct node curNode = findIdentInSymTable(IRlist[i].res);
+				if (strcmp(curNode.name, "$error") == 0)
+					error(UNDEF_ID);
 				fprintf(outputfp, "\tsw $t0, -%d($fp)\n", curNode.addr);
 				break;
 			}
 			case(getop): {
 				struct node curNode = findIdentInSymTable(IRlist[i].op1);
+				if (strcmp(curNode.name, "$error") == 0)
+					error(UNDEF_ID);
 				if (curNode.level == 0 && symTable->table[0].kind != 3) {
 					fprintf(outputfp, "\tla $t0, %s\n", curNode.name);
 					fprintf(outputfp, "\tlw $t0, ($t0)\n");
@@ -90,14 +97,23 @@ void gentext() {
 				else
 					fprintf(outputfp, "\tlw $t0, -%d($fp)\n", curNode.addr);
 				curNode = findIdentInSymTable(IRlist[i].res);
+				if (strcmp(curNode.name, "$error") == 0)
+					error(UNDEF_ID);
 				fprintf(outputfp, "\tsw $t0, -%d($fp)\n", curNode.addr);
 				break;
 			}
 			case(getaop): {
 				struct node curNode = findIdentInSymTable(IRlist[i].op1);
+				int currange = curNode.number;
 				if (curNode.level == 0 && symTable->table[0].kind != 3) {
 					fprintf(outputfp, "\tla $t0, %s\n", curNode.name);
 					curNode = findIdentInSymTable(IRlist[i].op2);
+					if (curNode.kind == 1 && curNode.type == 2) {
+						if (curNode.value < 0 || curNode.value >= currange)
+							error(OUT_OF_ARRAY);
+					}
+					if (strcmp(curNode.name, "$error") == 0)
+						error(UNDEF_ID);
 					if (curNode.level == 0 && symTable->table[0].kind != 3) {
 						fprintf(outputfp, "\tla $t1, %s\n", curNode.name);
 						fprintf(outputfp, "\tlw $t1, ($t1)\n");
@@ -113,6 +129,8 @@ void gentext() {
 				else {
 					fprintf(outputfp, "\taddi $t0, $fp, -%d\n", curNode.addr);
 					curNode = findIdentInSymTable(IRlist[i].op2);
+					if (strcmp(curNode.name, "$error") == 0)
+						error(UNDEF_ID);
 					if (curNode.level == 0 && symTable->table[0].kind != 3) {
 						fprintf(outputfp, "\tla $t1, %s\n", curNode.name);
 						fprintf(outputfp, "\tlw $t1, ($t1)\n");
@@ -127,11 +145,16 @@ void gentext() {
 				}
 				fprintf(outputfp, "\tlw $t0, ($t0)\n");
 				curNode = findIdentInSymTable(IRlist[i].res);
+				if (strcmp(curNode.name, "$error") == 0)
+					error(UNDEF_ID);
 				fprintf(outputfp, "\tsw $t0, -%d($fp)\n", curNode.addr);
 				break;
 			}
 			case(stoop): {
 				struct node curNode = findIdentInSymTable(IRlist[i].op1);
+				if (strcmp(curNode.name, "$error") == 0)
+					error(UNDEF_ID);
+				int op1type = curNode.type;
 				if (curNode.level == 0 && symTable->table[0].kind != 3) {
 					fprintf(outputfp, "\tla $t0, %s\n", curNode.name);
 					fprintf(outputfp, "\tlw $t0, ($t0)\n");
@@ -139,6 +162,11 @@ void gentext() {
 				else
 					fprintf(outputfp, "\tlw $t0, -%d($fp)\n", curNode.addr);
 				curNode = findIdentInSymTable(IRlist[i].res);
+				if (strcmp(curNode.name, "$error") == 0)
+					error(UNDEF_ID);
+				if (curNode.type != op1type && curNode.type - 2 != op1type && curNode.kind != 5) {
+					error(WRONG_ASSIGN_TYPE);
+				}
 				if (strcmp(IRlist[i].op2, "") == 0) {
 					if (curNode.level == 0 && symTable->table[0].kind != 3) {
 						fprintf(outputfp, "\tla $t1, %s\n", curNode.name);
@@ -151,6 +179,8 @@ void gentext() {
 					if (curNode.level == 0 && symTable->table[0].kind != 3) {
 						fprintf(outputfp, "\tla $t1, %s\n", curNode.name);
 						curNode = findIdentInSymTable(IRlist[i].op2);
+						if (strcmp(curNode.name, "$error") == 0)
+							error(UNDEF_ID);
 						fprintf(outputfp, "\tlw $t2, -%d($fp)\n", curNode.addr);
 						fprintf(outputfp, "\tli $t3, 4\n");
 						fprintf(outputfp, "\tmult $t2, $t3\n");
@@ -161,6 +191,8 @@ void gentext() {
 					else {
 						fprintf(outputfp, "\taddi $t1, $fp, -%d\n", curNode.addr);
 						curNode = findIdentInSymTable(IRlist[i].op2);
+						if (strcmp(curNode.name, "$error") == 0)
+							error(UNDEF_ID);
 						fprintf(outputfp, "\tlw $t2, -%d($fp)\n", curNode.addr);
 						fprintf(outputfp, "\tli $t3, 4\n");
 						fprintf(outputfp, "\tmult $t2, $t3\n");
@@ -173,6 +205,8 @@ void gentext() {
 			}
 			case(paraop): {
 				struct node curNode = findIdentInSymTable(IRlist[i].res);
+				if (strcmp(curNode.name, "$error") == 0)
+					error(UNDEF_ID);
 				fprintf(outputfp, "\tlw $t0, -%d($fp)\n", curNode.addr);
 				fprintf(outputfp, "\tsw $t0, ($sp)\n");
 				fprintf(outputfp, "\taddiu $sp, $sp, -4\n");
@@ -181,8 +215,12 @@ void gentext() {
 			}
 			case(bgezop): {
 				struct node curNode = findIdentInSymTable(IRlist[i].op1);
+				if (strcmp(curNode.name, "$error") == 0)
+					error(UNDEF_ID);
 				fprintf(outputfp, "\tlw $t0, -%d($fp)\n", curNode.addr);
 				curNode = findIdentInSymTable(IRlist[i].op2);
+				if (strcmp(curNode.name, "$error") == 0)
+					error(UNDEF_ID);
 				fprintf(outputfp, "\tlw $t1, -%d($fp)\n", curNode.addr);
 				fprintf(outputfp, "\tsub $t0, $t0, $t1\n");
 				fprintf(outputfp, "\tbgez $t0, %s\n", IRlist[i].res);
@@ -190,8 +228,12 @@ void gentext() {
 			}
 			case(bgtzop): {
 				struct node curNode = findIdentInSymTable(IRlist[i].op1);
+				if (strcmp(curNode.name, "$error") == 0)
+					error(UNDEF_ID);
 				fprintf(outputfp, "\tlw $t0, -%d($fp)\n", curNode.addr);
 				curNode = findIdentInSymTable(IRlist[i].op2);
+				if (strcmp(curNode.name, "$error") == 0)
+					error(UNDEF_ID);
 				fprintf(outputfp, "\tlw $t1, -%d($fp)\n", curNode.addr);
 				fprintf(outputfp, "\tsub $t0, $t0, $t1\n");
 				fprintf(outputfp, "\tbgtz $t0, %s\n", IRlist[i].res);
@@ -199,8 +241,12 @@ void gentext() {
 			}
 			case(bltzop): {
 				struct node curNode = findIdentInSymTable(IRlist[i].op1);
+				if (strcmp(curNode.name, "$error") == 0)
+					error(UNDEF_ID);
 				fprintf(outputfp, "\tlw $t0, -%d($fp)\n", curNode.addr);
 				curNode = findIdentInSymTable(IRlist[i].op2);
+				if (strcmp(curNode.name, "$error") == 0)
+					error(UNDEF_ID);
 				fprintf(outputfp, "\tlw $t1, -%d($fp)\n", curNode.addr);
 				fprintf(outputfp, "\tsub $t0, $t0, $t1\n");
 				fprintf(outputfp, "\tbltz $t0, %s\n", IRlist[i].res);
@@ -208,8 +254,12 @@ void gentext() {
 			}
 			case(blezop): {
 				struct node curNode = findIdentInSymTable(IRlist[i].op1);
+				if (strcmp(curNode.name, "$error") == 0)
+					error(UNDEF_ID);
 				fprintf(outputfp, "\tlw $t0, -%d($fp)\n", curNode.addr);
 				curNode = findIdentInSymTable(IRlist[i].op2);
+				if (strcmp(curNode.name, "$error") == 0)
+					error(UNDEF_ID);
 				fprintf(outputfp, "\tlw $t1, -%d($fp)\n", curNode.addr);
 				fprintf(outputfp, "\tsub $t0, $t0, $t1\n");
 				fprintf(outputfp, "\tblez $t0, %s\n", IRlist[i].res);
@@ -217,16 +267,24 @@ void gentext() {
 			}
 			case(bneop): {
 				struct node curNode = findIdentInSymTable(IRlist[i].op1);
+				if (strcmp(curNode.name, "$error") == 0)
+					error(UNDEF_ID);
 				fprintf(outputfp, "\tlw $t0, -%d($fp)\n", curNode.addr);
 				curNode = findIdentInSymTable(IRlist[i].op2);
+				if (strcmp(curNode.name, "$error") == 0)
+					error(UNDEF_ID);
 				fprintf(outputfp, "\tlw $t1, -%d($fp)\n", curNode.addr);
 				fprintf(outputfp, "\tbne $t0, $t1, %s\n", IRlist[i].res);
 				break;
 			}
 			case(beqop): {
 				struct node curNode = findIdentInSymTable(IRlist[i].op1);
+				if (strcmp(curNode.name, "$error") == 0)
+					error(UNDEF_ID);
 				fprintf(outputfp, "\tlw $t0, -%d($fp)\n", curNode.addr);
 				curNode = findIdentInSymTable(IRlist[i].op2);
+				if (strcmp(curNode.name, "$error") == 0)
+					error(UNDEF_ID);
 				fprintf(outputfp, "\tlw $t1, -%d($fp)\n", curNode.addr);
 				fprintf(outputfp, "\tbeq $t0, $t1, %s\n", IRlist[i].res);
 				break;
@@ -238,18 +296,41 @@ void gentext() {
 					fprintf(outputfp, "\tsyscall\n");
 				}
 				else {
-					if (strcmp("", IRlist[i].res) == 0)
+					struct node curNode = findFunctionByLayer(layer[layerTop - 1]);
+					if (strcmp("", IRlist[i].res) == 0) {
 						fprintf(outputfp, "\tjr $ra\n");
+						if (curNode.type != 1)
+							error(RETURN_ERROR);
+					}
 					else {
-						struct node curNode = findIdentInSymTable(IRlist[i].res);
-						fprintf(outputfp, "\tlw $v0, -%d($fp)\n", curNode.addr);
-						fprintf(outputfp, "\tjr $ra\n");
+						if (curNode.type == 1)
+							error(RETURN_ERROR);
+						else if (curNode.type == 2) {
+							struct node curNode = findIdentInSymTable(IRlist[i].res);
+							if (strcmp(curNode.name, "$error") == 0)
+								error(UNDEF_ID);
+							fprintf(outputfp, "\tlw $v0, -%d($fp)\n", curNode.addr);
+							fprintf(outputfp, "\tjr $ra\n");
+							if (curNode.type != 2)
+								error(RETURN_ERROR);
+						}
+						else if (curNode.type == 3) {
+							struct node curNode = findIdentInSymTable(IRlist[i].res);
+							if (strcmp(curNode.name, "$error") == 0)
+								error(UNDEF_ID);
+							fprintf(outputfp, "\tlw $v0, -%d($fp)\n", curNode.addr);
+							fprintf(outputfp, "\tjr $ra\n");
+							if (curNode.type != 3)
+								error(RETURN_ERROR);
+						}
 					}
 				}
 				break;
 			}
 			case(scaop): {
 				struct node curNode = findIdentInSymTable(IRlist[i].res);
+				if (strcmp(curNode.name, "$error") == 0)
+					error(UNDEF_ID);
 				if (curNode.type == 2) {
 					fprintf(outputfp, "\tli $v0, 5\n");
 					fprintf(outputfp, "\tsyscall\n");
@@ -282,6 +363,8 @@ void gentext() {
 				}
 				if (strcmp(IRlist[i].res, "") != 0) {
 					struct node curNode = findIdentInSymTable(IRlist[i].res);
+					if (strcmp(curNode.name, "$error") == 0)
+						error(UNDEF_ID);
 					if (curNode.type == 2) {
 						fprintf(outputfp, "\tlw $a0, -%d($fp)\n", curNode.addr);
 						fprintf(outputfp, "\tli $v0, 1\n");
@@ -305,43 +388,67 @@ void gentext() {
 			}
 			case(addop): {
 				struct node curNode = findIdentInSymTable(IRlist[i].op1);
+				if (strcmp(curNode.name, "$error") == 0)
+					error(UNDEF_ID);
 				fprintf(outputfp, "\tlw $t0, -%d($fp)\n", curNode.addr);
 				curNode = findIdentInSymTable(IRlist[i].op2);
+				if (strcmp(curNode.name, "$error") == 0)
+					error(UNDEF_ID);
 				fprintf(outputfp, "\tlw $t1, -%d($fp)\n", curNode.addr);
 				fprintf(outputfp, "\tadd $t0, $t0, $t1\n");
 				curNode = findIdentInSymTable(IRlist[i].res);
+				if (strcmp(curNode.name, "$error") == 0)
+					error(UNDEF_ID);
 				fprintf(outputfp, "\tsw $t0, -%d($fp)\n", curNode.addr);
 				break;
 			}
 			case(subop): {
 				struct node curNode = findIdentInSymTable(IRlist[i].op1);
+				if (strcmp(curNode.name, "$error") == 0)
+					error(UNDEF_ID);
 				fprintf(outputfp, "\tlw $t0, -%d($fp)\n", curNode.addr);
 				curNode = findIdentInSymTable(IRlist[i].op2);
+				if (strcmp(curNode.name, "$error") == 0)
+					error(UNDEF_ID);
 				fprintf(outputfp, "\tlw $t1, -%d($fp)\n", curNode.addr);
 				fprintf(outputfp, "\tsub $t0, $t0, $t1\n");
 				curNode = findIdentInSymTable(IRlist[i].res);
+				if (strcmp(curNode.name, "$error") == 0)
+					error(UNDEF_ID);
 				fprintf(outputfp, "\tsw $t0, -%d($fp)\n", curNode.addr);
 				break;
 			}
 			case(multop): {
 				struct node curNode = findIdentInSymTable(IRlist[i].op1);
+				if (strcmp(curNode.name, "$error") == 0)
+					error(UNDEF_ID);
 				fprintf(outputfp, "\tlw $t0, -%d($fp)\n", curNode.addr);
 				curNode = findIdentInSymTable(IRlist[i].op2);
+				if (strcmp(curNode.name, "$error") == 0)
+					error(UNDEF_ID);
 				fprintf(outputfp, "\tlw $t1, -%d($fp)\n", curNode.addr);
 				fprintf(outputfp, "\tmult $t0, $t1\n");
 				fprintf(outputfp, "\tmflo $t0\n");
 				curNode = findIdentInSymTable(IRlist[i].res);
+				if (strcmp(curNode.name, "$error") == 0)
+					error(UNDEF_ID);
 				fprintf(outputfp, "\tsw $t0, -%d($fp)\n", curNode.addr);
 				break;
 			}
 			case(divop): {
 				struct node curNode = findIdentInSymTable(IRlist[i].op1);
+				if (strcmp(curNode.name, "$error") == 0)
+					error(UNDEF_ID);
 				fprintf(outputfp, "\tlw $t0, -%d($fp)\n", curNode.addr);
 				curNode = findIdentInSymTable(IRlist[i].op2);
+				if (strcmp(curNode.name, "$error") == 0)
+					error(UNDEF_ID);
 				fprintf(outputfp, "\tlw $t1, -%d($fp)\n", curNode.addr);
 				fprintf(outputfp, "\tdiv $t0, $t1\n");
 				fprintf(outputfp, "\tmflo $t0\n");
 				curNode = findIdentInSymTable(IRlist[i].res);
+				if (strcmp(curNode.name, "$error") == 0)
+					error(UNDEF_ID);
 				fprintf(outputfp, "\tsw $t0, -%d($fp)\n", curNode.addr);
 				break;
 			}
@@ -351,6 +458,8 @@ void gentext() {
 			}
 			case(getrop): {
 				struct node curNode = findIdentInSymTable(IRlist[i].op1);
+				if (strcmp(curNode.name, "$error") == 0)
+					error(UNDEF_ID);
 				fprintf(outputfp, "\tsw $v0, -%d($fp)\n", curNode.addr);
 				break;
 			}

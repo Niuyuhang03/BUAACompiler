@@ -130,7 +130,7 @@ void main(){
             }             
         case -1:
             printf("Empty Default Case");
-        default:
+        default:;
     }
 
     return;                             
