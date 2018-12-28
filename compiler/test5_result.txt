@@ -1,7 +1,7 @@
 http://judge.buaa.edu.cn/forum/thread.jsp?forum=481&thread=8337
 测试用例和预期结果：
 第一组：
-输入： 0 1 2 3 4 yes 6 7 8（输入一个数字马上会打印对应输出）
+输入： 0 1 2 3 4 yes 6 7 8
 输出：
 0
 test_recursion begin:

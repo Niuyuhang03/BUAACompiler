@@ -1,0 +1,33 @@
+
+const int dd=9;
+const int ee=93;
+int i;
+void func3(){
+
+}
+int func(){
+    char c;
+int cc;
+c='i';
+cc=+c;
+
+c='c';
+
+    printf("enter func");
+    return (c+0 );
+}
+void main(){
+int a;
+char cc[10];
+   a= func();
+
+if(+-0){
+printf("interesting");
+}
+func3();
+while(+-0){
+}
+if(+-0){
+printf("interesting");
+}
+}
