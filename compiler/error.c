@@ -15,10 +15,6 @@ void error(enum errorType errorNum) {
 			printf("row:%d column:%d <this identifier was defined before!>\n", row, column);
 			break;
 		}
-		case(IDENT_TOO_LONG): {
-			printf("this identifier is too long!\n");
-			break;
-		}
 		case(PROGRAM_ERROR): {						// 程序中主函数后仍有代码
 			printf("row:%d column:%d <program doesn't finish after main!>\n", row, column);
 			break;
@@ -39,18 +35,6 @@ void error(enum errorType errorNum) {
 			printf("row:%d column:%d <number can't start with extra zero!>\n", row, column);
 			break;
 		}
-		case(NUM_HEAD_IDENT): {
-			printf("the identifier can't start with number!\n");
-			break;
-		}
-		case(NUM_TOO_LARGE): {
-			printf("the number is too large!\n");
-			break;
-		}
-		case(UNDEF_INPUT): {
-			printf("the input word is illegal!\n");
-			break;
-		}
 		case(CHAR_MISS_QUOTE): {					// 字符类型中字符后不紧跟单引号，容错，补一个单引号
 			printf("row:%d column:%d <missing a apostrophe in char!>\n", startRow, startColumn + 2);
 			break;
@@ -59,7 +43,7 @@ void error(enum errorType errorNum) {
 			printf("row:%d column:%d <the word in char is illegal!>\n", startRow, startColumn + 1);
 			break;
 		}
-		case(NEQUAL_MISS): {						// 不等号后不是等号，容错，强行补一个，保存!=
+		case(NEQUAL_MISS): {						// 感叹号后不是等号，容错，强行补一个，保存!=
 			printf("row:%d column:%d <missing a \'=\' after \'!\'!>\n", row, column);
 			break;
 		}
@@ -95,24 +79,16 @@ void error(enum errorType errorNum) {
 			printf("row:%d column:%d <missing a left parentheses!>\n", row, column);
 			break;
 		}
-		case(MISSING_LBRACK): {
-			printf("missing a left bracket!\n");
-			break;
-		}
 		case(MISSING_LBRACE): {						// 丢失左大括号
 			printf("row:%d column:%d <missing a left brace!>\n", row, column);
 			break;
 		}
-		case(MISSING_PLUS): {
-			printf("missing a plus or a minus!\n");
-			break;
-		}
-		case(MISSING_MULTI): {
-			printf("missing a multiply or a divide!\n");
-			break;
-		}
 		case(MISSING_INTEGER): {					// 丢失整数
 			printf("row:%d column:%d <missing integer!>\n", row, column);
+			break;
+		}
+		case(MISSING_NUMBER): {						// 丢失无符号整数
+			printf("row:%d column:%d <missing Non-sign number!>\n", row, column);
 			break;
 		}
 		case(MISSING_IS): {							// 丢失一个等号（赋值符号）
@@ -121,10 +97,6 @@ void error(enum errorType errorNum) {
 		}
 		case(MISSING_CHAR): {						// 丢失字符类型（'a'）
 			printf("row:%d column:%d <missing CHAR!>\n", row, column);
-			break;
-		}
-		case(MISSING_NUMBER): {						// 丢失无符号整数
-			printf("row:%d column:%d <missing Non-sign number!>\n", row, column);
 			break;
 		}
 		case(RETURN_ERROR): {						// 返回值类型错误或缺少返回值
@@ -139,20 +111,12 @@ void error(enum errorType errorNum) {
 			printf("row:%d column:%d <missing case key word!>\n", row, column);
 			break;
 		}
-		case(MISSING_RETURN): {
-			printf("missing a return!\n");
+		case(WRONG_ASSIGN_TYPE): {					// 赋值类型错误
+			printf("row:%d column:%d <wrong type when assign!>\n", row, column);
 			break;
 		}
-		case(EXPRESSION_ERROR): {
-			printf("error occurs in expression!\n");
-			break;
-		}
-		case(CONST_NOT_INIT): {
-			printf("constant isn't assigned!\n");
-			break;
-		}
-		case(VAR_NOT_INIT): {
-			printf("variable isn't assigned!\n");
+		case(CASE_CONTENT_WRONG): {					// case内容错误
+			printf("row:%d column:%d <wrong occurs in case!>\n", row, column);
 			break;
 		}
 		case(FACTOR_CONTENT_WRONG): {				// 因子内容错误
@@ -163,18 +127,6 @@ void error(enum errorType errorNum) {
 			printf("row:%d column:%d <wrong occurs in sentence!>\n", row, column);
 			break;
 		}
-		case(CASE_CONTENT_WRONG): {					// case内容错误
-			printf("row:%d column:%d <wrong occurs in case!>\n", row, column);
-			break;
-		}
-		case(FUNC_NO_RET): {
-			printf("row:%d column:%d <Non-return function can't be in experision!>\n", row, column);
-			break;
-		}
-		case(OUT_OF_TABLE): {
-			printf("symbol table is full!\n");
-			break;
-		}
 		case(OUT_OF_ARRAY): {						// 数组越界
 			printf("row:%d column:%d <the index is out of array range!>\n", row, column);
 			break;
@@ -183,20 +135,28 @@ void error(enum errorType errorNum) {
 			printf("row:%d column:%d <wrong type when declear!>\n", row, column);
 			break;
 		}
-		case(WRONG_ASSIGN_TYPE): {					// 赋值类型错误
-			printf("row:%d column:%d <wrong type when assign!>\n", row, column);
-			break;
-		}
-		case(FILE_NOT_EXIST): {
-			printf("file doesn't exist！\n");
+		case(FILE_NOT_EXIST): {						// 源文件不存在
+			printf("<file doesn't exist！>\n");
 			break;
 		}
 		case(ILLEGAL_WORD): {						// 非法字符（如汉字），跳过该字符
 			printf("row:%d column:%d <the word is not in ascii [-1, 255]!>\n", row, column);
 			break;
 		}
-		case(FUNC_NO_DEFINED): {
+		case(FUNC_NO_DEFINED): {					// 函数未定义
 			printf("row:%d column:%d <the function wasn't defined!>\n", row, column);
+			break;
+		}
+		case(FUNC_NO_RET): {						// 无返回值函数当做表达式使用
+			printf("row:%d column:%d <Non-return function can't be in experision!>\n", row, column);
+			break;
+		}
+		case(ERROR_PARA_TYPE): {					// 参数类型错误
+			printf("row:%d column:%d <error occurs in parameters' type!>\n", row, column);
+			break;
+		}
+		case(ASSIG2CONST): {						// 给常量赋值
+			printf("row:%d column:%d <constant can't be assigned!>\n", row, column);
 			break;
 		}
 		default: {

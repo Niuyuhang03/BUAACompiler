@@ -25,18 +25,18 @@ int main(void) {
 		}
 	}
 	updateFuncVarNum();
-
 	// printf symTable and subTable
 	/*int i, cnt = 0;
 	for (i = 0; i < symTable->top; i++) {
-		printf("%d name:%s kind:%d type:%d value:%d number:%d addr:%d level:%d ", cnt, symTable->table[i].name, symTable->table[i].kind, symTable->table[i].type, symTable->table[i].value, symTable->table[i].number, symTable->table[i].addr, symTable->table[i].level);
+		printf("%d name:%s kind:%d type:%d value:%d number:%d addr:%d level:%d", cnt, symTable->table[i].name, symTable->table[i].kind, symTable->table[i].type, symTable->table[i].value, symTable->table[i].number, symTable->table[i].addr, symTable->table[i].level);
 		if (symTable->table[i].kind == 3)
-			printf("sum:%d", symTable->table[i].sum);
+			printf(" sum:%d", symTable->table[i].sum);
 		if (symTable->table[i].kind == 3 && strcmp(symTable->table[i].name, "main") != 0)
-			printf("label:%s", symTable->table[i].label);
+			printf(" label:%s", symTable->table[i].label);
 		printf("\n");
 		cnt++;
-	}
+	}*/
+	/*
 	for (i = 0; i < symTable->subprogramNumber; i++) {
 		printf("%d\n", symTable->subprogramTable[i]);
 	}*/

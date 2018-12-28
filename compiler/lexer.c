@@ -28,9 +28,11 @@ void getch() {
 	ch = fgetc(fp);
 	column++;
 	while (ch == '\n' || ch == '\t') {
+		if (ch == '\n') {
+			row++;
+			column = 1;
+		}
 		ch = fgetc(fp);
-		row++;
-		column = 1;
 	}
 }
 
@@ -112,7 +114,6 @@ void getsym() {
 				push_in_symList(NUMBER, "", iValue, row, column);
 			}
 			else {
-				// printf("%d %s %d\n", outputLine, symbol_name[NUMBER], iValue);
 				push_in_symList(NUMBER, "", iValue, row, column);
 			}
 			outputLine++;
@@ -129,12 +130,10 @@ void getsym() {
 				getch();
 			int site;
 			if ((site = isinkey(cValue)) >= 0) {
-				// printf("%d %s %s\n", outputLine, symbol_name[key_sy[site]], cValue);
 				outputLine++;
 				push_in_symList(key_sy[site], "", 0, row, column);
 			}
 			else {
-				// printf("%d %s %s\n", outputLine, symbol_name[IDENT], cValue);
 				outputLine++;
 				push_in_symList(IDENT, cValue, 0, row, column);
 			}
@@ -148,14 +147,12 @@ void getsym() {
 				getch();
 				if (ch == '\'') {
 					getch();
-					// printf("%d %s %s\n", outputLine, symbol_name[CHAR], cValue);
 					outputLine++;
 					while (ch == ' ')
 						getch();
 					push_in_symList(CHAR, cValue, 0, row, column);
 				}
 				else {
-					// printf("%d %s %s\n", outputLine, symbol_name[CHAR], cValue);
 					outputLine++;
 					error(CHAR_MISS_QUOTE);
 					while (ch == ' ')
@@ -187,7 +184,6 @@ void getsym() {
 				}
 				cValue[cCnt] = '\0';
 				if (startRow != row) {
-					// printf("%d %s %s\n", outputLine, symbol_name[STRING], cValue);
 					outputLine++;			// 容错，该行没有右双引号时，强行补一个右双引号，保存之前的字符串
 					error(STR_MISSINT_RPARENT);
 					while (ch == ' ')
@@ -196,7 +192,6 @@ void getsym() {
 				}
 				else if (ch == '\"') {
 					getch();
-					// printf("%d %s %s\n", outputLine, symbol_name[STRING], cValue);
 					outputLine++;
 					while (ch == ' ')
 						getch();
@@ -243,14 +238,12 @@ void getsym() {
 					getch();
 				if (ch == '=') {
 					getch();
-					// printf("%d %s !=\n", outputLine, symbol_name[NEQ]);
 					outputLine++;
 					while (ch == ' ')
 						getch();
 					push_in_symList(NEQ, "", 0, row, column);
 				}
 				else {
-					// printf("%d %s !=\n", outputLine, symbol_name[NEQ]);
 					outputLine++;				// 不等号后不是等号，容错，强行补一个，保存!=
 					error(NEQUAL_MISS);
 					push_in_symList(NEQ, "", 0, row, column);
@@ -258,7 +251,6 @@ void getsym() {
 			}
 			else if (ch == '(') {
 				getch();
-				// printf("%d %s (\n", outputLine, symbol_name[LPAR]);
 				outputLine++;
 				while (ch == ' ')
 					getch();
@@ -266,7 +258,6 @@ void getsym() {
 			}
 			else if (ch == ')') {
 				getch();
-				// printf("%d %s )\n", outputLine, symbol_name[RPAR]);
 				outputLine++;
 				while (ch == ' ')
 					getch();
@@ -274,7 +265,6 @@ void getsym() {
 			}
 			else if (ch == '*') {
 				getch();
-				// printf("%d %s *\n", outputLine, symbol_name[MULT]);
 				outputLine++;
 				while (ch == ' ')
 					getch();
@@ -282,7 +272,6 @@ void getsym() {
 			}
 			else if (ch == '+') {
 				getch();
-				// printf("%d %s +\n", outputLine, symbol_name[PLUS]);
 				outputLine++;
 				while (ch == ' ')
 					getch();
@@ -290,7 +279,6 @@ void getsym() {
 			}
 			else if (ch == ',') {
 				getch();
-				// printf("%d %s ,\n", outputLine, symbol_name[COMMA]);
 				outputLine++;
 				while (ch == ' ')
 					getch();
@@ -298,7 +286,6 @@ void getsym() {
 			}
 			else if (ch == '-') {
 				getch();
-				// printf("%d %s -\n", outputLine, symbol_name[MINUS]);
 				outputLine++;
 				while (ch == ' ')
 					getch();
@@ -306,7 +293,6 @@ void getsym() {
 			}
 			else if (ch == '/') {
 				getch();
-				// printf("%d %s /\n", outputLine, symbol_name[DIV]);
 				outputLine++;
 				while (ch == ' ')
 					getch();
@@ -314,7 +300,6 @@ void getsym() {
 			}
 			else if (ch == ':') {
 				getch();
-				// printf("%d %s :\n", outputLine, symbol_name[COLON]);
 				outputLine++;
 				while (ch == ' ')
 					getch();
@@ -322,7 +307,6 @@ void getsym() {
 			}
 			else if (ch == ';') {
 				getch();
-				// printf("%d %s ;\n", outputLine, symbol_name[SEMICOLON]);
 				outputLine++;
 				while (ch == ' ')
 					getch();
@@ -332,14 +316,12 @@ void getsym() {
 				getch();
 				if (ch == '=') {
 					getch();
-					// printf("%d %s <=\n", outputLine, symbol_name[LE]);
 					outputLine++;
 					while (ch == ' ')
 						getch();
 					push_in_symList(LE, "", 0, row, column);
 				}
 				else {
-					// printf("%d %s <\n", outputLine, symbol_name[LT]);
 					outputLine++;
 					while (ch == ' ')
 						getch();
@@ -350,14 +332,12 @@ void getsym() {
 				getch();
 				if (ch == '=') {
 					getch();
-					// printf("%d %s ==\n", outputLine, symbol_name[EQ]);
 					outputLine++;
 					while (ch == ' ')
 						getch();
 					push_in_symList(EQ, "", 0, row, column);
 				}
 				else {
-					// printf("%d %s =\n", outputLine, symbol_name[IS]);
 					outputLine++;
 					while (ch == ' ')
 						getch();
@@ -368,14 +348,12 @@ void getsym() {
 				getch();
 				if (ch == '=') {
 					getch();
-					// printf("%d %s >=\n", outputLine, symbol_name[GE]);
 					outputLine++;
 					while (ch == ' ')
 						getch();
 					push_in_symList(GE, "", 0, row, column);
 				}
 				else {
-					// printf("%d %s >\n", outputLine, symbol_name[GT]);
 					outputLine++;
 					while (ch == ' ')
 						getch();
@@ -384,7 +362,6 @@ void getsym() {
 			}
 			else if (ch == '[') {
 				getch();
-				// printf("%d %s [\n", outputLine, symbol_name[LBRACK]);
 				outputLine++;
 				while (ch == ' ')
 					getch();
@@ -392,7 +369,6 @@ void getsym() {
 			}
 			else if (ch == ']') {
 				getch();
-				// printf("%d %s ]\n", outputLine, symbol_name[RBRACK]);
 				outputLine++;
 				while (ch == ' ')
 					getch();
@@ -400,7 +376,6 @@ void getsym() {
 			}
 			else if (ch == '{') {
 				getch();
-				// printf("%d %s {\n", outputLine, symbol_name[LBRACE]);
 				outputLine++;
 				while (ch == ' ')
 					getch();
@@ -408,7 +383,6 @@ void getsym() {
 			}
 			else if (ch == '}') {
 				getch();
-				// printf("%d %s }\n", outputLine, symbol_name[RBRACE]);
 				outputLine++;
 				while (ch == ' ')
 					getch();

@@ -26,6 +26,7 @@ void updateParaNumber(char* name, int value);
 struct node findIdentInSymTable(char* name);
 struct node findIdentInLastSymTable(char* name);
 struct node findFunction(char* name);
+struct node findPara(char* name, int offset);
 struct node findFunctionByLayer(int cur_layer);
 struct node findLabel(char* name);
 void updateFuncVarNum();
@@ -295,6 +296,20 @@ struct node findFunction(char* name) {
 }
 
 /*
+* Summary: find a para by function name and offset, and return the whole node
+*/
+struct node findPara(char* name, int offset) {
+	int i;
+	for (i = 0; i < symTable->subprogramNumber; i++) {
+		if (symTable->table[symTable->subprogramTable[i]].kind != 3)
+			continue;
+		if (strcmp(symTable->table[symTable->subprogramTable[i]].name, name) == 0) {
+			return symTable->table[symTable->subprogramTable[i] + offset];
+		}
+	}
+}
+
+/*
 * Summary: find a function by layer and return the whole node
 */
 struct node findFunctionByLayer(int cur_layer) {
@@ -338,29 +353,19 @@ void constdef() {
 		while (1) {
 			char name[100];
 			int kind = 1, type = 2, value = 0;
-			if (sym != IDENT) {
-				// error
-				// return;
+			if (sym != IDENT)
 				error(MISSING_IDENT);
-			}
 			strcpy(name, cValue);
 			getsym();
-			if (sym != IS) {
-				// error
-				// return;
+			if (sym != IS)
 				error(MISSING_IS);
-			}
 			getsym();
-			if (!isInteger()) {
-				// error
-				// return;
+			if (!isInteger())
 				error(MISSING_INTEGER);
-			}
 			else {
 				value = iValue;
 				getsym();
 			}
-			// printf("This is a constant int define!\n");
 			if (sym == SEMICOLON) {
 				struct node curNode = findIdentInLastSymTable(name);
 				if (strcmp(curNode.name, "$error") != 0 && curNode.level == symTable->subprogramNumber - 1)
@@ -384,37 +389,25 @@ void constdef() {
 				insertIntoIRlist(conop, "int", op1, name);
 				getsym();
 			}
-			else {
+			else
 				error(MISSING_SEMICOLON);
-			}
 		}
-		// printf("This is a constant int declear!\n");
 	}
 	else if (sym == CHARSY) {
 		getsym();
 		while (1) {
 			char name[100];
 			int kind = 1, type = 3, value = 0;
-			if (sym != IDENT) {
-				// error
-				// return;
+			if (sym != IDENT)
 				error(MISSING_IDENT);
-			}
 			strcpy(name, cValue);
 			getsym();
-			if (sym != IS) {
-				// error
-				// return;
+			if (sym != IS)
 				error(MISSING_IS);
-			}
 			getsym();
-			if (sym != CHAR) {
-				// error
-				// return
+			if (sym != CHAR)
 				error(MISSING_CHAR);
-			}
 			value = (int)(cValue[0]);
-			// printf("This is a constant char define!\n");
 			getsym();
 			if (sym == SEMICOLON) {
 				struct node curNode = findIdentInLastSymTable(name);
@@ -439,19 +432,12 @@ void constdef() {
 				insertIntoIRlist(conop, "char", op1, name);
 				getsym();
 			}
-			else {
-				// error
-				// return;
+			else
 				error(MISSING_SEMICOLON);
-			}
 		}
-		// printf("This is a constant char declear!\n");
 	}
-	else {
-		// error
-		// return
+	else
 		error(WRONG_TYPE);
-	}
 }
 
 /*
@@ -473,32 +459,22 @@ void vardef() {
 		while (1) {
 			char name[100];
 			int kind = 2, type = 2, number = 0;
-			if (sym != IDENT) {
-				// error
-				// return;
+			if (sym != IDENT)
 				error(MISSING_IDENT);
-			}
 			strcpy(name, cValue);
 			getsym();
 			if (sym == LBRACK) {
 				type = 4;
 				getsym();
-				if (sym != NUMBER) {
-					// error
-					// return;
+				if (sym != NUMBER)
 					error(MISSING_NUMBER);
-				}
 				number = iValue;
 				getsym();
-				if (sym != RBRACK) {
-					// error
-					// return;
+				if (sym != RBRACK)
 					error(MISSING_RBRACK);
-				}
 				getsym();
 			}
 			if (sym == SEMICOLON) {
-				// printf("This is a variable int define!\n");
 				struct node curNode = findIdentInLastSymTable(name);
 				if (strcmp(curNode.name, "$error") != 0 && curNode.level == symTable->subprogramNumber - 1)
 					error(MULTI_DEF);
@@ -514,7 +490,6 @@ void vardef() {
 				break;
 			}
 			else if (sym == COMMA) {
-				// printf("This is a variable int define!\n");
 				struct node curNode = findIdentInLastSymTable(name);
 				if (strcmp(curNode.name, "$error") != 0 && curNode.level == symTable->subprogramNumber - 1)
 					error(MULTI_DEF);
@@ -528,45 +503,31 @@ void vardef() {
 				insertIntoIRlist(varop, "int", temp, name);
 				getsym();
 			}
-			else {
-				// error
-				// return;
+			else
 				error(MISSING_SEMICOLON);
-			}
 		}
-		// printf("This is a variable int declear!\n");
 	}
 	else if (sym == CHARSY) {
 		getsym();
 		while (1) {
 			char name[100];
 			int kind = 2, type = 3, number = 0;
-			if (sym != IDENT) {
-				// error
-				// return;
+			if (sym != IDENT)
 				error(MISSING_IDENT);
-			}
 			strcpy(name, cValue);
 			getsym();
 			if (sym == LBRACK) {
 				type = 5;
 				getsym();
-				if (sym != NUMBER) {
-					// error
-					// return;
+				if (sym != NUMBER)
 					error(MISSING_NUMBER);
-				}
 				number = iValue;
 				getsym();
-				if (sym != RBRACK) {
-					// error
-					// return;
+				if (sym != RBRACK)
 					error(MISSING_RBRACK);
-				}
 				getsym();
 			}
 			if (sym == SEMICOLON) {
-				// printf("This is a variable char define!\n");
 				struct node curNode = findIdentInLastSymTable(name);
 				if (strcmp(curNode.name, "$error") != 0 && curNode.level == symTable->subprogramNumber - 1)
 					error(MULTI_DEF);
@@ -585,7 +546,6 @@ void vardef() {
 				struct node curNode = findIdentInLastSymTable(name);
 				if (strcmp(curNode.name, "$error") != 0 && curNode.level == symTable->subprogramNumber - 1)
 					error(MULTI_DEF);
-				// printf("This is a variable char define!\n");
 				enter(name, kind, type, 0, number, addrIndex, "", "");
 				if (number == 0)
 					addrIndex += 4;
@@ -596,19 +556,12 @@ void vardef() {
 				insertIntoIRlist(varop, "char", temp, name);
 				getsym();
 			}
-			else {
-				// error
-				// return;
+			else
 				error(MISSING_SEMICOLON);
-			}
 		}
-		// printf("This is a variable char declear!\n");
 	}
-	else {
-		// error
-		// return
+	else
 		error(WRONG_TYPE);
-	}
 }
 
 /*
@@ -620,11 +573,8 @@ void vardecl() {
 		if (sym != INTSY && sym != CHARSY)
 			break;
 		getsym();
-		if (sym != IDENT) {
-			// error
-			// return;
+		if (sym != IDENT)
 			error(MISSING_IDENT);
-		}
 		getsym();
 		if (sym != COMMA && sym != SEMICOLON && sym != LBRACK) {
 			symList_index -= 3;
@@ -646,54 +596,35 @@ void para() {
 	if (sym == INTSY) {
 		type = 2;
 		getsym();
-		if (sym != IDENT) {
-			// error
-			// return;
+		if (sym != IDENT)
 			error(MISSING_IDENT);
-		}
 		strcpy(name, cValue);
-		// printf("This is a int parameter!\n");
 		getsym();
 		if (sym == COMMA) {
 			getsym();
 		}
-		else if (sym != RPAR) {
-			// error
-			// return;
+		else if (sym != RPAR)
 			error(MISSING_RPARENT);
-		}
 		enter(name, kind, type, 0, 0, addrIndex, "", "");
 		addrIndex += 4;
-		insertIntoIRlist(getpop, "", "", name);
 	}
 	else if (sym == CHARSY) {
 		type = 3;
 		getsym();
-		if (sym != IDENT) {
-			// error
-			// return;
+		if (sym != IDENT)
 			error(MISSING_IDENT);
-		}
 		strcpy(name, cValue);
 		getsym();
-		// printf("This is a char parameter!\n");
 		if (sym == COMMA) {
 			getsym();
 		}
-		else if (sym != RPAR) {
-			// error
-			// return;
+		else if (sym != RPAR)
 			error(MISSING_RPARENT);
-		}
 		enter(name, kind, type, 0, 0, addrIndex, "", "");
 		addrIndex += 4;
-		insertIntoIRlist(getpop, "", "", name);
 	}
-	else {
-		// error
-		// return
+	else
 		error(WRONG_TYPE);
-	}
 }
 
 /*
@@ -705,7 +636,6 @@ int paratable() {
 		para();
 		sum++;
 	} while (sym == INTSY || sym == CHARSY);
-	// printf("This is a parameter list!\n");
 	return sum;
 }
 
@@ -713,13 +643,15 @@ int paratable() {
 * Summary: expression
 */
 void expression() {
-	int coefficient = 1;
+	int coefficient = 1, type = 0;
 	if (sym == PLUS) {
 		getsym();
+		type = 2;
 	}
 	else if (sym == MINUS) {
 		coefficient = -1;
 		getsym();
+		type = 2;
 	}
 	term();
 	if (coefficient == -1) {
@@ -735,6 +667,22 @@ void expression() {
 		nameATempVar();
 		strcpy(temp3, tempRes);
 		insertIntoIRlist(subop, temp4, temp2, temp3);
+		enter(temp3, 5, 2, 0, 0, addrIndex, "", "");
+		addrIndex += 4;
+	}
+	else if (type == 2) {
+		char temp1[100], temp2[100], temp3[100], temp4[100];
+		nameATempVarByIndex(tempResIndex - 1);
+		strcpy(temp2, tempRes);
+		nameATempVar();
+		strcpy(temp4, tempRes);
+		_itoa(0, temp1, 10);
+		insertIntoIRlist(getiop, temp1, "", temp4);
+		enter(temp4, 5, 2, 0, 0, addrIndex, "", "");
+		addrIndex += 4;
+		nameATempVar();
+		strcpy(temp3, tempRes);
+		insertIntoIRlist(addop, temp4, temp2, temp3);
 		enter(temp3, 5, 2, 0, 0, addrIndex, "", "");
 		addrIndex += 4;
 	}
@@ -773,7 +721,6 @@ void expression() {
 			addrIndex += 4;
 		}
 	}
-	// printf("This is an expression!\n");
 }
 
 /*
@@ -799,14 +746,14 @@ void factor() {
 				error(UNDEF_ID);
 			enter(temp2, 5, curNode.type - 2, 0, 0, addrIndex, "", "");
 			addrIndex += 4;
-			if (sym != RBRACK) {
-				// error
-				// return;
+			if (sym != RBRACK)
 				error(MISSING_RBRACK);
-			}
 			getsym();
 		}
 		else if (sym == LPAR) {
+			struct node curNode = findFunction(name);
+			if (curNode.type == 1)
+				error(FUNC_NO_RET);
 			symList_index -= 2;
 			getsym();
 			funccall();
@@ -814,7 +761,7 @@ void factor() {
 			nameATempVar();
 			strcpy(temp3, tempRes);
 			insertIntoIRlist(getrop, temp3, "", name);
-			struct node curNode = findFunction(name);
+			curNode = findFunction(name);
 			enter(temp3, 5, curNode.type, 0, 0, addrIndex, "", "");
 			addrIndex += 4;
 		}
@@ -833,11 +780,8 @@ void factor() {
 	else if (sym == LPAR) {
 		getsym();
 		expression();
-		if (sym != RPAR) {
-			// error
-			// return;
+		if (sym != RPAR)
 			error(MISSING_RPARENT);
-		}
 		getsym();
 	}
 	else if (sym == CHAR) {
@@ -862,12 +806,8 @@ void factor() {
 		addrIndex += 4;
 		getsym();
 	}
-	else {
-		// error
-		// return;
+	else
 		error(FACTOR_CONTENT_WRONG);
-	}
-	// printf("This is a factor!\n");
 }
 
 /*
@@ -909,7 +849,6 @@ void term() {
 			addrIndex += 4;
 		}
 	}
-	// printf("This is a term!\n");
 }
 
 /*
@@ -980,7 +919,6 @@ void conditionsentence(char *elselabel) {
 		addrIndex += 4;
 		insertIntoIRlist(beqop, temp1, temp3, elselabel);
 	}
-	// printf("This is a condition sentence!\n");
 }
 
 /*
@@ -992,26 +930,19 @@ void whilesentence() {
 	strcpy(temp1, label);
 	insertIntoIRlist(setop, "", "", temp1);
 	getsym();
-	if (sym != LPAR) {
-		// error
-		// return;
+	if (sym != LPAR)
 		error(MISSING_LPARENT);
-	}
 	getsym();
 	nameALabel();
 	char temp2[100];
 	strcpy(temp2, label);
 	conditionsentence(temp2);
-	if (sym != RPAR) {
-		// error
-		// return;
+	if (sym != RPAR)
 		error(MISSING_RPARENT);
-	}
 	getsym();
 	sentence();
 	insertIntoIRlist(jop, "", "", temp1);
 	insertIntoIRlist(setop, "", "", temp2);
-	// printf("This is a while sentence!\n");
 }
 
 /*
@@ -1019,25 +950,18 @@ void whilesentence() {
 */
 void ifsentence() {
 	getsym();
-	if (sym != LPAR) {
-		// error
-		// return;
+	if (sym != LPAR)
 		error(MISSING_LPARENT);
-	}
 	getsym();
 	char temp1[100];
 	nameALabel();
 	strcpy(temp1, label);
 	conditionsentence(temp1);
-	if (sym != RPAR) {
-		// error
-		// return;
+	if (sym != RPAR)
 		error(MISSING_RPARENT);
-	}
 	getsym();
 	sentence();
 	insertIntoIRlist(setop, "", "", temp1);
-	// printf("This is a if sentence!\n");
 }
 
 /*
@@ -1051,6 +975,10 @@ void valueparatable(char* name) {
 	strcpy(temp1, tempRes);
 	insertIntoIRlist(paraop, "", "", temp1);
 	sum++;
+	struct node curNode = findPara(name, sum);
+	if (curNode.kind == 4 && curNode.type != findIdentInLastSymTable(temp1).type) {
+		error(ERROR_PARA_TYPE);
+	}
 	while (sym == COMMA) {
 		getsym();
 		expression();
@@ -1059,8 +987,7 @@ void valueparatable(char* name) {
 		insertIntoIRlist(paraop, "", "", temp1);
 		sum++;
 	}
-	// printf("This is a value parameter table!\n");
-	struct node curNode = findFunction(name);
+	curNode = findFunction(name);
 	if (curNode.number != sum)
 		error(ERROR_PARA_NUM);
 }
@@ -1072,32 +999,19 @@ void funccall() {
 	char name[100], returnlabel[100];
 	nameALabel();
 	strcpy(returnlabel, label);
-	if (sym != IDENT) {
-		// error
-		// return;
+	if (sym != IDENT)
 		error(MISSING_IDENT);
-	}
 	strcpy(name, cValue);
 	getsym();
-	if (sym != LPAR) {
-		// error
-		// return;
+	if (sym != LPAR)
 		error(MISSING_LPARENT);
-	}
 	getsym();
-	if (sym == RPAR) {
-		// printf("This is an empty value parameter table!\n");
-	}
-	else {
+	if (sym != RPAR) {
 		valueparatable(name);
 	}
 	insertIntoIRlist(callop, "", "", name);
-	if (sym != RPAR) {
-		// error
-		// return;
+	if (sym != RPAR)
 		error(MISSING_RPARENT);
-	}
-	// printf("This is a function call!\n");
 	getsym();
 }
 
@@ -1106,11 +1020,8 @@ void funccall() {
 */
 void assignsentence() {
 	char name[100], temp1[100] = "";
-	if (sym != IDENT) {
-		// error
-		// return;
+	if (sym != IDENT)
 		error(MISSING_IDENT);
-	}
 	strcpy(name, cValue);
 	getsym();
 	if (sym == LBRACK) {
@@ -1119,24 +1030,21 @@ void assignsentence() {
 		nameATempVarByIndex(tempResIndex - 1);
 		strcpy(temp1, tempRes);
 		if (sym != RBRACK) {
-			// error
-			// return;
 			error(MISSING_RBRACK);
 		}
 		getsym();
 	}
-	if (sym != IS) {
-		// error
-		// return;
+	if (sym != IS)
 		error(MISSING_IS);
-	}
 	getsym();
 	expression();
 	nameATempVarByIndex(tempResIndex - 1);
 	char temp2[100];
 	strcpy(temp2, tempRes);
 	insertIntoIRlist(stoop, temp2, temp1, name);
-	// printf("This is an assign sentence!\n");
+	struct node curNode = findIdentInLastSymTable(name);
+	if (curNode.kind == 1)
+		error(ASSIG2CONST);
 }
 /*
 * Summary: scanf sentence
@@ -1144,38 +1052,28 @@ void assignsentence() {
 void scanfsentence() {
 	char name[100];
 	getsym();
-	if (sym != LPAR) {
-		// error
-		// return;
+	if (sym != LPAR)
 		error(MISSING_LPARENT);
-	}
 	getsym();
-	if (sym != IDENT) {
-		// error
-		// return;
+	if (sym != IDENT)
 		error(MISSING_IDENT);
-	}
 	strcpy(name, cValue);
 	insertIntoIRlist(scaop, "", "", name);
 	getsym();
 	while (sym == COMMA) {
 		getsym();
-		if (sym != IDENT) {
-			// error
-			// return;
+		if (sym != IDENT)
 			error(MISSING_IDENT);
-		}
 		strcpy(name, cValue);
 		insertIntoIRlist(scaop, "", "", name);
 		getsym();
 	}
-	if (sym != RPAR) {
-		// error
-		// return;
+	if (sym != RPAR)
 		error(MISSING_RPARENT);
-	}
-	// printf("This is a scanf sentence!\n");
 	getsym();
+	struct node curNode = findIdentInLastSymTable(name);
+	if (curNode.kind == 1)
+		error(ASSIG2CONST);
 }
 
 /*
@@ -1184,11 +1082,8 @@ void scanfsentence() {
 void printfsentence() {
 	char string[100], stringName[100];
 	getsym();
-	if (sym != LPAR) {
-		// error
-		// return;
+	if (sym != LPAR)
 		error(MISSING_LPARENT);
-	}
 	getsym();
 	if (sym == STRING) {
 		strcpy(string, cValue);
@@ -1215,23 +1110,16 @@ void printfsentence() {
 		strcpy(temp1, tempRes);
 		insertIntoIRlist(priop, "", "", temp1);
 	}
-	if (sym != RPAR) {
-		// error
-		// return;
+	if (sym != RPAR)
 		error(MISSING_RPARENT);
-	}
 	getsym();
-	// printf("This is a scanf sentence!\n");
 }
 
 /*
 Summary: case substatement*/
 void casesentence(char* switchVar, char *endlabel) {
-	if (sym != CASESY) {
-		// error
-		// return;
+	if (sym != CASESY)
 		error(MISSING_CASE_KEYWORD);
-	}
 	getsym();
 	char endOfThisCase[100];
 	nameALabel();
@@ -1258,36 +1146,25 @@ void casesentence(char* switchVar, char *endlabel) {
 		insertIntoIRlist(bneop, switchVar, temp3, endOfThisCase);
 		getsym();
 	}
-	else {
-		// error
-		// return;
+	else
 		error(CASE_CONTENT_WRONG);
-	}
-	if (sym != COLON) {
-		// error
-		// return;
+	if (sym != COLON)
 		error(MISSING_COLON);
-	}
 	getsym();
 	sentence();
 	insertIntoIRlist(jop, "", "", endlabel);
 	insertIntoIRlist(setop, "", "", endOfThisCase);
-	// printf("This is a case sentence!\n");
 }
 
 /*
 * Summary: case table
 */
 void casetable(char* switchVar, char* endlabel) {
-	if (sym != CASESY) {
-		// error
-		// return;
+	if (sym != CASESY)
 		error(MISSING_CASE_KEYWORD);
-	}
 	do {
 		casesentence(switchVar, endlabel);
 	} while (sym == CASESY);
-	// printf("This is a case table!\n");
 }
 
 /*
@@ -1295,20 +1172,14 @@ void casetable(char* switchVar, char* endlabel) {
 */
 void defau() {
 	getsym();
-	if (sym == SEMICOLON) {
-		// printf("This is an empty default sentence!\n");
+	if (sym == SEMICOLON)
 		getsym();
-	}
 	else if (sym == COLON) {
 		getsym();
 		sentence();
-		// printf("This is a default sentence!\n");
 	}
-	else {
-		// error
-		// return;
+	else
 		error(MISSING_SEMICOLON);
-	}
 }
 
 /*
@@ -1316,42 +1187,28 @@ void defau() {
 */
 void switchsentence() {
 	getsym();
-	if (sym != LPAR) {
-		// error
-		// return;
+	if (sym != LPAR)
 		error(MISSING_LPARENT);
-	}
 	getsym();
 	expression();
 	char switchVar[100];
 	nameATempVarByIndex(tempResIndex - 1);
 	strcpy(switchVar, tempRes);
-	if (sym != RPAR) {
-		// error
-		// return;
+	if (sym != RPAR)
 		error(MISSING_RPARENT);
-	}
 	getsym();
-	if (sym != LBRACE) {
-		// error
-		// return;
+	if (sym != LBRACE)
 		error(MISSING_LBRACE);
-	}
 	getsym();
 	char endlabel[100];
 	nameALabel();
 	strcpy(endlabel, label);
 	casetable(switchVar, endlabel);
-	if (sym == DEFAULTSY) {
+	if (sym == DEFAULTSY)
 		defau();
-	}
-	if (sym != RBRACE) {
-		// error
-		// return;
+	if (sym != RBRACE)
 		error(MISSING_RBRACE);
-	}
 	insertIntoIRlist(setop, "", "", endlabel);
-	// printf("This is a switch sentence!\n");
 	getsym();
 }
 
@@ -1368,37 +1225,27 @@ void returnsentence() {
 		nameATempVarByIndex(tempResIndex - 1);
 		strcpy(temp1, tempRes);
 		insertIntoIRlist(retop, "", "", temp1);
-		if (sym != RPAR) {
-			// error
-			// return;
+		if (sym != RPAR)
 			error(MISSING_RPARENT);
-		}
 		getsym();
 	}
-	else {
+	else
 		insertIntoIRlist(retop, "", "", "");
-	}
-	// printf("This is a return sentence!\n");
 }
 
 /*
 * Summary: sentence
 */
 void sentence() {
-	if (sym == IFSY) {
+	if (sym == IFSY)
 		ifsentence();
-	}
-	else if (sym == WHILESY) {
+	else if (sym == WHILESY)
 		whilesentence();
-	}
 	else if (sym == LBRACE) {
 		getsym();
 		sentenceslist();
-		if (sym != RBRACE) {
-			// error
-			// return;
+		if (sym != RBRACE)
 			error(MISSING_RBRACE);
-		}
 		getsym();
 	}
 	else if (sym == IDENT) {
@@ -1407,83 +1254,55 @@ void sentence() {
 			symList_index -= 2;
 			getsym();
 			funccall();
-			if (sym != SEMICOLON) {
-				// error
-				// return;
+			if (sym != SEMICOLON)
 				error(MISSING_SEMICOLON);
-			}
 			getsym();
 		}
 		else if (sym == IS || sym == LBRACK) {
 			symList_index -= 2;
 			getsym();
 			assignsentence();
-			if (sym != SEMICOLON) {
-				// error
-				// return;
+			if (sym != SEMICOLON)
 				error(MISSING_SEMICOLON);
-			}
 			getsym();
 		}
-		else {
-			// error
-			// return;
+		else
 			error(SENTENCE_CONTENT_WRONG);
-		}
 	}
 	else if (sym == SCANFSY) {
 		scanfsentence();
-		if (sym != SEMICOLON) {
-			// error
-			// return;
+		if (sym != SEMICOLON)
 			error(MISSING_SEMICOLON);
-		}
 		getsym();
 	}
 	else if (sym == PRINTFSY) {
 		printfsentence();
-		if (sym != SEMICOLON) {
-			// error
-			// return;
+		if (sym != SEMICOLON)
 			error(MISSING_SEMICOLON);
-		}
 		getsym();
 	}
-	else if (sym == SEMICOLON) {
-		// printf("This is an empty sentence!\n");
+	else if (sym == SEMICOLON)
 		getsym();
-	}
-	else if (sym == SWITCHSY) {
+	else if (sym == SWITCHSY)
 		switchsentence();
-	}
 	else if (sym == RETURNSY) {
 		returnsentence();
-		if (sym != SEMICOLON) {
-			// error
-			// return;
+		if (sym != SEMICOLON)
 			error(MISSING_SEMICOLON);
-		}
 		getsym();
 	}
-	else {
-		// error
-		// return;
+	else
 		error(SENTENCE_CONTENT_WRONG);
-	}
 }
 
 /*
 * Summary: sentences list
 */
 void sentenceslist() {
-	if (sym != IFSY && sym != WHILESY && sym != LBRACE && sym != IDENT && sym != SCANFSY && sym != PRINTFSY && sym != SEMICOLON && sym != SWITCHSY && sym != RETURNSY) {
-		// printf("This is an empty sentences list!\n");
+	if (sym != IFSY && sym != WHILESY && sym != LBRACE && sym != IDENT && sym != SCANFSY && sym != PRINTFSY && sym != SEMICOLON && sym != SWITCHSY && sym != RETURNSY)
 		return;
-	}
-	while (sym == IFSY || sym == WHILESY || sym == LBRACE || sym == IDENT || sym == SCANFSY || sym == PRINTFSY || sym == SEMICOLON || sym == SWITCHSY || sym == RETURNSY) {
+	while (sym == IFSY || sym == WHILESY || sym == LBRACE || sym == IDENT || sym == SCANFSY || sym == PRINTFSY || sym == SEMICOLON || sym == SWITCHSY || sym == RETURNSY)
 		sentence();
-	}
-	// printf("This is a sentences list!\n");
 }
 
 /*
@@ -1492,11 +1311,9 @@ void sentenceslist() {
 void complexsentence() {
 	if (sym == CONSTSY)
 		condecl();
-	if (sym == INTSY || sym == CHARSY) {
+	if (sym == INTSY || sym == CHARSY)
 		vardecl();
-	}
 	sentenceslist();
-	// printf("This is a complex sentence!\n");
 }
 
 /*
@@ -1518,58 +1335,34 @@ void funcdef() {
 		else
 			type = 3;
 		getsym();
-		if (sym != IDENT) {
-			// error
-			// return;
+		if (sym != IDENT)
 			error(MISSING_IDENT);
-		}
 		strcpy(name, cValue);
 		insertIntoIRlist(fstaop, "", "", name);
 		insertIntoIRlist(setop, "", "", temp1);
 		enter(name, kind, type, 0, number, 0, "", temp1);
 		getsym();
-		if (sym != LPAR) {
-			// error
-			// return;
+		if (sym != LPAR)
 			error(MISSING_LPARENT);
-		}
 		getsym();
 		if (sym != RPAR) {
 			number = paratable();
 			updateParaNumber(name, number);
 		}
-		else {
-			// printf("This is a empty parameter list!\n");
-		}
 		addrIndex += 8;
-		if (sym != RPAR) {
-			// error
-			// return;
+		if (sym != RPAR)
 			error(MISSING_RPARENT);
-		}
 		getsym();
-		if (sym != LBRACE) {
-			// error
-			// return;
+		if (sym != LBRACE)
 			error(MISSING_LBRACE);
-		}
 		getsym();
 		complexsentence();
 		if (retflag == 0 && type != 1)
 			error(RETURN_ERROR);
 		retflag = 1;
-		if (sym != RBRACE) {
-			// error
-			// return;
+		if (sym != RBRACE)
 			error(MISSING_RBRACE);
-		}
 		insertIntoIRlist(jrop, "", "", "");
-		// if (type == 1)
-			// printf("This is a Non-return function!\n");
-		// else if (type == 3)
-			// printf("This is a char-return function!\n");
-		// else if (type == 2)
-			// printf("This is a int-return function!\n");
 		getsym();
 
 		if (sym == INTSY || sym == CHARSY || sym == VOIDSY) {
@@ -1597,38 +1390,22 @@ void funcdef() {
 void mainprog(char *mainlabel) {
 	addrIndex = 0;
 	getsym();
-	if (sym != MAINSY) {
-		// error
-		// return;
+	if (sym != MAINSY)
 		error(MISSING_MAIN);
-	}
 	enter("main", 3, 1, 0, 0, 0, "", mainlabel);
 	getsym();
-	if (sym != LPAR) {
-		// error
-		// return;
+	if (sym != LPAR)
 		error(MISSING_LPARENT);
-	}
 	getsym();
-	if (sym != RPAR) {
-		// error
-		// return;
+	if (sym != RPAR)
 		error(MISSING_RPARENT);
-	}
 	getsym();
-	if (sym != LBRACE) {
-		// error
-		// return;
+	if (sym != LBRACE)
 		error(MISSING_LBRACE);
-	}
 	getsym();
 	complexsentence();
-	if (sym != RBRACE) {
-		// error
-		// return;
+	if (sym != RBRACE)
 		error(MISSING_RBRACE);
-	}
-	// printf("This is main function!\n");
 	getsym();
 }
 
@@ -1643,11 +1420,8 @@ void program() {
 		condecl();
 	if (sym == INTSY || sym == CHARSY) {
 		getsym();
-		if (sym != IDENT) {
-			// error
-			// return;
+		if (sym != IDENT)
 			error(MISSING_IDENT);
-		}
 		getsym();
 		if (sym == LPAR) {
 			symList_index -= 3;
@@ -1658,11 +1432,8 @@ void program() {
 			getsym();
 			vardecl();
 		}
-		else {
-			// error
-			// return;
+		else
 			error(MISSING_SEMICOLON);
-		}
 	}
 	insertIntoIRlist(callop, "", "", "main");
 	if (sym == INTSY || sym == CHARSY || sym == VOIDSY) {
@@ -1682,11 +1453,7 @@ void program() {
 		insertIntoIRlist(setop, "", "", mainlabel);
 		mainprog(mainlabel);
 		insertIntoIRlist(endop, "", "", "");
-		// printf("This is a program!\n");
 	}
-	else {
-		// error
-		// return;
+	else
 		error(PROGRAM_ERROR);
-	}
 }

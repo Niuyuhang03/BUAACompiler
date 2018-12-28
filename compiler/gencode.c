@@ -59,12 +59,6 @@ void gentext() {
 				layer[layerTop++] = curNode.level;
 				break;
 			}
-			//case(getpop): {
-			//	struct node curNode = findIdentInSymTable(IRlist[i].res);
-			//	fprintf(outputfp, "\tsw $a%d, -%d($fp)\n", getParaIndex, curNode.addr);
-			//	getParaIndex++;
-			//	break;
-			//}
 			case(jrop): {
 				fprintf(outputfp, "\tjr $ra\n");
 				layerTop--;
@@ -124,10 +118,10 @@ void gentext() {
 					fprintf(outputfp, "\tli $t2, 4\n");
 					fprintf(outputfp, "\tmult $t1, $t2\n");
 					fprintf(outputfp, "\tmflo $t1\n");
-					fprintf(outputfp, "\tadd $t0, $t0, $t1\n");
+					fprintf(outputfp, "\taddu $t0, $t0, $t1\n");
 				}
 				else {
-					fprintf(outputfp, "\taddi $t0, $fp, -%d\n", curNode.addr);
+					fprintf(outputfp, "\taddiu $t0, $fp, -%d\n", curNode.addr);
 					curNode = findIdentInSymTable(IRlist[i].op2);
 					if (strcmp(curNode.name, "$error") == 0)
 						error(UNDEF_ID);
@@ -141,7 +135,7 @@ void gentext() {
 					fprintf(outputfp, "\tli $t2, 4\n");
 					fprintf(outputfp, "\tmult $t1, $t2\n");
 					fprintf(outputfp, "\tmflo $t1\n");
-					fprintf(outputfp, "\tsub $t0, $t0, $t1\n");
+					fprintf(outputfp, "\tsubu $t0, $t0, $t1\n");
 				}
 				fprintf(outputfp, "\tlw $t0, ($t0)\n");
 				curNode = findIdentInSymTable(IRlist[i].res);
@@ -185,11 +179,11 @@ void gentext() {
 						fprintf(outputfp, "\tli $t3, 4\n");
 						fprintf(outputfp, "\tmult $t2, $t3\n");
 						fprintf(outputfp, "\tmflo $t2\n");
-						fprintf(outputfp, "\tadd $t1, $t1, $t2\n");
+						fprintf(outputfp, "\taddu $t1, $t1, $t2\n");
 						fprintf(outputfp, "\tsw $t0, ($t1)\n");
 					}
 					else {
-						fprintf(outputfp, "\taddi $t1, $fp, -%d\n", curNode.addr);
+						fprintf(outputfp, "\taddiu $t1, $fp, -%d\n", curNode.addr);
 						curNode = findIdentInSymTable(IRlist[i].op2);
 						if (strcmp(curNode.name, "$error") == 0)
 							error(UNDEF_ID);
@@ -197,7 +191,7 @@ void gentext() {
 						fprintf(outputfp, "\tli $t3, 4\n");
 						fprintf(outputfp, "\tmult $t2, $t3\n");
 						fprintf(outputfp, "\tmflo $t2\n");
-						fprintf(outputfp, "\tsub $t1, $t1, $t2\n");
+						fprintf(outputfp, "\tsubu $t1, $t1, $t2\n");
 						fprintf(outputfp, "\tsw $t0, ($t1)\n");
 					}
 				}
@@ -222,7 +216,7 @@ void gentext() {
 				if (strcmp(curNode.name, "$error") == 0)
 					error(UNDEF_ID);
 				fprintf(outputfp, "\tlw $t1, -%d($fp)\n", curNode.addr);
-				fprintf(outputfp, "\tsub $t0, $t0, $t1\n");
+				fprintf(outputfp, "\tsubu $t0, $t0, $t1\n");
 				fprintf(outputfp, "\tbgez $t0, %s\n", IRlist[i].res);
 				break;
 			}
@@ -235,7 +229,7 @@ void gentext() {
 				if (strcmp(curNode.name, "$error") == 0)
 					error(UNDEF_ID);
 				fprintf(outputfp, "\tlw $t1, -%d($fp)\n", curNode.addr);
-				fprintf(outputfp, "\tsub $t0, $t0, $t1\n");
+				fprintf(outputfp, "\tsubu $t0, $t0, $t1\n");
 				fprintf(outputfp, "\tbgtz $t0, %s\n", IRlist[i].res);
 				break;
 			}
@@ -248,7 +242,7 @@ void gentext() {
 				if (strcmp(curNode.name, "$error") == 0)
 					error(UNDEF_ID);
 				fprintf(outputfp, "\tlw $t1, -%d($fp)\n", curNode.addr);
-				fprintf(outputfp, "\tsub $t0, $t0, $t1\n");
+				fprintf(outputfp, "\tsubu $t0, $t0, $t1\n");
 				fprintf(outputfp, "\tbltz $t0, %s\n", IRlist[i].res);
 				break;
 			}
@@ -261,7 +255,7 @@ void gentext() {
 				if (strcmp(curNode.name, "$error") == 0)
 					error(UNDEF_ID);
 				fprintf(outputfp, "\tlw $t1, -%d($fp)\n", curNode.addr);
-				fprintf(outputfp, "\tsub $t0, $t0, $t1\n");
+				fprintf(outputfp, "\tsubu $t0, $t0, $t1\n");
 				fprintf(outputfp, "\tblez $t0, %s\n", IRlist[i].res);
 				break;
 			}
@@ -395,7 +389,7 @@ void gentext() {
 				if (strcmp(curNode.name, "$error") == 0)
 					error(UNDEF_ID);
 				fprintf(outputfp, "\tlw $t1, -%d($fp)\n", curNode.addr);
-				fprintf(outputfp, "\tadd $t0, $t0, $t1\n");
+				fprintf(outputfp, "\taddu $t0, $t0, $t1\n");
 				curNode = findIdentInSymTable(IRlist[i].res);
 				if (strcmp(curNode.name, "$error") == 0)
 					error(UNDEF_ID);
@@ -411,7 +405,7 @@ void gentext() {
 				if (strcmp(curNode.name, "$error") == 0)
 					error(UNDEF_ID);
 				fprintf(outputfp, "\tlw $t1, -%d($fp)\n", curNode.addr);
-				fprintf(outputfp, "\tsub $t0, $t0, $t1\n");
+				fprintf(outputfp, "\tsubu $t0, $t0, $t1\n");
 				curNode = findIdentInSymTable(IRlist[i].res);
 				if (strcmp(curNode.name, "$error") == 0)
 					error(UNDEF_ID);
