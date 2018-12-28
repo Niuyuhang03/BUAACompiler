@@ -1,0 +1,21 @@
+int a;
+int add(){
+    
+    a=a+1;
+    return (a);
+}
+int sum(int a,int b,int c,int d){
+printf(a);
+printf(b);
+printf(c);
+printf(d);
+return(a+b+c+d);
+}
+void main(){
+
+int b,  c,d;
+a=1;
+    printf( sum(a,add(),a,add()));
+
+
+}

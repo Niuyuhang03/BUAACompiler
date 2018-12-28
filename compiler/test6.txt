@@ -1,0 +1,24 @@
+const int a = 1000;
+const char c = 'c';
+int array1[500];
+
+void main() {
+    const int b = 9000;
+    int array2[400], d;
+    array1[a] = 1;
+    array1[b] = 1;
+    array1[10000] = 1;
+    array1[c] = 1;
+    array2[a] = 1;
+    array2[b] = 1;
+    array2[10000] = 1;
+    array2[c] = 1;
+    d = array1[a];
+    d = array1[b];
+    d = array1[10000];
+    d = array1[c];
+    d = array2[a];
+    d = array2[b];
+    d = array2[10000];
+    d = array2[c];
+}

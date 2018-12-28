@@ -159,6 +159,18 @@ void error(enum errorType errorNum) {
 			printf("row:%d column:%d <constant can't be assigned!>\n", row, column);
 			break;
 		}
+		case(CONDITION_TYPE_ERROR): {				// 条件中类型不匹配或类型不为整型
+			printf("row:%d column:%d <condition type error!>\n", row, column);
+			break;
+		}
+		case(ARRAY_INDEX_NOT_INT): {				// 数组下标不是int
+			printf("row:%d column:%d <index in array should be int!>\n", row, column);
+			break;
+		}
+		case(SWITCH_TYPE_ERROR): {					// switch中类型不匹配
+			printf("row:%d column:%d <type in switch-case doesn't match!>\n", row, column);
+			break;
+		}
 		default: {
 			break;
 		}

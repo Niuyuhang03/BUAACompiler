@@ -1,0 +1,20 @@
+void main(){
+    const int a = 97;
+    const char b = 'b';
+    int c;
+    char d;
+    c = 99;
+    d = 'd';
+    switch(a) {
+        case 'a':;
+    }
+    switch(b) {
+        case 98:;
+    }
+    switch(c) {
+        case 'c':;
+    }
+    switch(d) {
+        case 100:;
+    }
+}

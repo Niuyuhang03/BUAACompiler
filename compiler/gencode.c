@@ -102,12 +102,19 @@ void gentext() {
 				if (curNode.level == 0 && symTable->table[0].kind != 3) {
 					fprintf(outputfp, "\tla $t0, %s\n", curNode.name);
 					curNode = findIdentInSymTable(IRlist[i].op2);
-					if (curNode.kind == 1 && curNode.type == 2) {
+					if (strcmp(curNode.name, "$error") == 0)
+						error(UNDEF_ID);
+					else if (curNode.kind == 1 && curNode.type == 2) {
 						if (curNode.value < 0 || curNode.value >= currange)
 							error(OUT_OF_ARRAY);
 					}
-					if (strcmp(curNode.name, "$error") == 0)
-						error(UNDEF_ID);
+					else if (curNode.kind == 5 && curNode.type == 2) {
+						if (curNode.value < 0 || curNode.value >= currange)
+							error(OUT_OF_ARRAY);
+					}
+					else if (curNode.type != 2) {
+						error(ARRAY_INDEX_NOT_INT);
+					}
 					if (curNode.level == 0 && symTable->table[0].kind != 3) {
 						fprintf(outputfp, "\tla $t1, %s\n", curNode.name);
 						fprintf(outputfp, "\tlw $t1, ($t1)\n");
@@ -125,6 +132,17 @@ void gentext() {
 					curNode = findIdentInSymTable(IRlist[i].op2);
 					if (strcmp(curNode.name, "$error") == 0)
 						error(UNDEF_ID);
+					else if (curNode.kind == 1 && curNode.type == 2) {
+						if (curNode.value < 0 || curNode.value >= currange)
+							error(OUT_OF_ARRAY);
+					}
+					else if (curNode.kind == 5 && curNode.type == 2) {
+						if (curNode.value < 0 || curNode.value >= currange)
+							error(OUT_OF_ARRAY);
+					}
+					else if (curNode.type != 2) {
+						error(ARRAY_INDEX_NOT_INT);
+					}
 					if (curNode.level == 0 && symTable->table[0].kind != 3) {
 						fprintf(outputfp, "\tla $t1, %s\n", curNode.name);
 						fprintf(outputfp, "\tlw $t1, ($t1)\n");
@@ -156,6 +174,7 @@ void gentext() {
 				else
 					fprintf(outputfp, "\tlw $t0, -%d($fp)\n", curNode.addr);
 				curNode = findIdentInSymTable(IRlist[i].res);
+				int currange = curNode.number;
 				if (strcmp(curNode.name, "$error") == 0)
 					error(UNDEF_ID);
 				if (curNode.type != op1type && curNode.type - 2 != op1type && curNode.kind != 5) {
@@ -175,6 +194,17 @@ void gentext() {
 						curNode = findIdentInSymTable(IRlist[i].op2);
 						if (strcmp(curNode.name, "$error") == 0)
 							error(UNDEF_ID);
+						else if (curNode.kind == 1 && curNode.type == 2) {
+							if (curNode.value < 0 || curNode.value >= currange)
+								error(OUT_OF_ARRAY);
+						}
+						else if (curNode.kind == 5 && curNode.type == 2) {
+							if (curNode.value < 0 || curNode.value >= currange)
+								error(OUT_OF_ARRAY);
+						}
+						else if (curNode.type != 2) {
+							error(ARRAY_INDEX_NOT_INT);
+						}
 						fprintf(outputfp, "\tlw $t2, -%d($fp)\n", curNode.addr);
 						fprintf(outputfp, "\tli $t3, 4\n");
 						fprintf(outputfp, "\tmult $t2, $t3\n");
@@ -187,6 +217,17 @@ void gentext() {
 						curNode = findIdentInSymTable(IRlist[i].op2);
 						if (strcmp(curNode.name, "$error") == 0)
 							error(UNDEF_ID);
+						else if (curNode.kind == 1 && curNode.type == 2) {
+							if (curNode.value < 0 || curNode.value >= currange)
+								error(OUT_OF_ARRAY);
+						}
+						else if (curNode.kind == 5 && curNode.type == 2) {
+							if (curNode.value < 0 || curNode.value >= currange)
+								error(OUT_OF_ARRAY);
+						}
+						else if (curNode.type != 2) {
+							error(ARRAY_INDEX_NOT_INT);
+						}
 						fprintf(outputfp, "\tlw $t2, -%d($fp)\n", curNode.addr);
 						fprintf(outputfp, "\tli $t3, 4\n");
 						fprintf(outputfp, "\tmult $t2, $t3\n");

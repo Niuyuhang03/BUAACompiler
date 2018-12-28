@@ -773,7 +773,7 @@ void factor() {
 			struct node curNode = findIdentInLastSymTable(name);
 			if (strcmp(curNode.name, "$error") == 0)
 				error(UNDEF_ID);
-			enter(temp1, 5, curNode.type, 0, 0, addrIndex, "", "");
+			enter(temp1, 5, curNode.type, curNode.value, 0, addrIndex, "", "");
 			addrIndex += 4;
 		}
 	}
@@ -802,7 +802,7 @@ void factor() {
 		char temp2[100];
 		strcpy(temp2, tempRes);
 		insertIntoIRlist(getiop, temp1, "", temp2);
-		enter(temp2, 5, 2, 0, 0, addrIndex, "", "");
+		enter(temp2, 5, 2, iValue, 0, addrIndex, "", "");
 		addrIndex += 4;
 		getsym();
 	}
@@ -859,12 +859,16 @@ void conditionsentence(char *elselabel) {
 	char temp1[100];
 	nameATempVarByIndex(tempResIndex - 1);
 	strcpy(temp1, tempRes);
+	struct node curNode = findIdentInLastSymTable(temp1);
+	char type1 = curNode.type;
+	if (type1 != 2)
+		error(CONDITION_TYPE_ERROR);
 	if (sym == LT || sym == LE || sym == GE || sym == GT || sym == EQ || sym == NEQ) {
+		char temp2[100];
 		if (sym == LT) {
 			getsym();
 			expression();
 			nameATempVarByIndex(tempResIndex - 1);
-			char temp2[100];
 			strcpy(temp2, tempRes);
 			insertIntoIRlist(bgezop, temp1, temp2, elselabel);
 		}
@@ -872,7 +876,6 @@ void conditionsentence(char *elselabel) {
 			getsym();
 			expression();
 			nameATempVarByIndex(tempResIndex - 1);
-			char temp2[100];
 			strcpy(temp2, tempRes);
 			insertIntoIRlist(bgtzop, temp1, temp2, elselabel);
 		}
@@ -880,7 +883,6 @@ void conditionsentence(char *elselabel) {
 			getsym();
 			expression();
 			nameATempVarByIndex(tempResIndex - 1);
-			char temp2[100];
 			strcpy(temp2, tempRes);
 			insertIntoIRlist(bltzop, temp1, temp2, elselabel);
 		}
@@ -888,7 +890,6 @@ void conditionsentence(char *elselabel) {
 			getsym();
 			expression();
 			nameATempVarByIndex(tempResIndex - 1);
-			char temp2[100];
 			strcpy(temp2, tempRes);
 			insertIntoIRlist(blezop, temp1, temp2, elselabel);
 		}
@@ -896,7 +897,6 @@ void conditionsentence(char *elselabel) {
 			getsym();
 			expression();
 			nameATempVarByIndex(tempResIndex - 1);
-			char temp2[100];
 			strcpy(temp2, tempRes);
 			insertIntoIRlist(bneop, temp1, temp2, elselabel);
 		}
@@ -904,10 +904,13 @@ void conditionsentence(char *elselabel) {
 			getsym();
 			expression();
 			nameATempVarByIndex(tempResIndex - 1);
-			char temp2[100];
 			strcpy(temp2, tempRes);
 			insertIntoIRlist(beqop, temp1, temp2, elselabel);
 		}
+		struct node curNode = findIdentInLastSymTable(temp2);
+		char type2 = curNode.type;
+		if (type2 != 2)
+			error(CONDITION_TYPE_ERROR);
 	}
 	else {
 		nameATempVar();
@@ -1133,6 +1136,8 @@ void casesentence(char* switchVar, char *endlabel) {
 		enter(temp3, 5, 2, 0, 0, addrIndex, "", "");
 		addrIndex += 4;
 		insertIntoIRlist(bneop, switchVar, temp3, endOfThisCase);
+		if (findIdentInLastSymTable(switchVar).type != 3)
+			error(SWITCH_TYPE_ERROR);
 		getsym();
 	}
 	else if (isInteger()) {
@@ -1141,9 +1146,11 @@ void casesentence(char* switchVar, char *endlabel) {
 		nameATempVar();
 		strcpy(temp3, tempRes);
 		insertIntoIRlist(getiop, temp2, "", temp3);
-		enter(temp3, 5, 2, 0, 0, addrIndex, "", "");
+		enter(temp3, 5, 2, iValue, 0, addrIndex, "", "");
 		addrIndex += 4;
 		insertIntoIRlist(bneop, switchVar, temp3, endOfThisCase);
+		if (findIdentInLastSymTable(switchVar).type != 2)
+			error(SWITCH_TYPE_ERROR);
 		getsym();
 	}
 	else
