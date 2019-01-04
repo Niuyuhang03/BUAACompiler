@@ -259,3 +259,5 @@ paket-files/
 # Python Tools for Visual Studio (PTVS)
 __pycache__/
 *.pyc
+/compiler/16061011_牛宇航_优化前中间代码.txt
+/compiler/16061011_牛宇航_优化前目标代码.txt

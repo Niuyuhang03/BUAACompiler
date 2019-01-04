@@ -43,7 +43,7 @@ int main(void) {
 	}*/
 
 	// printf IRlist
-	char IRoutputname[100] = "mid_output.txt";
+	char IRoutputname[100] = "16061011_牛宇航_优化前中间代码.txt";
 	FILE *IRoutput, *outputfp;
 	fopen_s(&IRoutput, IRoutputname, "w");
 	for (int i = 0; i < IRtop; i++)
@@ -52,7 +52,7 @@ int main(void) {
 	// generate midcode and asmcode before optimization
 	fclose(fp);
 	if (errorflag == 0) {
-		strcpy(outfilename, "output.asm");
+		strcpy(outfilename, "16061011_牛宇航_优化前目标代码.txt");
 		fopen_s(&outputfp, outfilename, "w");
 		gendata(outputfp);
 		gentext(outputfp);
