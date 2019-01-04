@@ -14,9 +14,9 @@ int layerTop = 0;			// 运行栈中的分程序信息的顶部
 /*
 * Summary: gen .word code, include global variable and STRING.
 */
-void gendata() {
+void gendata(FILE* outputfp) {
 	fprintf(outputfp, ".data\n");
-	fprintf(outputfp, "\t$string_0: .asciiz \"\\n\"\n");
+	// fprintf(outputfp, "\t$string_0: .asciiz \"\\n\"\n");
 	int i;
 	for (i = 0; i < symTable->top; i++) {
 		if (symTable->table[i].kind == 6)
@@ -39,7 +39,7 @@ void gendata() {
 /*
 * Summary: gen .text code.
 */
-void gentext() {
+void gentext(FILE* outputfp) {
 	fprintf(outputfp, ".text\n");
 	int i;
 	for (i = 0; i < IRtop; i++) {
@@ -128,7 +128,7 @@ void gentext() {
 					fprintf(outputfp, "\taddu $t0, $t0, $t1\n");
 				}
 				else {
-					fprintf(outputfp, "\taddiu $t0, $fp, -%d\n", curNode.addr);
+					fprintf(outputfp, "\taddi $t0, $fp, -%d\n", curNode.addr);
 					curNode = findIdentInSymTable(IRlist[i].op2);
 					if (strcmp(curNode.name, "$error") == 0)
 						error(UNDEF_ID);
@@ -213,7 +213,7 @@ void gentext() {
 						fprintf(outputfp, "\tsw $t0, ($t1)\n");
 					}
 					else {
-						fprintf(outputfp, "\taddiu $t1, $fp, -%d\n", curNode.addr);
+						fprintf(outputfp, "\taddi $t1, $fp, -%d\n", curNode.addr);
 						curNode = findIdentInSymTable(IRlist[i].op2);
 						if (strcmp(curNode.name, "$error") == 0)
 							error(UNDEF_ID);
@@ -244,7 +244,7 @@ void gentext() {
 					error(UNDEF_ID);
 				fprintf(outputfp, "\tlw $t0, -%d($fp)\n", curNode.addr);
 				fprintf(outputfp, "\tsw $t0, ($sp)\n");
-				fprintf(outputfp, "\taddiu $sp, $sp, -4\n");
+				fprintf(outputfp, "\taddi $sp, $sp, -4\n");
 				// setParaIndex++;
 				break;
 			}
@@ -411,9 +411,9 @@ void gentext() {
 						fprintf(outputfp, "\tsyscall\n");
 					}
 				}
-				fprintf(outputfp, "\tla $a0, $string_0\n");
-				fprintf(outputfp, "\tli $v0, 4\n");
-				fprintf(outputfp, "\tsyscall\n");
+				// fprintf(outputfp, "\tla $a0, $string_0\n");
+				// fprintf(outputfp, "\tli $v0, 4\n");
+				// fprintf(outputfp, "\tsyscall\n");
 				break;
 			}
 			case(endop): {
@@ -505,9 +505,9 @@ void gentext() {
 				if (strcmp(IRlist[i].res, "main") != 0) {
 					fprintf(outputfp, "\tsw $ra, ($sp)\n");
 					fprintf(outputfp, "\tsw $fp, -4($sp)\n");
-					fprintf(outputfp, "\taddiu $sp, $sp, %d\n", curNode.number * 4);
+					fprintf(outputfp, "\taddi $sp, $sp, %d\n", curNode.number * 4);
 					fprintf(outputfp, "\tmove $fp, $sp\n");
-					fprintf(outputfp, "\taddiu $sp, $fp, -%d\n", curNode.sum);
+					fprintf(outputfp, "\taddi $sp, $fp, -%d\n", curNode.sum);
 					fprintf(outputfp, "\tjal %s\n", curNode.label);
 					fprintf(outputfp, "\tmove $sp, $fp\n");
 					fprintf(outputfp, "\tlw $fp, -%d($sp)\n", curNode.number * 4 + 4);
@@ -515,7 +515,7 @@ void gentext() {
 				}
 				else {
 					fprintf(outputfp, "\tmove $fp, $sp\n");
-					fprintf(outputfp, "\taddiu $sp, $fp, -%d\n", curNode.sum);
+					fprintf(outputfp, "\taddi $sp, $fp, -%d\n", curNode.sum);
 					fprintf(outputfp, "\tj %s\n", curNode.label);
 				}
 				break;

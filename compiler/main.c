@@ -25,6 +25,7 @@ int main(void) {
 		}
 	}
 	updateFuncVarNum();
+
 	// printf symTable and subTable
 	/*int i, cnt = 0;
 	for (i = 0; i < symTable->top; i++) {
@@ -43,20 +44,21 @@ int main(void) {
 
 	// printf IRlist
 	char IRoutputname[100] = "mid_output.txt";
-	FILE *IRoutput;
+	FILE *IRoutput, *outputfp;
 	fopen_s(&IRoutput, IRoutputname, "w");
-	for (int i = 0; i < IRtop; i++) {
+	for (int i = 0; i < IRtop; i++)
 		fprintf(IRoutput, "%s,%s,%s,%s\n", IRlistName[IRlist[i].op], IRlist[i].op1, IRlist[i].op2, IRlist[i].res);
-	}
 
+	// generate midcode and asmcode before optimization
 	fclose(fp);
 	if (errorflag == 0) {
 		strcpy(outfilename, "output.asm");
 		fopen_s(&outputfp, outfilename, "w");
-		gendata();
-		gentext();
+		gendata(outputfp);
+		gentext(outputfp);
 		fclose(outputfp);
 	}
+
 	system("pause");
 	return 0;
 }

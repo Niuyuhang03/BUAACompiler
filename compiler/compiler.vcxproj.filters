@@ -58,16 +58,37 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <Text Include="1.txt">
-      <Filter>资源文件</Filter>
-    </Text>
-    <Text Include="16061011_result.txt">
-      <Filter>资源文件</Filter>
-    </Text>
-    <Text Include="16061011_test.txt">
-      <Filter>资源文件</Filter>
-    </Text>
     <Text Include="mid_output.txt">
+      <Filter>资源文件</Filter>
+    </Text>
+    <Text Include="test2.txt">
+      <Filter>资源文件</Filter>
+    </Text>
+    <Text Include="test2_result.txt">
+      <Filter>资源文件</Filter>
+    </Text>
+    <Text Include="test3.txt">
+      <Filter>资源文件</Filter>
+    </Text>
+    <Text Include="test3_result.txt">
+      <Filter>资源文件</Filter>
+    </Text>
+    <Text Include="test4.txt">
+      <Filter>资源文件</Filter>
+    </Text>
+    <Text Include="test4_result.txt">
+      <Filter>资源文件</Filter>
+    </Text>
+    <Text Include="test6.txt">
+      <Filter>资源文件</Filter>
+    </Text>
+    <Text Include="test6_result.txt">
+      <Filter>资源文件</Filter>
+    </Text>
+    <Text Include="test7.txt">
+      <Filter>资源文件</Filter>
+    </Text>
+    <Text Include="test7_result.txt">
       <Filter>资源文件</Filter>
     </Text>
   </ItemGroup>

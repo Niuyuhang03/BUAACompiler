@@ -1,11 +1,10 @@
 .data
-	$string_0: .asciiz "\n"
 	a: .word 1000
 	c: .word 99
 	array1: .word 0:500
 .text
 	move $fp, $sp
-	addiu $sp, $fp, -1736
+	addi $sp, $fp, -1736
 	j label_0
 label_0:
 	li $t0, 9000
@@ -66,7 +65,7 @@ label_0:
 	li $t0, 1
 	sw $t0, -1644($fp)
 	lw $t0, -1644($fp)
-	addiu $t1, $fp, -4
+	addi $t1, $fp, -4
 	lw $t2, -1640($fp)
 	li $t3, 4
 	mult $t2, $t3
@@ -78,7 +77,7 @@ label_0:
 	li $t0, 1
 	sw $t0, -1652($fp)
 	lw $t0, -1652($fp)
-	addiu $t1, $fp, -4
+	addi $t1, $fp, -4
 	lw $t2, -1648($fp)
 	li $t3, 4
 	mult $t2, $t3
@@ -90,7 +89,7 @@ label_0:
 	li $t0, 1
 	sw $t0, -1660($fp)
 	lw $t0, -1660($fp)
-	addiu $t1, $fp, -4
+	addi $t1, $fp, -4
 	lw $t2, -1656($fp)
 	li $t3, 4
 	mult $t2, $t3
@@ -103,7 +102,7 @@ label_0:
 	li $t0, 1
 	sw $t0, -1668($fp)
 	lw $t0, -1668($fp)
-	addiu $t1, $fp, -4
+	addi $t1, $fp, -4
 	lw $t2, -1664($fp)
 	li $t3, 4
 	mult $t2, $t3
@@ -163,7 +162,7 @@ label_0:
 	la $t0, a
 	lw $t0, ($t0)
 	sw $t0, -1704($fp)
-	addiu $t0, $fp, -4
+	addi $t0, $fp, -4
 	lw $t1, -1704($fp)
 	li $t2, 4
 	mult $t1, $t2
@@ -175,7 +174,7 @@ label_0:
 	sw $t0, -1604($fp)
 	lw $t0, -0($fp)
 	sw $t0, -1712($fp)
-	addiu $t0, $fp, -4
+	addi $t0, $fp, -4
 	lw $t1, -1712($fp)
 	li $t2, 4
 	mult $t1, $t2
@@ -187,7 +186,7 @@ label_0:
 	sw $t0, -1604($fp)
 	li $t0, 10000
 	sw $t0, -1720($fp)
-	addiu $t0, $fp, -4
+	addi $t0, $fp, -4
 	lw $t1, -1720($fp)
 	li $t2, 4
 	mult $t1, $t2
@@ -200,7 +199,7 @@ label_0:
 	la $t0, c
 	lw $t0, ($t0)
 	sw $t0, -1728($fp)
-	addiu $t0, $fp, -4
+	addi $t0, $fp, -4
 	lw $t1, -1728($fp)
 	li $t2, 4
 	mult $t1, $t2
