@@ -96,5 +96,8 @@
     <None Include="output.asm">
       <Filter>资源文件</Filter>
     </None>
+    <None Include="..\16061011_牛宇航_编译课设文档.docx">
+      <Filter>资源文件</Filter>
+    </None>
   </ItemGroup>
 </Project>

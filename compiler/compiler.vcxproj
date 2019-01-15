@@ -146,6 +146,7 @@
     <Text Include="test7_result.txt" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\16061011_牛宇航_编译课设文档.docx" />
     <None Include="output.asm" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
