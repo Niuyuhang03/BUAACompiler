@@ -16,7 +16,7 @@ void error(enum errorType errorNum) {
 			break;
 		}
 		case(PROGRAM_ERROR): {						// 程序中主函数后仍有代码
-			printf("row:%d column:%d <program doesn't finish after main!>\n", row, column);
+			printf("row:%d column:%d <program doesn't finish after main or without main!>\n", row, column);
 			break;
 		}
 		case(STR_EMPTY): {							// 空字符串，不保存空字符串，跳到右引号后

@@ -16,7 +16,7 @@ int layerTop = 0;			// 运行栈中的分程序信息的顶部
 */
 void gendata(FILE* outputfp) {
 	fprintf(outputfp, ".data\n");
-	// fprintf(outputfp, "\t$string_0: .asciiz \"\\n\"\n");
+	fprintf(outputfp, "\t$string_0: .asciiz \"\\n\"\n");
 	int i;
 	for (i = 0; i < symTable->top; i++) {
 		if (symTable->table[i].kind == 6)
@@ -411,9 +411,9 @@ void gentext(FILE* outputfp) {
 						fprintf(outputfp, "\tsyscall\n");
 					}
 				}
-				// fprintf(outputfp, "\tla $a0, $string_0\n");
-				// fprintf(outputfp, "\tli $v0, 4\n");
-				// fprintf(outputfp, "\tsyscall\n");
+				fprintf(outputfp, "\tla $a0, $string_0\n");
+				fprintf(outputfp, "\tli $v0, 4\n");
+				fprintf(outputfp, "\tsyscall\n");
 				break;
 			}
 			case(endop): {
